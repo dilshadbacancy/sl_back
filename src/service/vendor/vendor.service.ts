@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
-import { AppErrors } from "../errors/app.errors";
-import { VendorModel } from "../models/vendor/vendor.model";
-import { SequelizeConnection } from "../config/database.config";
+import { AppErrors } from "../../errors/app.errors";
+import { VendorModel } from "../../models/vendor/vendor.model";
+import { SequelizeConnection } from "../../config/database.config";
 import { da } from "zod/v4/locales";
 
 export class VendorService {

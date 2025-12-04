@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { Status } from "../../utils/enum.utils";
 import { SequelizeConnection } from "../../config/database.config";
-import { VendorService } from "../../service/vendor.service";
+import { VendorService } from "../../service/vendor/vendor.service";
 
 
 interface VendorShopDetailsAttributes {

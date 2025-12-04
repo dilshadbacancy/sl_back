@@ -11,7 +11,7 @@ import { errorLogger } from "./middlewares/logger/error.logger";
 
 import userRoute from "../src/routes/user.route"
 import commonRoute from "../src/routes/common.route"
-import vendorRoute from "../src/routes/vendor.route"
+import vendorRoute from "./routes/vendor.route"
 import { AppErrors } from "./errors/app.errors";
 
 dotenv.config();

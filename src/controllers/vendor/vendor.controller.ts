@@ -1,8 +1,10 @@
-import { AuthRequest } from "../middlewares/auth.middleware";
+
 import { Request, Response } from "express";
-import { VendorBankDetailSchema, VendorKYCDetailsSchema, VendorLocationDetailsSchema, VendorServicesUpdateSchema, VendorShopDetailsSchema } from "../schema/vendor/vendor_schema";
-import { ApiResponse } from "../utils/apiResponse";
-import { VendorService } from "../service/vendor.service";
+import { ApiResponse } from "../../utils/apiResponse";
+import { VendorService } from "../../service/vendor/vendor.service";
+import { VendorBankDetailSchema, VendorKYCDetailsSchema, VendorLocationDetailsSchema, VendorServicesUpdateSchema, VendorShopDetailsSchema } from "../../schema/vendor/vendor_schema";
+import { AuthRequest } from "../../middlewares/auth.middleware";
+
 
 export class VendorController {
     static async saveVendorDetails(req: AuthRequest, res: Response) {

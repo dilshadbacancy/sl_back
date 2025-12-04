@@ -80,6 +80,7 @@ export class AuthService {
             const res = {
                 user: user.toJSON(),
                 access_token: token,
+                role: user.role,
                 refresh_token: refreshtoken,
             }
 

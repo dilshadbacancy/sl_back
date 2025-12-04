@@ -12,6 +12,11 @@ export class HelperUtils {
         return user;
     }
 
+    static async findBarberById(id: string): Promise<Barber | null> {
+        const barber = await Barber.findByPk(id)
+        return barber;
+    }
+
     static async findUserByPhone(phone: string): Promise<User | null> {
         const user = await User.findOne({ where: { mobile: phone } })
         return user;
@@ -40,6 +45,12 @@ export class HelperUtils {
     }
 
 
+    static generateUsername(name: string): string {
+        const base = name.toLowerCase().replace(/\s+/g, "");
+        const random = Math.floor(1000 + Math.random() * 9000); // 4-digit
+        return `${base}${random}`;
+    }
+
     static calculateDistance(lat1: any, lon1: any, lat2: any, lon2: any) {
         const R = 6371; // Earth radius in km
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -64,6 +75,7 @@ import { ZodError, ZodObject } from "zod";
 import { Request, Response, NextFunction } from "express";
 import { formatZodError } from "../errors/app.errors";
 import { User } from "../models/user/user.model";
+import { Barber } from "../models/vendor/barber.mode";
 
 export const validateBody =
     (schema: ZodObject) =>

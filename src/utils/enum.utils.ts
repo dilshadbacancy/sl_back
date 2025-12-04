@@ -1,7 +1,8 @@
 export enum Roles {
     ADMIN = "admin",
     USER = "user",
-    Vendor = "vendor"
+    VENDOR = "vendor",
+    BARBER = "barber",
 }
 
 
@@ -9,7 +10,7 @@ export enum Status {
     ACTIVE = "active",
     BLOCKED = "blocked",
     DEACTIVED = "de-activated",
-
+    DISABLED = "disabled"
 }
 
 export enum AddressType {
@@ -158,4 +159,10 @@ export enum BrowserType {
 export enum TokenType {
     FCM = "fcm",
     APNS = "apns"
+}
+
+export enum Gender {
+    MALE = "male",
+    FEMALE = "female",
+    OTHERS = "others"
 }
