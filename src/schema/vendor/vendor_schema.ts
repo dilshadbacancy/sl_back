@@ -76,3 +76,58 @@ export const VendorLocationDetailsSchema = z.object({
             .optional(),
     })
 });
+
+
+
+export const VendorKYCDetailsSchema = z.object(
+    {
+        id: z.string({ error: "Id is required" }),
+        kyc_details: z.object({
+            aadhar_number: z
+                .string()
+                .nullable()
+                .optional()
+                .refine((val) => !val || /^[0-9]{12}$/.test(val), {
+                    message: "Aadhar number must be 12 digits",
+                }),
+
+            pan_number: z
+                .string()
+                .nullable()
+                .optional()
+                .refine((val) => !val || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val), {
+                    message: "Invalid PAN number format",
+                }),
+
+            document_urls: z.object({
+                aadhar_front: z.string().url("Invalid URL").nullable().optional(),
+                aadhar_back: z.string().url("Invalid URL").nullable().optional(),
+                pan_card: z.string().url("Invalid URL").nullable().optional(),
+                shop_license: z.string().url("Invalid URL").nullable().optional(),
+            }),
+        })
+    }
+)
+
+
+export const VendorBankDetailSchema = z.object({
+    id: z.string({ error: "Id is required" }),
+    bank_details: z.object({
+        bank_name: z.string().nullable().optional(),
+        account_number: z
+            .string()
+            .nullable()
+            .optional()
+            .refine((val) => !val || /^[0-9]{9,18}$/.test(val), {
+                message: "Account number must be between 9 and 18 digits",
+            }),
+        ifsc_code: z
+            .string()
+            .nullable()
+            .optional()
+            .refine((val) => !val || /^[A-Z]{4}0[A-Z0-9]{6}$/.test(val), {
+                message: "Invalid IFSC code format",
+            }),
+        account_holder_name: z.string().nullable().optional(),
+    })
+})

@@ -1,6 +1,6 @@
 import { AuthRequest } from "../middlewares/auth.middleware";
 import { Request, Response } from "express";
-import { VendorLocationDetailsSchema, VendorShopDetailsSchema } from "../schema/vendor/vendor_schema";
+import { VendorBankDetailSchema, VendorKYCDetailsSchema, VendorLocationDetailsSchema, VendorShopDetailsSchema } from "../schema/vendor/vendor_schema";
 import { ApiResponse } from "../utils/apiResponse";
 import { VendorService } from "../service/vendor.service";
 
@@ -29,4 +29,40 @@ export class VendorController {
 
     }
 
+
+    static async saveVendorKycDetails(req: AuthRequest, res: Response): Promise<void> {
+
+        const parsed = VendorKYCDetailsSchema.safeParse(req.body);
+
+        if (!parsed.success) {
+            ApiResponse.error(parsed.error);
+        }
+
+        await VendorService.saveVendorKYCDetails(parsed.data)
+            .then((value) => ApiResponse.success("Vendor KYC details saved successfully", value))
+            .catch((e) => ApiResponse.error(e))
+            .finally(() => res.end())
+    }
+
+    static async saveVendorBankDetails(req: AuthRequest, res: Response): Promise<any> {
+        const parsed = VendorBankDetailSchema.safeParse(req.body);
+
+        if (!parsed.success) {
+            ApiResponse.error(parsed.error);
+        }
+
+        await VendorService.saveVendorBankDetail(parsed.data)
+            .then((value) => ApiResponse.success("Vendor Bank details saved successfully", value))
+            .catch((e) => ApiResponse.error(e))
+            .finally(() => res.end())
+    }
+
+
+    static async getVendors(req: AuthRequest, res: Response): Promise<void> {
+        const id = req.user?.id;
+        await VendorService.getVendors(id!)
+            .then((value) => ApiResponse.success("Vendor fetched successfully", value))
+            .catch((e) => ApiResponse.error(e))
+            .finally(() => res.end())
+    }
 }

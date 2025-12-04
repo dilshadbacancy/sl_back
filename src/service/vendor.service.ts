@@ -39,7 +39,7 @@ export class VendorService {
                 throw new AppErrors("No vendor found")
             }
             const location_details = data.location_details;
-            vendor.update({ location_details: location_details });
+            await vendor.update({ location_details: location_details });
             return {
                 id: vendor.id,
                 message: "Vendor location updated successfuly",
@@ -49,5 +49,52 @@ export class VendorService {
             throw new AppErrors(e);
         }
 
+    }
+
+    static async saveVendorKYCDetails(data: any): Promise<any> {
+
+        const vendorId = data.id;
+        const kyc_details = data.kyc_details;
+
+        const vendor = await VendorModel.findByPk(vendorId);
+
+        if (!vendor) {
+            throw new AppErrors("No vendor found")
+        }
+
+        await vendor.update({ kyc_details: kyc_details })
+        return {
+            id: vendor.id,
+            message: "Vendor KYC detauls updated successfuly",
+            profile_completed: false,
+        }
+    }
+
+    static async saveVendorBankDetail(data: any): Promise<any> {
+
+        const vendorId = data.id;
+        const bank_details = data.bank_details;
+
+        const vendor = await VendorModel.findByPk(vendorId);
+
+        if (!vendor) {
+            throw new AppErrors("Vendor not found")
+        }
+
+        await vendor.update({ bank_details: bank_details })
+        return {
+            id: vendor.id,
+            message: "Vendor bank details updated successfuly",
+            profile_completed: true,
+        }
+    }
+
+    static async getVendors(user_id: string): Promise<VendorModel[]> {
+        try {
+            const vendors = await VendorModel.findAll({ where: { user_id: user_id } })
+            return vendors;
+        } catch (error) {
+            throw new AppErrors(error);
+        }
     }
 }
