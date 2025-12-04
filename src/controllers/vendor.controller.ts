@@ -1,6 +1,6 @@
 import { AuthRequest } from "../middlewares/auth.middleware";
 import { Request, Response } from "express";
-import { VendorBankDetailSchema, VendorKYCDetailsSchema, VendorLocationDetailsSchema, VendorShopDetailsSchema } from "../schema/vendor/vendor_schema";
+import { VendorBankDetailSchema, VendorKYCDetailsSchema, VendorLocationDetailsSchema, VendorServicesUpdateSchema, VendorShopDetailsSchema } from "../schema/vendor/vendor_schema";
 import { ApiResponse } from "../utils/apiResponse";
 import { VendorService } from "../service/vendor.service";
 
@@ -29,6 +29,21 @@ export class VendorController {
 
     }
 
+
+    static async saveVendorServices(req: AuthRequest, res: Response): Promise<any> {
+
+        const parsed = VendorServicesUpdateSchema.safeParse(req.body);
+
+        if (!parsed.success) {
+            ApiResponse.error(parsed.error);
+        }
+
+        await VendorService.saveVendorServices(parsed.data)
+            .then((value) => ApiResponse.success("Vendor servicess saved successfully", value))
+            .catch((e) => ApiResponse.error(e))
+            .finally(() => res.end())
+
+    }
 
     static async saveVendorKycDetails(req: AuthRequest, res: Response): Promise<void> {
 

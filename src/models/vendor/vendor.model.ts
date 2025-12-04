@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { Status } from "../../utils/enum.utils";
 import { SequelizeConnection } from "../../config/database.config";
+import { VendorService } from "../../service/vendor.service";
 
 
 interface VendorShopDetailsAttributes {
@@ -13,6 +14,15 @@ interface VendorShopDetailsAttributes {
     shop_open_time: string | null;
     shop_close_time: string | null;
     weekly_holiday: string | null;
+}
+
+
+interface VendorServices {
+    name: string;           // service name
+    price: number;          // optional price
+    duration_minutes: number; // optional duration
+    category?: string;       // optional category like hair, spa, massage
+    is_active?: boolean;     // optional flag to deactivate service
 }
 
 interface VendorLocationDetails {
@@ -52,6 +62,7 @@ export class VendorModel extends Model {
     status!: Status;
     shop_details!: VendorShopDetailsAttributes;
     location_details!: VendorLocationDetails;
+    services!: VendorServices
     kyc_details!: VendorKYCDetails;
     bank_details!: VendorBankDetail;
 }
@@ -85,6 +96,10 @@ VendorModel.init(
         },
 
         location_details: {
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
+        services: {
             type: DataTypes.JSON,
             allowNull: true,
         },

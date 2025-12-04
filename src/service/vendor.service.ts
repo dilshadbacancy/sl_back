@@ -51,6 +51,28 @@ export class VendorService {
 
     }
 
+
+    static async saveVendorServices(data: any): Promise<any> {
+        const vendorId = data.id;
+        const services = data.services;
+        const vendor = await VendorModel.findByPk(vendorId)
+
+
+
+        if (!vendor) {
+            throw new AppErrors("Vendor not found")
+        }
+
+        await vendor.update({ services: services })
+        return {
+            id: vendor.id,
+            message: "Vendor services updated successfuly",
+            profile_completed: false,
+        }
+
+    }
+
+
     static async saveVendorKYCDetails(data: any): Promise<any> {
 
         const vendorId = data.id;

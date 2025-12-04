@@ -77,6 +77,19 @@ export const VendorLocationDetailsSchema = z.object({
     })
 });
 
+const VendorServiceSchema = z.object({
+    name: z.string().min(1, "Service name is required"),
+    price: z.number().positive().optional(),
+    duration_minutes: z.number().positive().optional(),
+    category: z.string().optional(),
+    is_active: z.boolean().optional().default(true),
+});
+
+export const VendorServicesUpdateSchema = z.object({
+    id: z.string().uuid("Invalid vendor ID"),
+    services: z.array(VendorServiceSchema).nonempty("At least one service is required"),
+});
+
 
 
 export const VendorKYCDetailsSchema = z.object(
