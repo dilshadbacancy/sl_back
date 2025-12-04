@@ -1,6 +1,6 @@
 import { ca, da } from "zod/v4/locales";
 import { AppErrors } from "../errors/app.errors";
-import { User } from "../models/user.model";
+import { User } from "../models/user/user.model";
 import { CreateUserDto } from "../schema/user/user.dto";
 import { ApiResponse } from "../utils/apiResponse";
 import { Status } from "../utils/enum.utils";

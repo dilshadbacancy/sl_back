@@ -63,7 +63,7 @@ export class HelperUtils {
 import { ZodError, ZodObject } from "zod";
 import { Request, Response, NextFunction } from "express";
 import { formatZodError } from "../errors/app.errors";
-import { User } from "../models/user.model";
+import { User } from "../models/user/user.model";
 
 export const validateBody =
     (schema: ZodObject) =>

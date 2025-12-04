@@ -1,7 +1,7 @@
 import { AppErrors } from "../errors/app.errors";
-import { DeviceInfo } from "../models/device_info.model";
-import { FCM } from "../models/fcm.model";
-import { User } from "../models/user.model";
+import { DeviceInfo } from "../models/user/device_info.model";
+import { FCM } from "../models/user/fcm.model";
+import { User } from "../models/user/user.model";
 
 
 export class CommonService {

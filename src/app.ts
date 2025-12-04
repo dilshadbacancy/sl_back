@@ -11,6 +11,7 @@ import { errorLogger } from "./middlewares/logger/error.logger";
 
 import userRoute from "../src/routes/user.route"
 import commonRoute from "../src/routes/common.route"
+import vendorRoute from "../src/routes/vendor.route"
 import { AppErrors } from "./errors/app.errors";
 
 dotenv.config();
@@ -43,7 +44,8 @@ app.use((req, res, next) => {
 app.use("/auth", authRouter)
 
 app.use("/users", userRoute);
-app.use("/common", commonRoute)
+app.use("/common", commonRoute);
+app.use("/vendor", vendorRoute)
 
 
 app.get("/api", (req, res) => {

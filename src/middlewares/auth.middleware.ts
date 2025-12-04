@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken'
 import { HelperUtils } from "../utils/helper";
 import { TokenPayload } from "../interfaces/jwt.payload";
-import { User } from "../models/user.model";
+import { User } from "../models/user/user.model";
 import { JwtUtils } from "../utils/jwt_utils";
 
 

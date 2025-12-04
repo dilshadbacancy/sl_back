@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { string } from "zod";
-import { Roles, Status } from "../utils/enum.utils";
-import { SequelizeConnection } from "../config/database.config";
+import { Roles, Status } from "../../utils/enum.utils";
+import { SequelizeConnection } from "../../config/database.config";
 
 
 interface UserLocationDetails {

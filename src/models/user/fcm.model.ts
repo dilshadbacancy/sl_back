@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { SequelizeConnection } from "../config/database.config";
-import { TokenType } from "../utils/enum.utils";
+import { SequelizeConnection } from "../../config/database.config";
+import { TokenType } from "../../utils/enum.utils";
 
 interface FCMAttributes {
     type: TokenType

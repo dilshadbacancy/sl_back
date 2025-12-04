@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { BrowserType, DeviceType, Platform, Roles } from "../utils/enum.utils";
-import { SequelizeConnection } from "../config/database.config";
+import { BrowserType, DeviceType, Platform, Roles } from "../../utils/enum.utils";
+import { SequelizeConnection } from "../../config/database.config";
 
 
 interface DeviceInfoAttributes {
