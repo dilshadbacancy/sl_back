@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 7
+    },
+    "auditLog": "/Users/mac/Desktop/NodeJS/sl_back/src/logs/.c4fc0734b2384cbb5cc202f2a16a3f494294e1d7-audit.json",
+    "files": [
+        {
+            "date": 1764743844903,
+            "name": "/Users/mac/Desktop/NodeJS/sl_back/src/logs/http-2025-12-03.log",
+            "hash": "fc0e78995f84c8f13e13eba4242e3d711c40666e75d2d0fa8e547b0ec6b3876a"
+        },
+        {
+            "date": 1764822938488,
+            "name": "/Users/mac/Desktop/NodeJS/sl_back/src/logs/http-2025-12-04.log",
+            "hash": "2a60b0df4384f4794243ebbe59c1eb870c28903abb826579e8ef76670a50a295"
+        }
+    ],
+    "hashType": "sha256"
+}
