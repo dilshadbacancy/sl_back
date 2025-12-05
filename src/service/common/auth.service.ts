@@ -1,11 +1,11 @@
-import { AppErrors } from "../errors/app.errors";
-import { TokenPayload } from "../interfaces/jwt.payload";
-import { blackListToken } from "../middlewares/auth.middleware";
-import { OTP } from "../models/auth/otp.model";
-import { RefreshToken } from "../models/auth/RefreshToken.model";
-import { User } from "../models/user/user.model";
-import { HelperUtils } from "../utils/helper";
-import { JwtUtils } from "../utils/jwt_utils";
+import { AppErrors } from "../../errors/app.errors";
+import { TokenPayload } from "../../interfaces/jwt.payload";
+import { blackListToken } from "../../middlewares/auth.middleware";
+import { OTP } from "../../models/auth/otp.model";
+import { RefreshToken } from "../../models/auth/RefreshToken.model";
+import { User } from "../../models/user/user.model";
+import { HelperUtils } from "../../utils/helper";
+import { JwtUtils } from "../../utils/jwt_utils";
 
 export class AuthService {
 

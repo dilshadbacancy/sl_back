@@ -1,15 +1,21 @@
 import { Request, Response } from "express";
-import { AuthRequest } from "../middlewares/auth.middleware";
-import { UserService } from "../service/user.service";
-import { ApiResponse } from "../utils/apiResponse";
-import { CreateUserDto } from "../schema/user/user.dto";
-import { UpdateLocationDto } from "../schema/user/update_location.dto";
-import { UpdateStatusDto } from "../schema/user/soft_delete.dto";
+import { AuthRequest } from "../../middlewares/auth.middleware";
+import { ApiResponse } from "../../utils/apiResponse";
+import { UpdateLocationDto } from "../../schema/user/update_location.dto";
+import { UpdateStatusDto } from "../../schema/user/soft_delete.dto";
+import { UserService } from "../../service/user/user.service";
+import { CreateUserDto } from "../../schema/user/user.dto";
 export class UserController {
     static async saveUserProfile(req: AuthRequest, res: Response): Promise<void> {
         const body = req.body;
         const user_id = body.user_id || req.user?.id;
-        await UserService.saveUserProfile(body, user_id!)
+
+
+        const parsed = CreateUserDto.safeParse(req.body)
+        if (!parsed.success) {
+            ApiResponse.error(parsed.error);
+        }
+        await UserService.saveUserProfile(parsed.data, user_id!)
             .then((value) => ApiResponse.success("User saved successfully", value))
             .then((error) => ApiResponse.error(error))
     }

@@ -2,19 +2,20 @@ import express, { Application } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import authRouter from "./routes/auth.route"
+import authRouter from "./routes/common/auth.route"
 import { requestContext } from "./utils/request.context";
 import { morganFormats } from "./config/morgan.stream";
 import { requestLogger } from "./middlewares/logger/request.logger";
 import logger from "./config/logger";
 import { errorLogger } from "./middlewares/logger/error.logger";
 
-import userRoute from "../src/routes/user.route"
-import commonRoute from "../src/routes/common.route"
-import shopRoute from "./routes/shop.route"
-import saloonRoute from "./routes/saloon.route"
 import adminRoute from "./routes/admin/admin.route"
 import { AppErrors } from "./errors/app.errors";
+import userRoute from "./routes/user/user.route";
+import commonRoute from "./routes/common/common.route";
+import saloonRoute from "./routes/user/saloon.route";
+import shopRoute from "./routes/vendor/shop.route";
+import barberRoute from "./routes/vendor/barbar.route"
 
 dotenv.config();
 
@@ -50,6 +51,8 @@ app.use("/common", commonRoute);
 app.use("/vendor", shopRoute)
 app.use("/saloon", saloonRoute)
 app.use("/admin", adminRoute)
+app.use("/barber", barberRoute)
+
 
 
 app.get("/api", (req, res) => {

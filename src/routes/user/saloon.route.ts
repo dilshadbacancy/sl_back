@@ -1,6 +1,5 @@
 import Router from "express";
-import { SaloonController } from "../controllers/vendor/saloon.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { authMiddleware } from "../../middlewares/auth.middleware";
 const router = Router();
 
 

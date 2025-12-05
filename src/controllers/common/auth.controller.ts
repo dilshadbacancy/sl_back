@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { AuthService } from "../service/auth.service";
-import { ApiResponse } from "../utils/apiResponse";
-import { AuthRequest } from "../middlewares/auth.middleware";
+import { AuthService } from "../../service/common/auth.service";
+import { ApiResponse } from "../../utils/apiResponse";
+import { AuthRequest } from "../../middlewares/auth.middleware";
 
 export class AuthController {
     static async sendOtp(req: Request, res: Response): Promise<void> {

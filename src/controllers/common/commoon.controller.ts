@@ -1,7 +1,7 @@
-import { AuthRequest } from "../middlewares/auth.middleware";
-import { CreateFCMRecordSchema } from "../schema/fcm_token.schema";
-import { CommonService } from "../service/common.service";
-import { ApiResponse } from "../utils/apiResponse";
+import { AuthRequest } from "../../middlewares/auth.middleware";
+import { CreateFCMRecordSchema } from "../../schema/fcm_token.schema";
+import { CommonService } from "../../service/common/common.service";
+import { ApiResponse } from "../../utils/apiResponse";
 import { Request, Response } from "express";
 
 export class CommonController {

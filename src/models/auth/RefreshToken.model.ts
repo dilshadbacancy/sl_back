@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import { SequelizeConnection } from "../../config/database.config";
-import { fa } from "zod/v4/locales";
 import { Roles } from "../../utils/enum.utils";
 
 export class RefreshToken extends Model {

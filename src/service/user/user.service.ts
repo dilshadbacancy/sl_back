@@ -1,18 +1,12 @@
-import { AppErrors } from "../errors/app.errors";
-import { User } from "../models/user/user.model";
-import { CreateUserDto } from "../schema/user/user.dto";
-import { ApiResponse } from "../utils/apiResponse";
-import { Status } from "../utils/enum.utils";
+import { AppErrors } from "../../errors/app.errors";
+import { User } from "../../models/user/user.model";
+import { Status } from "../../utils/enum.utils";
+
 
 export class UserService {
 
     static async saveUserProfile(data: any, user_id: string): Promise<User> {
         try {
-
-            const parsed = CreateUserDto.safeParse(data)
-            if (!parsed.success) {
-                ApiResponse.error(parsed.error);
-            }
 
             const user = await User.findByPk(user_id);
             if (!user) {

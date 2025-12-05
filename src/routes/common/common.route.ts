@@ -1,8 +1,8 @@
 
 
 import Router from "express";
-import { CommonController } from "../controllers/commoon.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { CommonController } from "../../controllers/common/commoon.controller";
+import { authMiddleware } from "../../middlewares/auth.middleware";
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import { AuthRequest } from "../../middlewares/auth.middleware";
-import { SaloonService } from "../../service/vendor/saloon.service";
+import { SaloonService } from "../../service/user/saloon.service";
 import { ApiResponse } from "../../utils/apiResponse";
 import { Request, Response } from "express";
 
