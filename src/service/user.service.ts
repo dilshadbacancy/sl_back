@@ -1,4 +1,3 @@
-import { ca, da } from "zod/v4/locales";
 import { AppErrors } from "../errors/app.errors";
 import { User } from "../models/user/user.model";
 import { CreateUserDto } from "../schema/user/user.dto";
@@ -109,6 +108,5 @@ export class UserService {
             location_completed: hasLocation
         }
     }
-
 
 }

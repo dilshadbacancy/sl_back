@@ -164,5 +164,6 @@ export enum TokenType {
 export enum Gender {
     MALE = "male",
     FEMALE = "female",
+    UNISEX = "unisex",
     OTHERS = "others"
 }

@@ -11,7 +11,9 @@ import { errorLogger } from "./middlewares/logger/error.logger";
 
 import userRoute from "../src/routes/user.route"
 import commonRoute from "../src/routes/common.route"
-import vendorRoute from "./routes/vendor.route"
+import shopRoute from "./routes/shop.route"
+import saloonRoute from "./routes/saloon.route"
+import adminRoute from "./routes/admin/admin.route"
 import { AppErrors } from "./errors/app.errors";
 
 dotenv.config();
@@ -45,7 +47,9 @@ app.use("/auth", authRouter)
 
 app.use("/users", userRoute);
 app.use("/common", commonRoute);
-app.use("/vendor", vendorRoute)
+app.use("/vendor", shopRoute)
+app.use("/saloon", saloonRoute)
+app.use("/admin", adminRoute)
 
 
 app.get("/api", (req, res) => {

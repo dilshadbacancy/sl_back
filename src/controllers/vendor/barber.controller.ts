@@ -4,11 +4,12 @@ import { AuthRequest } from "../../middlewares/auth.middleware";
 import { BarberAvailabilitySchema, BarberSchema } from "../../schema/vendor/barber.schema";
 import { ApiResponse } from "../../utils/apiResponse";
 import { BarberService } from "../../service/vendor/barber.service";
-import { AppErrors } from "../../errors/app.errors";
 import { BarberAuthReq as BarberAuthRequest } from "../../middlewares/barbar.auth.middleware";
 
 export class BarberController {
 
+
+    /// Barber Only-------
 
     static async loginBarber(req: Request, res: Response): Promise<void> {
         const { username, login_pin } = req.body;

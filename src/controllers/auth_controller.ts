@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../service/auth.service";
 import { ApiResponse } from "../utils/apiResponse";
-import { body } from "express-validator";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
 export class AuthController {

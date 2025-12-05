@@ -1,7 +1,6 @@
 import Router from "express";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import { VendorService } from "../service/vendor/vendor.service";
-import { VendorController } from "../controllers/vendor/vendor.controller";
+import { ShopController } from "../controllers/vendor/shop.controller";
 import { BarberController } from "../controllers/vendor/barber.controller";
 import { barberAuthMiddleware } from "../middlewares/barbar.auth.middleware";
 
@@ -14,13 +13,12 @@ router.post("/login", BarberController.loginBarber);
 router.get("/barber-profile", barberAuthMiddleware, BarberController.getBarberProfile)
 
 router.use(authMiddleware)
-router.post("/save-vendor-details", VendorController.saveVendorDetails);
-router.post("/save-vendor-location", VendorController.saveVendorLocation)
-router.post("/save-vendor-services", VendorController.saveVendorServices)
-router.post("/save-vendor-kyc", VendorController.saveVendorKycDetails)
-router.post("/save-vendor-bank", VendorController.saveVendorBankDetails)
+router.post("/save-shop-details", ShopController.saveSaloonShop);
+router.post("/save-shop-location", ShopController.saveSaloonShopLocation)
+router.post("/save-shop-kyc", ShopController.saveSaloonShopKyc)
+router.post("/save-shop-bank", ShopController.saveSaloonShopBankDetails)
 
-router.get("/get-vendors", VendorController.getVendors);
+router.get("/get-shop-profile", ShopController.getShopProfile);
 
 router.post("/add-barber", BarberController.addBarber);
 router.post("/update-barber", BarberController.updateBarber);

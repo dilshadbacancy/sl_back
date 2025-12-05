@@ -1,32 +1,23 @@
 import * as z from "zod";
-import { Gender, Status } from "../../utils/enum.utils";
+import { Gender, Roles, Status } from "../../utils/enum.utils";
 import { availableMemory } from "process";
 
+
 export const BarberSchema = z.object({
-    id: z.string().uuid("Invalid barber ID").optional(),
-
-    user_id: z.string().uuid("User ID is required"),
-
-    shop_id: z.string().uuid("Shop ID is required"),
-
+    user_id: z.string({ message: "User ID is required" }),
+    shop_id: z.string({ message: "Shop ID is required" }),
     name: z.string().min(1, "Name is required"),
-
-    email: z.string().email("Invalid email").optional().nullable(),
-
+    email: z.email("Invalid email").optional(),
     mobile: z
         .string()
         .regex(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
-
-    age: z.number().int().positive().optional().nullable(),
-
-    gender: z.enum(Object.values(Gender) as [string, ...string[]]),
-
-    specialist_in: z
-        .array(z.string().min(1))
-        .optional()
-        .nullable(),
-    status: z.enum(Status).optional().nullable()
+    role: z.enum(Object.values(Roles)).optional(),
+    age: z.number().int().positive().optional(),
+    gender: z.enum(Object.values(Gender)),
+    specialist_in: z.array(z.string()).optional(),
+    status: z.enum(Object.values(Status)).optional(),
 });
+
 
 
 export const BarberAvailabilitySchema = z.object(

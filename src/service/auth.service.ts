@@ -71,12 +71,13 @@ export class AuthService {
             if (!refresh) {
                 refresh = await RefreshToken.create({
                     user_id: user.id,
+                    role: user.role,
                     token: refreshtoken,
                     expire_at: expiresAt,
                     is_revoked: false
                 })
             }
-            await refresh.update({ token: refreshtoken, user_id: user.id, is_revoked: false })
+            await refresh.update({ token: refreshtoken, role: user.role, user_id: user.id, is_revoked: false })
             const res = {
                 user: user.toJSON(),
                 access_token: token,

@@ -113,7 +113,6 @@ export class ApiResponse {
             message = error;
             details = { message: error };
         }
-        LoggerHelper.logError(message);
 
         return res.status(statusCode).json({
             success: false,
