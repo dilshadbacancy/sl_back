@@ -5,6 +5,7 @@ import { BarberAvailabilitySchema, BarberSchema } from "../../schema/vendor/barb
 import { ApiResponse } from "../../utils/apiResponse";
 import { BarberService } from "../../service/vendor/barber.service";
 import { BarberAuthReq as BarberAuthRequest } from "../../middlewares/barbar.auth.middleware";
+import z from "zod";
 
 export class BarberController {
 
@@ -58,7 +59,18 @@ export class BarberController {
 
     static async getAllBarbersOfShop(req: AuthRequest, res: Response): Promise<any> {
         const id = req.params.id;
-        await BarberService.getAllBarbers(id)
+
+        const querySchema = z.object({
+            available: z.preprocess((val) => {
+                if (val === undefined) return undefined; // allow missing param
+                if (val === "true") return true;
+                if (val === "false") return false;
+                return val; // leave as is → will fail below
+            }, z.boolean().optional())
+        });
+
+        const parsed = querySchema.safeParse(req.query);
+        await BarberService.getAllBarbers(id, parsed.data?.available)
             .then((value) => ApiResponse.success("Barbers fetched successfully", value))
             .catch((e) => ApiResponse.error(e))
             .finally(() => res.end())

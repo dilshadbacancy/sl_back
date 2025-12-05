@@ -57,8 +57,15 @@ export class BarberService {
         return barber;
     }
 
-    static async getAllBarbers(id: string): Promise<Barber[]> {
-        const barbers = await Barber.findAll({ where: { shop_id: id } });
+    static async getAllBarbers(id: string, available: boolean | undefined): Promise<Barber[]> {
+
+        let whereCaluse: any = { shop_id: id }
+
+        if (available !== undefined) {
+            whereCaluse.available = available;
+        }
+
+        const barbers = await Barber.findAll({ where: whereCaluse });
         return barbers;
     }
 
