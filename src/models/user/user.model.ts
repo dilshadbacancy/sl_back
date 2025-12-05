@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { string } from "zod";
-import { Roles, Status } from "../../utils/enum.utils";
+import { Gender, Roles, Status } from "../../utils/enum.utils";
 import { SequelizeConnection } from "../../config/database.config";
 
 
@@ -21,7 +21,8 @@ export class User extends Model {
     mobile!: string;
     email!: string;
     location!: UserLocationDetails
-    role!: Roles
+    role!: Roles;
+    gender!: Gender;
     is_verified!: boolean;
     is_profile_completed!: boolean;
     created_at!: Date;
@@ -71,6 +72,11 @@ User.init(
             allowNull: true,
             defaultValue: Roles.USER,
 
+        },
+        gender: {
+            type: DataTypes.ENUM(...Object.values(Gender)),
+            allowNull: true,
+            defaultValue: Gender.MALE,
         },
         is_verified: {
             type: DataTypes.BOOLEAN,

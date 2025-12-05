@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { Roles } from "../../utils/enum.utils";
+import { Gender, Roles } from "../../utils/enum.utils";
 
 export const CreateUserDto = z.object(
     {
@@ -18,5 +18,6 @@ export const CreateUserDto = z.object(
             }
         ),
         is_profile_completed: z.boolean({ error: "this is required" }),
+        gender: z.enum(Object.values(Gender), { error: "Gender is required" }),
     }
 )

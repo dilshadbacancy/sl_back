@@ -16,3 +16,8 @@ export const CreateServiceSchema = z.object({
     image_url: z.string().url().nullable().optional(),
 });
 
+
+export const AddServiceToShopSchema = z.object({
+    shop_id: z.string().nonempty({ error: "Shop id is required" }),
+    services: z.array(z.string()).nonempty("At least one service is required"),
+})

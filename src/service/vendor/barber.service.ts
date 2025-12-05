@@ -7,7 +7,7 @@ import { RefreshToken } from "../../models/auth/RefreshToken.model";
 import { da } from "zod/v4/locales";
 
 export class BarberService {
-    static async addBarber(data: any): Promise<Barber> {
+    static async createBarber(data: any): Promise<Barber> {
         const { mobile, name, email } = data;
         let barber = await Barber.findOne({ where: { mobile, name, email } })
         console.log(data.shop_id, data.shop_id.length);

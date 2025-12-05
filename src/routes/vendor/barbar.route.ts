@@ -12,7 +12,7 @@ router.post("/login", BarberController.loginBarber);
 router.get("/barber-profile", barberAuthMiddleware, BarberController.getBarberProfile)
 
 router.use(authMiddleware)
-router.post("/add-barber", BarberController.addBarber);
+router.post("/create-barber", BarberController.createBarber);
 router.post("/update-barber", BarberController.updateBarber);
 
 router.get("/barbers/:id", BarberController.getAllBarbersOfShop)

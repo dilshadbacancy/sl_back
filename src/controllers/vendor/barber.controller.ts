@@ -32,7 +32,7 @@ export class BarberController {
 
     /// Vendor and Barbar inter relateed
 
-    static async addBarber(req: AuthRequest, res: Response): Promise<any> {
+    static async createBarber(req: AuthRequest, res: Response): Promise<any> {
 
         const parsed = BarberSchema.safeParse(req.body);
 
@@ -40,7 +40,7 @@ export class BarberController {
             ApiResponse.error(parsed.error);
         }
 
-        await BarberService.addBarber(parsed.data)
+        await BarberService.createBarber(parsed.data)
             .then((value) => ApiResponse.success("Barber added successfully", value))
             .catch((e) => ApiResponse.error(e))
             .finally(() => res.end())

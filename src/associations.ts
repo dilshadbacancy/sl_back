@@ -132,19 +132,19 @@ Shop.hasMany(Barber, {
 
 // Shop ->Service
 
-Shop.belongsToMany(Service, {
-    through: Service,
-    foreignKey: "shop_id",
-    otherKey: "service_id",
-    as: "service"
-});
+// Shop.belongsToMany(Service, {
+//     through: Service,
+//     foreignKey: "shop_id",
+//     otherKey: "service_id",
+//     as: "service"
+// });
 
-Service.belongsToMany(Shop, {
-    through: Service,
-    foreignKey: "service_id",
-    otherKey: "shop_id",
-    as: "shops"
-});
+// Service.belongsToMany(Shop, {
+//     through: Service,
+//     foreignKey: "service_id",
+//     otherKey: "shop_id",
+//     as: "shops"
+// });
 
 
 
