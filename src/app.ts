@@ -16,6 +16,7 @@ import commonRoute from "./routes/common/common.route";
 import saloonRoute from "./routes/user/saloon.route";
 import shopRoute from "./routes/vendor/shop.route";
 import barberRoute from "./routes/vendor/barbar.route"
+import customerRoute from "./routes/user/cutomer.route"
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use("/vendor", shopRoute)
 app.use("/saloon", saloonRoute)
 app.use("/admin", adminRoute)
 app.use("/barber", barberRoute)
+app.use('/customer', customerRoute);
 
 
 

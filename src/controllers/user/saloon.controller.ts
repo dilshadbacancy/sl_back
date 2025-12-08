@@ -37,19 +37,4 @@ export class SaloonController {
             .then((value) => ApiResponse.success("Service updated successfully", value))
             .catch((e) => ApiResponse.error(e))
     }
-
-
-    // static async getNearByShops(req: AuthRequest, res: Response): Promise<void> {
-    //     const { city, lat, lng, radius = 5 } = req.query;
-    //     await SaloonService.getNearByShops(
-    //         city?.toString() ?? "",
-    //         Number(lat),
-    //         Number(lng),
-    //         Number(radius)
-
-    //     )
-    //         .then((value) => ApiResponse.success("Shops fetched successfully", value))
-    //         .catch((e) => ApiResponse.error(e))
-    //         .finally(() => res.end())
-    // }
 }
