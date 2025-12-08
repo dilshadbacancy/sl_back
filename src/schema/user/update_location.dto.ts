@@ -7,4 +7,4 @@ export const UpdateLocationDto = z.object(
         longitude: z.string({ error: "Longitude cannot be null or Empty" }),
         user_id: z.string("User id cannot be null or empty")
     }
-)
+).strict()

@@ -2,8 +2,22 @@ import { Op, Sequelize } from "sequelize";
 import { SequelizeConnection } from "../../config/database.config";
 import { Shop } from "../../models/vendor/shop.model";
 import { AppErrors } from "../../errors/app.errors";
+import Service from "../../models/admin/service.model";
 
 export class SaloonService {
+    static async updateServiceOfShop(data: any): Promise<any> {
+
+        const serviceId = data.id;
+
+        const service = await Service.findByPk(serviceId);
+
+        if (!service) {
+            throw new AppErrors("Service doesnot exist for the reference id");
+        }
+
+        await service.update({ ...data });
+
+    }
 
     static async addServicesToShop(shopId: string, ids: string[]): Promise<any> {
         const shops = await Shop.findByPk(shopId);

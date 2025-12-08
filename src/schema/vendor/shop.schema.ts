@@ -30,7 +30,7 @@ export const CreateSaloonShopSchema = z.object(
         services: z.array(z.string()).nonempty("At least one service is required"),
 
     }
-)
+).strict()
 
 
 
@@ -75,7 +75,7 @@ export const ShopLoactionSchema = z.object({
         .number()
         .nullable()
 
-});
+}).strict();
 
 
 
@@ -89,7 +89,7 @@ export const ShopKycDetailSchema = z.object({
     aadhar_back: z.string().url().nullable().optional(),
     pan_card: z.string().url().nullable().optional(),
     shop_license: z.string().url().nullable().optional(),
-});
+}).strict();
 
 
 
@@ -100,6 +100,6 @@ export const ShopBankDetailsSchema = z.object({
     account_number: z.string().nullable().optional(),
     ifsc_code: z.string().nullable().optional(),
     account_holder_name: z.string().nullable().optional(),
-});
+}).strict();
 
 

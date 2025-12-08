@@ -19,6 +19,11 @@
             "date": 1764911830107,
             "name": "/Users/mac/Desktop/NodeJS/sl_back/src/logs/application-2025-12-05.log",
             "hash": "ffd4b97988df19636ec14048ac1ae581cf032ee9c1c3735658d9563495a56d68"
+        },
+        {
+            "date": 1765184360509,
+            "name": "/Users/mac/Desktop/NodeJS/sl_back/src/logs/application-2025-12-08.log",
+            "hash": "cfa1eb1b41a4162ab8cba0cfa92826a620ccb296f0314eaf7d50c208b51709b1"
         }
     ],
     "hashType": "sha256"

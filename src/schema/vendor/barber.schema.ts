@@ -16,7 +16,7 @@ export const BarberSchema = z.object({
     gender: z.enum(Object.values(Gender)),
     specialist_in: z.array(z.string()).optional(),
     status: z.enum(Object.values(Status)).optional(),
-});
+}).strict();
 
 
 
@@ -25,4 +25,4 @@ export const BarberAvailabilitySchema = z.object(
         id: z.string({ error: "Id is required" }),
         available: z.boolean({ error: "availabilty is required" })
     }
-)
+).strict()

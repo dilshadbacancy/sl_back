@@ -55,6 +55,18 @@ export class UserController {
             .catch((e) => ApiResponse.error(e))
     }
 
+    static async getAllGenders(req: AuthRequest): Promise<any> {
+        await UserService.getAllGenders()
+            .then((val) => ApiResponse.success("All available genders fetched successfully", val))
+            .catch((e) => ApiResponse.error(e))
+    }
+
+    static async getAllRoles(req: AuthRequest): Promise<any> {
+        await UserService.getAllRoles()
+            .then((value) => ApiResponse.success("All available roles fetched successfully", value))
+            .catch((e) => ApiResponse.error(e))
+    }
+
     static async updateUserStatus(req: Request): Promise<void> {
         const parsed = UpdateStatusDto.safeParse(req.body)
         if (!parsed.success) {

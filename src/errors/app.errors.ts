@@ -37,7 +37,8 @@ export class AppErrors extends Error {
 
 export const formatZodError = (error: ZodError) => {
     return error.issues.map((issue) => ({
-        path: issue.path.join("."),
+        path: issue.path.join(".") || null,
+        unknown_key: issue.code === "unrecognized_keys" ? issue.keys[0] : undefined,
         message: issue.message,
         code: issue.code,
         expected: (issue as any).expected,

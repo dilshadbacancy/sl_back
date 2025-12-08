@@ -1,6 +1,6 @@
 import { AppErrors } from "../../errors/app.errors";
 import { User } from "../../models/user/user.model";
-import { Status } from "../../utils/enum.utils";
+import { Gender, Roles, Status } from "../../utils/enum.utils";
 
 
 export class UserService {
@@ -73,6 +73,23 @@ export class UserService {
             label: value.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
             value
         }));
+        return list;
+    }
+
+    static async getAllRoles(): Promise<any> {
+        const list = Object.values(Roles).map((value) => ({
+            label: value.toUpperCase(),
+            value: value.toLowerCase(),
+        }))
+        return list;
+    }
+
+
+    static async getAllGenders(): Promise<any> {
+        const list = Object.values(Gender).map((value) => ({
+            label: value.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+            value,
+        }))
         return list;
     }
 
