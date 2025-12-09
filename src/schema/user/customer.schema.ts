@@ -32,10 +32,25 @@ export const CreateAppointmentSchema = z.object({
             discounted_price: z.number().optional()
         })
     ).min(1, "At least one service must be selected")
-});
+}).strict();
 
 
 export const ChangeAppointmentStatus = z.object({
     id: z.string().uuid("Appointment id is required"),
-    status: z.enum(AppointmentStatus)
-}).strict()
+    status: z.enum(AppointmentStatus),
+    remark: z.string().optional(),
+})
+    .superRefine((data, ctx) => {
+        if (
+            (data.status === AppointmentStatus.Rejected ||
+                data.status === AppointmentStatus.Cancelled)
+            && !data.remark
+        ) {
+            ctx.addIssue({
+                path: ["remark"],
+                code: z.ZodIssueCode.custom,
+                message: "Remark is required when rejecting or cancelling an appointment",
+            });
+        }
+    })
+    .strict();

@@ -23,6 +23,7 @@ export class Appointment extends Model {
 
     payment_status!: PaymentStatus;
     payment_mode!: PaymentMode;
+    remark!: string | null;
 }
 
 const sequelize = SequelizeConnection.getInstance();
@@ -49,7 +50,8 @@ Appointment.init(
         status: { type: DataTypes.ENUM(...Object.values(AppointmentStatus)), defaultValue: AppointmentStatus.Pending },
         notes: { type: DataTypes.TEXT, allowNull: true },
         payment_status: { type: DataTypes.ENUM(...Object.values(PaymentStatus)), defaultValue: PaymentStatus.Pending },
-        payment_mode: { type: DataTypes.ENUM(...Object.values(PaymentMode)), allowNull: false }
+        payment_mode: { type: DataTypes.ENUM(...Object.values(PaymentMode)), allowNull: false },
+        remark: { type: DataTypes.STRING, allowNull: true }
     },
     { sequelize, tableName: "appointments", timestamps: true }
 );

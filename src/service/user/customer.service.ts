@@ -323,23 +323,23 @@ export class CustomerServies {
         const currentStatus = appointment.status;
 
         if (currentStatus == AppointmentStatus.Rejected) {
-            throw new AppErrors("Rejected appointments cannot be change, Please check other appointments")
+            throw new AppErrors("Rejected appointments cannot be change, Please check other appointments" + ` ${status}`)
         }
 
         if (currentStatus === AppointmentStatus.Cancelled) {
-            throw new AppErrors("Cancelled appointments cannot be change, Please take an appointment again")
+            throw new AppErrors("Cancelled appointments cannot be change, Please take an appointment again" + ` ${status}`)
         }
 
         if (currentStatus === AppointmentStatus.Accepted && status === AppointmentStatus.Rejected) {
-            throw new AppErrors("You cannot reject an appointment once it is accepted");
+            throw new AppErrors("You cannot reject an appointment once it is accepted" + ` ${status}`);
         }
 
         if (currentStatus === AppointmentStatus.InProgress && status === AppointmentStatus.Cancelled) {
-            throw new AppErrors("You cannot cancel ongoing appointments");
+            throw new AppErrors("You cannot cancel ongoing appointments" + ` ${status}`);
         }
 
         if (currentStatus === AppointmentStatus.Conmpleted && status !== AppointmentStatus.Conmpleted) {
-            throw new AppErrors("Completed appointments cannot be changed");
+            throw new AppErrors("Completed appointments cannot be updated to" + ` ${status}`);
         }
 
         let dataToUpdate: any = { status };
@@ -378,7 +378,6 @@ export class CustomerServies {
                 discount_price: as.service.discounted_price,
             }));
         }
-
         // ---- UPDATE APPOINTMENT ----
         await appointment.update(dataToUpdate);
 
@@ -393,6 +392,10 @@ export class CustomerServies {
             customer_id: appointment.customer_id,
             barber_id: appointment.barber_id,
             service_count: services.length,
+            ...(appointment.status === AppointmentStatus.Cancelled ||
+                appointment.status === AppointmentStatus.Rejected
+                ? { remark: appointment.remark }
+                : {}),
             services
         };
     }
