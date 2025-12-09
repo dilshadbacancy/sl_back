@@ -14,7 +14,7 @@ export const NearByShops = z.object({
 
 export const CreateAppointmentSchema = z.object({
     customer_id: z.string().uuid("Invalid customer_id"),
-    shop_id: z.string().uuid("Invalid shop_id"),
+    shop_id: z.string().uuid("Invalid shop_id").optional(),
     appointment_date: z.string().refine(
         (val) => !isNaN(Date.parse(val)),
         "Invalid appointment_date, must be a valid ISO date string"
@@ -31,7 +31,12 @@ export const CreateAppointmentSchema = z.object({
             price: z.number().min(0, "Price cannot be negative"),
             discounted_price: z.number().optional()
         })
-    ).min(1, "At least one service must be selected")
+    ).min(1, "At least one service must be selected"),
+    location: z.object({
+        latitude: z.string({ error: "Latitude is required" }),
+        longitude: z.string({ error: "Longitude is required" }),
+        radius: z.number().optional()
+    }).optional()
 }).strict();
 
 

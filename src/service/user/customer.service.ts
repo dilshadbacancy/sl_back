@@ -2,16 +2,15 @@ import { AppErrors } from "../../errors/app.errors";
 import { Appointment } from "../../models/user/appointment";
 import { Shop } from "../../models/vendor/shop.model";
 import { ShopLocation } from "../../models/vendor/shop_location";
-import { literal, Op, Transaction, where } from "sequelize";
+import { JSON, literal, Op } from "sequelize";
 import { AppointmentStatus, PaymentStatus } from "../../utils/enum.utils";
-import { da } from "zod/v4/locales";
-import { SequelizeConnection } from "../../config/database.config";
 import { Barber } from "../../models/vendor/barber.mode";
 import { HelperUtils } from "../../utils/helper";
 import { User } from "../../models/user/user.model";
 import Service from "../../models/vendor/service.model";
 import { AppointmentService } from "../../models/vendor/appointment_service.model";
-import { boolean, includes } from "zod";
+import { BarberService } from "../vendor/barber.service";
+import { SequelizeConnection } from "../../config/database.config";
 
 export class CustomerServies {
     static async fetchNearByShops(data: any): Promise<any> {
@@ -60,45 +59,147 @@ export class CustomerServies {
 
 
     static async createAppointment(data: any) {
-        if (!data.services || data.services.length === 0) throw new AppErrors("At least one service is required");
 
-        // Calculate total duration and total price
+        const sequelize = SequelizeConnection.getInstance();
+        if (!data.services || !Array.isArray(data.services) || data.services.length === 0) {
+            throw new AppErrors("At least one service is required");
+        }
+
+        // calculate duration/price
         let totalDuration = 0;
         let totalPrice = 0;
-        data.services.forEach((s: any) => {
-            totalDuration += s.duration;
-            totalPrice += s.price;
-        });
+
+        for (const s of data.services) {
+            totalDuration += Number(s.duration || 0);
+            totalPrice += Number(s.price || 0);
+        }
 
         const pin = HelperUtils.generateOTP();
 
-        // Create appointment
-        const appointment = await Appointment.create({
-            customer_id: data.customer_id,
-            shop_id: data.shop_id,
-            barber_id: data.barber_id ?? null,
-            appointment_date: data.appointment_date,
-            gender: data.gender,
-            status: AppointmentStatus.Pending,
-            notes: data.notes,
-            payment_mode: data.payment_mode,
-            service_duration: totalDuration,
-            pin
+        return sequelize.transaction(async (tx) => {
+            let chosenShopId = data.shop_id;
+            let distance: any;
+
+            // ------------------------------------------------------------------
+            // 1) If NO SHOP ID → find nearest shop according to your rules
+            // ------------------------------------------------------------------
+            if (!chosenShopId) {
+                if (!data.location?.latitude || !data.location?.longitude) {
+                    throw new AppErrors("Latitude & longitude required when shop_id is not provided");
+                }
+
+                const nearbyShops: Shop[] = await this.fetchNearByShops({
+                    latitude: data.location.latitude,
+                    longitude: data.location.longitude,
+                    radius: data.location.radius ?? 5
+                });
+
+                if (!nearbyShops || nearbyShops.length === 0) {
+                    throw new AppErrors("No nearby shops found");
+                }
+
+                // -------- First preference → shop having an available barber --------
+                let immediateShop: Shop | null = null;
+
+                for (const shop of nearbyShops) {
+                    const available = await Barber.findOne({
+                        where: {
+                            shop_id: shop.id,
+                            available: true,
+                            status: "active"
+                        },
+                        transaction: tx
+                    });
+
+                    if (available) {
+                        immediateShop = shop;
+                        distance = shop.getDataValue("distance").
+                            break; // nearest shop with available barber
+                    }
+                }
+
+                if (immediateShop) {
+
+                    chosenShopId = immediateShop.id;
+                } else {
+                    // -------- Second preference → barber gets free earliest --------
+                    let bestShop: Shop | null = null;
+                    let earliestFreeMs = Infinity;
+
+                    for (const shop of nearbyShops) {
+                        const barbers = await Barber.findAll({
+                            where: { shop_id: shop.id },
+                            transaction: tx
+                        });
+
+                        for (const barber of barbers) {
+                            const lastAppt = await Appointment.findOne({
+                                where: {
+                                    barber_id: barber.id,
+                                    status: { [Op.in]: ["inProgress", "accepted"] }
+                                },
+                                order: [["expected_end_time", "DESC"]],
+                                transaction: tx
+                            });
+
+                            const freeAtMs = lastAppt?.expected_end_time
+                                ? new Date(lastAppt.expected_end_time).getTime()
+                                : Date.now();
+
+                            if (freeAtMs < earliestFreeMs) {
+                                earliestFreeMs = freeAtMs;
+                                bestShop = shop;
+                            }
+                        }
+                    }
+
+                    if (!bestShop) {
+                        throw new AppErrors("No barbers found in nearby shops");
+                    }
+                    distance = bestShop.getDataValue("distance")
+                    chosenShopId = bestShop.id;
+                }
+            }
+
+            // ------------------------------------------------------------------
+            // 2) Create Appointment under chosen shop
+            // ------------------------------------------------------------------
+            const appointment = await Appointment.create({
+                customer_id: data.customer_id,
+                shop_id: chosenShopId,
+                appointment_date: data.appointment_date,
+                gender: data.gender,
+                status: AppointmentStatus.Pending,
+                notes: data.notes,
+                payment_mode: data.payment_mode,
+                service_duration: totalDuration,
+                pin
+            }, { transaction: tx });
+
+            // ------------------------------------------------------------------
+            // 3) Insert appointment services
+            // ------------------------------------------------------------------
+            for (const s of data.services) {
+                await AppointmentService.create({
+                    appointment_id: appointment.id,
+                    service_id: s.service_id,
+                    duration: s.duration,
+                    price: s.price,
+                    discounted_price: s.discounted_price ?? null,
+                }, { transaction: tx });
+            }
+
+            // Final return (NO BARBER ASSIGNMENT)
+
+
+
+
+
+            return { ...appointment.toJSON(), distance };
         });
-
-        // Save each service in appointment_services
-        for (const s of data.services) {
-            await AppointmentService.create({
-                appointment_id: appointment.id,
-                service_id: s.service_id,
-                duration: s.duration,
-                price: s.price,
-                discounted_price: s.discounted_price,
-            });
-        }
-
-        return appointment;
     }
+
+
 
 
     static async assignBarber(
@@ -311,7 +412,8 @@ export class CustomerServies {
                     model: AppointmentService,
                     as: "services",
                     include: [{ model: Service, as: "service" }]
-                }
+                },
+
             ]
         });
 
