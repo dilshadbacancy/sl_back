@@ -5,6 +5,10 @@ import { HelperUtils } from "../../utils/helper";
 import { JwtUtils } from "../../utils/jwt_utils";
 import { RefreshToken } from "../../models/auth/RefreshToken.model";
 import { da } from "zod/v4/locales";
+import { Appointment } from "../../models/user/appointment";
+import Service from "../../models/vendor/service.model";
+import { AppointmentService } from "../../models/vendor/appointment_service.model";
+import { User } from "../../models/user/user.model";
 
 export class BarberService {
     static async createBarber(data: any): Promise<Barber> {
@@ -120,10 +124,89 @@ export class BarberService {
         return barber;
 
     }
+    static async getAllApointment(id: string): Promise<any[]> {
+        try {
+            const appointments = await Appointment.findAll({
+                where: { barber_id: id },
+                include: [
+                    {
+                        model: AppointmentService,
+                        as: "services",
+                        include: [{ model: Service, as: "service" }]
+                    },
+                    {
+                        model: User,
+                        as: "customer",
+                        attributes: ["first_name", "last_name", "gender", "email", "mobile"]
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            });
 
-    static async punhIn(data: any): Promise<any> {
+            const formatted = appointments.map((appt) => {
+                const plain = appt.get({ plain: true });
 
+                const total_price = plain.services?.reduce(
+                    (sum: number, s: any) => sum + (s.price || 0),
+                    0
+                ) || 0;
 
+                const discount = plain.services?.reduce(
+                    (sum: number, s: any) => sum + (s.discounted_price ?? 0),
+                    0
+                ) || 0;
 
+                const chargeable_amount = total_price - discount;
+
+                // Format service list
+                const services = plain.services?.map((s: any) => ({
+                    id: s.service_id,
+                    name: s.service?.name,
+                    duration: s.duration,
+                    price: s.price,
+                    discounted_price: s.discounted_price,
+                    image_url: s.service?.image_url,
+                })) || [];
+
+                return {
+                    id: plain.id,
+                    appointment_date: plain.appointment_date,
+                    expected_start_time: plain.expected_start_time,
+                    expected_end_time: plain.expected_end_time,
+                    service_completed_at: plain.service_completed_at,
+
+                    status: plain.status,
+                    notes: plain.notes,
+                    payment_status: plain.payment_status,
+                    payment_mode: plain.payment_mode,
+
+                    // remark should be sent only if rejected/cancelled
+                    remark:
+                        ["rejected", "cancelled"].includes(plain.status)
+                            ? plain.remark
+                            : undefined,
+
+                    total_price,
+                    discount,
+                    chargeable_amount,
+
+                    customer: plain.customer
+                        ? {
+                            first_name: plain.customer.first_name,
+                            last_name: plain.customer.last_name,
+                            gender: plain.customer.gender,
+                            mobile: plain.customer.mobile,
+                        }
+                        : null,
+
+                    services,
+                };
+            });
+
+            return formatted;
+        } catch (e) {
+            throw new AppErrors(e);
+        }
     }
+
 }

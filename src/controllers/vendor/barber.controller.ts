@@ -87,4 +87,13 @@ export class BarberController {
             .finally(() => res.end());
     }
 
+
+    static async getAllAppointments(req: BarberAuthRequest, res: Response): Promise<void> {
+        const id = req.barber?.id;
+
+        await BarberService.getAllApointment(id!)
+            .then((value) => ApiResponse.success("Appointments fetched", value))
+            .catch((e) => ApiResponse.error(e))
+    }
+
 }

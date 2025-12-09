@@ -10,6 +10,8 @@ const router = Router();
 router.post("/login", BarberController.loginBarber);
 
 router.get("/barber-profile", barberAuthMiddleware, BarberController.getBarberProfile)
+router.get("/barbers-appointments", barberAuthMiddleware, BarberController.getAllAppointments);
+
 
 router.use(authMiddleware)
 router.post("/create-barber", BarberController.createBarber);
@@ -17,6 +19,7 @@ router.post("/update-barber", BarberController.updateBarber);
 
 router.get("/barbers/:id", BarberController.getAllBarbersOfShop)
 router.post("/availability", BarberController.toggelBarberAvailability);
+
 
 
 

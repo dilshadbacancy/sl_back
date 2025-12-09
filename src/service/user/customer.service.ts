@@ -2,7 +2,7 @@ import { AppErrors } from "../../errors/app.errors";
 import { Appointment } from "../../models/user/appointment";
 import { Shop } from "../../models/vendor/shop.model";
 import { ShopLocation } from "../../models/vendor/shop_location";
-import { literal, Op, Transaction } from "sequelize";
+import { literal, Op, Transaction, where } from "sequelize";
 import { AppointmentStatus, PaymentStatus } from "../../utils/enum.utils";
 import { da } from "zod/v4/locales";
 import { SequelizeConnection } from "../../config/database.config";
@@ -193,13 +193,15 @@ export class CustomerServies {
     static async getAllAppointments(
         status?: AppointmentStatus,
         shop_id?: string,
-        user_id?: string
+        user_id?: string,
+        barber_id?: string
     ): Promise<any[]> {
         const whereClause: any = {};
 
         if (status) whereClause.status = status;
         if (shop_id) whereClause.shop_id = shop_id;
         if (user_id) whereClause.customer_id = user_id;
+        if (barber_id) whereClause.barber_id = barber_id;
 
         const appointments = await Appointment.findAll({
             where: whereClause,
@@ -377,6 +379,14 @@ export class CustomerServies {
                 price: as.service.price,
                 discount_price: as.service.discounted_price,
             }));
+
+            /// RELEASE THE APPOINTED BARBER FROMT THAT APPOINTMENT
+            const appointedBarber = await Barber.findByPk(appointment.barber_id!);
+
+            if (!appointedBarber) {
+                throw new AppErrors("Baber is not found for this appointment")
+            }
+            await appointedBarber.update({ available: true });
         }
         // ---- UPDATE APPOINTMENT ----
         await appointment.update(dataToUpdate);

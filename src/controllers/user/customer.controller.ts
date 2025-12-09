@@ -47,8 +47,9 @@ export class CustomerController {
     static async getAllAppoitments(req: AuthRequest, res: Response): Promise<void> {
         const user_id = req.query.user_id as string;
         const shop_id = req.query.shop_id as string;
+        const barber_id = req.query.barber_id as string;
         const status = req.query.status as AppointmentStatus;
-        await CustomerServies.getAllAppointments(status, shop_id, user_id)
+        await CustomerServies.getAllAppointments(status, shop_id, user_id, barber_id)
             .then((value) => ApiResponse.success("Appointments fetched successfully", value))
             .catch((e) => ApiResponse.error(e))
     }
