@@ -1,4 +1,4 @@
-import Service from "./models/admin/service.model";
+import Service from "./models/vendor/service.model";
 import { OTP } from "./models/auth/otp.model";
 import { DeviceInfo } from "./models/user/device_info.model";
 import { FCM } from "./models/user/fcm.model";
@@ -8,6 +8,8 @@ import { Shop } from "./models/vendor/shop.model";
 import ShopBankDetails from "./models/vendor/shop_bank_details";
 import { ShopKycDetail } from "./models/vendor/shop_kyc.model";
 import { ShopLocation } from "./models/vendor/shop_location";
+import { Appointment } from "./models/user/appointment";
+import { AppointmentService } from "./models/vendor/appointment_service.model";
 
 
 
@@ -132,19 +134,24 @@ Shop.hasMany(Barber, {
 
 // Shop ->Service
 
-// Shop.belongsToMany(Service, {
-//     through: Service,
-//     foreignKey: "shop_id",
-//     otherKey: "service_id",
-//     as: "service"
-// });
+// Shop -> Service
+Shop.hasMany(Service, {
+    foreignKey: "shop_id",
+    as: "shop_services" // must match your include
+});
 
-// Service.belongsToMany(Shop, {
-//     through: Service,
-//     foreignKey: "service_id",
-//     otherKey: "shop_id",
-//     as: "shops"
-// });
+Service.belongsTo(Shop, {
+    foreignKey: "shop_id",
+    as: "shop"
+});
 
+// Appointment.ts associations
 
+// Associations
+Appointment.belongsTo(User, { foreignKey: "customer_id", as: "customer" });
+Appointment.belongsTo(Shop, { foreignKey: "shop_id", as: "shop" });
+Appointment.belongsTo(Barber, { foreignKey: "barber_id", as: "barber" });
+Appointment.hasMany(AppointmentService, { foreignKey: "appointment_id", as: "services" });
 
+AppointmentService.belongsTo(Appointment, { foreignKey: "appointment_id", as: "appointment" });
+AppointmentService.belongsTo(Service, { foreignKey: "service_id", as: "service" });

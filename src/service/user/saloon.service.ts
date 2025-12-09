@@ -2,7 +2,7 @@ import { Op, Sequelize } from "sequelize";
 import { SequelizeConnection } from "../../config/database.config";
 import { Shop } from "../../models/vendor/shop.model";
 import { AppErrors } from "../../errors/app.errors";
-import Service from "../../models/admin/service.model";
+import Service from "../../models/vendor/service.model";
 
 export class SaloonService {
     static async updateServiceOfShop(data: any): Promise<any> {
@@ -44,4 +44,5 @@ export class SaloonService {
         }
 
     }
+
 }

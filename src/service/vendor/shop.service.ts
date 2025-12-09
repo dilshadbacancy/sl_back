@@ -2,7 +2,7 @@ import { AppErrors } from "../../errors/app.errors";
 import { Shop } from "../../models/vendor/shop.model";
 import { ShopLocation } from "../../models/vendor/shop_location";
 import { ShopKycDetail } from "../../models/vendor/shop_kyc.model";
-import Service from "../../models/admin/service.model";
+import Service from "../../models/vendor/service.model";
 import { User } from "../../models/user/user.model";
 import ShopBankDetails from "../../models/vendor/shop_bank_details";
 import { Barber } from "../../models/vendor/barber.mode";
@@ -71,6 +71,10 @@ export class ShopServices {
             const shop = await Shop.findOne({
                 where: { user_id: user_id }, include: [
                     {
+                        model: User,
+                        as: "shop_user"
+                    },
+                    {
                         model: ShopLocation,
                         as: "location"
                     },
@@ -88,36 +92,96 @@ export class ShopServices {
                         as: "shop_bank_details"
                     },
                     {
+                        model: Service,
+                        as: "shop_services"
+                    },
+                    {
                         model: Barber,
                         as: "shop_barbers",
                         attributes: {
                             exclude: ["username", "login_pin", "role"]
                         }
-                    }
+                    },
 
-                ]
+
+                ],
+                attributes: {
+                    exclude: ["services", "user_id", "createdAt", "updatedAt"]
+                }
             })
             if (!shop) {
                 throw new AppErrors("No Shop Vendor found")
             }
 
-            const serviceIds = shop.services;
-            let services = [];
 
-            for (const id of serviceIds) {
-                const service = await Service.findByPk(id);
-                services.push(service);
-            }
             const shopData = shop.toJSON();
             shopData.barber_count = shopData.shop_barbers ? shopData.shop_barbers.length : 0;
+            shopData.service_count = shopData.shop_services ? shopData.shop_services.length : 0;
             shopData.self_employed = shopData.barber_count === 0;
+
+
+
+            const barberGender = new Set(
+                shopData.shop_barbers.map((b: any) => b.gender.toLowerCase())
+            );
+
+            const serviceGender = new Set(
+                shopData.shop_services.map((b: any) => b.gender.toLowerCase())
+            )
+
+            // Rules:
+            const hasMaleBarber = barberGender.has("male");
+            const hasFemaleBarber = barberGender.has("female");
+            const hasUnisexBarber = barberGender.has("unisex");
+            const hasOthersBarber = barberGender.has("others");
+
+            const hasMaleService = serviceGender.has("male");
+            const hasFemaleService = serviceGender.has("female");
+            const hasUnisexService = serviceGender.has("unisex");
+            const hasOthersService = serviceGender.has("others");
+
+
+            shopData.multi_gender_barbers =
+                hasUnisexBarber ||                      // Unisex = both
+                (hasMaleBarber && hasFemaleBarber) ||         // Both male & female
+                (hasOthersBarber && (hasMaleBarber || hasFemaleBarber)); //
+
+
+            shopData.multi_gender_services =
+                hasUnisexService ||                      // Unisex = both
+                (hasMaleService && hasFemaleService) ||         // Both male & female
+                (hasOthersService && (hasMaleService || hasFemaleService)); //
+
 
             return {
                 ...shopData,
-                services,
             };
         } catch (error) {
             throw new AppErrors(error);
         }
     }
+
+
+
+    static async createServices(data: any): Promise<Service> {
+
+        const name = data.name;
+        const gender = data.gender;
+
+        let services = await Service.findOne({ where: { name: name, gender: gender } });
+
+        if (services) {
+            throw new AppErrors("This services is already exist")
+        }
+        services = await Service.create(data);
+        return services;
+
+    }
+
+    static async getAllServices(): Promise<Service[]> {
+        return await Service.findAll();
+    }
+
+
+
 }

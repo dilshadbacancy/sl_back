@@ -1,6 +1,5 @@
 import * as z from "zod";
 import { Gender, Roles, Status } from "../../utils/enum.utils";
-import { availableMemory } from "process";
 
 
 export const BarberSchema = z.object({

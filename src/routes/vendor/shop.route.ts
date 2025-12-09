@@ -16,6 +16,10 @@ router.post("/save-shop-bank", ShopController.saveSaloonShopBankDetails)
 router.get("/get-shop-profile", ShopController.getShopProfile);
 
 
+router.post("/create-service", ShopController.createService)
+router.get("/services", ShopController.getAllServices)
+
+
 
 
 export default router;

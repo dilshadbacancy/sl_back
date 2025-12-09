@@ -6,6 +6,6 @@ const router = Router();
 
 router.use(authMiddleware)
 router.post("/add-services", SaloonController.addServicesToShop);
-router.post("/update-service", SaloonController.updateServicesOfShops)
+router.post("/update-service", SaloonController.updateServicesOfShops);
 
 export default router;

@@ -59,3 +59,25 @@ export enum Gender {
     UNISEX = "unisex",
     OTHERS = "others"
 }
+
+export enum AppointmentStatus {
+    Pending = "pending",
+    Accepted = "accepted",
+    InProgress = "in-prpgress",
+    Rejected = "rejected",
+    Conmpleted = "completed",
+    Cancelled = "cancelled",
+}
+
+
+export enum PaymentStatus {
+    Pending = "pending",
+    Failed = "failed",
+    Success = "succss"
+}
+
+export enum PaymentMode {
+    Cash = "cash",
+    Online = "online",
+    Other = "Other"
+}

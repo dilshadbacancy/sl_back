@@ -1,6 +1,7 @@
 import { AppErrors } from "../../errors/app.errors";
 import { AuthRequest } from "../../middlewares/auth.middleware";
-import { AddServiceToShopSchema, UpdateServiceOfShop } from "../../schema/admin/services";
+import { CreateAppointmentSchema } from "../../schema/user/customer.schema";
+import { AddServiceToShopSchema, UpdateServiceOfShop } from "../../schema/vendor/services.schema";
 import { SaloonService } from "../../service/user/saloon.service";
 import { ApiResponse } from "../../utils/apiResponse";
 import { Request, Response } from "express";

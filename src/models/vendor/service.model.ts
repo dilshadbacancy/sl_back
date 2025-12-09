@@ -7,6 +7,7 @@ import { DataTypes, Model } from "sequelize";
 export class Service extends Model {
     id!: string;
     name!: string;
+    shop_id!: string;
     description!: string | null;
     duration!: number;
     price!: number;
@@ -32,7 +33,10 @@ Service.init(
             type: DataTypes.STRING(150),
             allowNull: false,
         },
-
+        shop_id: {
+            type: DataTypes.UUID,
+            allowNull: false,
+        },
         description: {
             type: DataTypes.TEXT,
             allowNull: true,
