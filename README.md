@@ -7,12 +7,14 @@ Complete Node.js API for a salon/barber shop booking system with flowcharts, doc
 ## 🎯 Quick Navigation
 
 | Role | Start Here |
-|------|-----------|
-| **Frontend Dev** | [📄 API Documentation](./documentation/01-API-Reference/API_DOCUMENTATION.md) |
-| **Backend Dev** | [📄 Routes Guide](./documentation/02-Routes-Guide/COMPLETE_ROUTES_DOCUMENTATION.md) |
-| **QA Engineer** | [📑 Complete Index](./documentation/TABLE_OF_CONTENTS.md) |
-| **New to Project** | [⚡ Quick Start (5 min)](./documentation/QUICK_START.md) |
-
+|------|----| Metric | Value |
+|--------|-------|
+| **Total Endpoints** | 40 |
+| **Common Routes** | 8 |
+| **User Routes** | 18 |
+| **Vendor Routes** | 14 |
+| **HTTP Methods** | GET + POST |
+| **Last Updated** | Auto-generated |
 ---
 
 ## 📂 Documentation Structure
