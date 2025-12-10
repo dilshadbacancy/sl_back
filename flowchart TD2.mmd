@@ -1,0 +1,45 @@
+flowchart TD
+    Start([CUSTOMER ROUTES - /customer]) --> R1["GET /near-by-shops"]
+    Start --> R2["POST /book-appointment"]
+    Start --> R3["POST /assign-appointments"]
+    Start --> R4["GET /appointments"]
+    Start --> R5["POST /change-appointment-status"]
+    
+    R1 --> R1Body["📥 REQUEST BODY:<br/>{ latitude: number,<br/>longitude: number,<br/>radius?: number }"]
+    R1Body --> R1Validation["✅ Validation:<br/>- Latitude required<br/>- Longitude required"]
+    R1Validation --> R1Service["🔄 CustomerService.fetchNearByShops"]
+    R1Service --> R1Response["📤 RESPONSE:<br/>{ success: true,<br/>data: [{ id, shop_name,<br/>distance, location,<br/>email, mobile }] }"]
+    
+    R2 --> R2Body["📥 REQUEST BODY:<br/>{ customer_id: UUID,<br/>shop_id?: UUID,<br/>appointment_date: ISO string,<br/>gender: enum,<br/>notes?: string,<br/>payment_mode: enum,<br/>services: [{<br/>  service_id: UUID,<br/>  duration: number,<br/>  price: number,<br/>  discounted_price?: number<br/>}],<br/>location?: {<br/>  latitude, longitude<br/>} }"]
+    R2Body --> R2Validation["✅ Validation:<br/>- customer_id UUID<br/>- At least 1 service<br/>- Valid gender enum<br/>- Valid payment_mode"]
+    R2Validation --> R2Logic["🔄 Smart Shop Selection:<br/>1. If shop_id: use it<br/>2. Else: find nearest<br/>3. Prefer available barber<br/>4. Else: barber free earliest"]
+    R2Logic --> R2Service["🔄 CustomerService.createAppointment"]
+    R2Service --> R2Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'Appointment submitted',<br/>data: { id, customer_id,<br/>shop_id, appointment_date,<br/>status: Pending,<br/>service_duration,<br/>distance, services[] } }"]
+    
+    R3 --> R3Body["📥 REQUEST BODY:<br/>{ id: UUID,<br/>barberId?: UUID,<br/>extra_duration?: number }"]
+    R3Body --> R3Validation["✅ Validation:<br/>- Appointment id required"]
+    R3Validation --> R3Logic["🔄 Barber Assignment:<br/>1. If barberId: assign it<br/>2. Else: find available<br/>3. Else: earliest free"]
+    R3Logic --> R3Service["🔄 CustomerService.assignBarber"]
+    R3Service --> R3Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'Assignments accepted',<br/>data: { id, barber_id,<br/>expected_start_time,<br/>expected_end_time,<br/>status: Accepted,<br/>total_service_duration } }"]
+    
+    R4 --> R4Query["📥 QUERY PARAMS:<br/>?user_id=UUID<br/>&shop_id=UUID<br/>&barber_id=UUID<br/>&status=enum"]
+    R4Query --> R4Service["🔄 CustomerService.getAllAppointments"]
+    R4Service --> R4Response["📤 RESPONSE:<br/>{ success: true,<br/>data: [{ id,<br/>appointment_date,<br/>expected_start_time,<br/>expected_end_time,<br/>status, services[],<br/>barber{}, shop{},<br/>customer{} }] }"]
+    
+    R5 --> R5Body["📥 REQUEST BODY:<br/>{ id: UUID,<br/>status: enum<br/>  Pending|Accepted|<br/>  InProgress|Completed|<br/>  Rejected|Cancelled,<br/>remark?: string }"]
+    R5Body --> R5Validation["✅ Validation:<br/>- ID required<br/>- Valid status enum<br/>- Remark required if<br/>  Rejected/Cancelled"]
+    R5Validation --> R5Logic["🔄 Status Transitions:<br/>- Validate current status<br/>- If Completed:<br/>  • Calculate totals<br/>  • Release barber<br/>  • Mark paid"]
+    R5Logic --> R5Service["🔄 CustomerService.changeAppointmentStatus"]
+    R5Service --> R5Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'Status changed',<br/>data: { id, status,<br/>total_price,<br/>discount,<br/>chargeable_amount,<br/>services[] } }"]
+    
+    style Start fill:#e3f2fd
+    style R1 fill:#c8e6c9
+    style R2 fill:#fff9c4
+    style R3 fill:#ffccbc
+    style R4 fill:#e1bee7
+    style R5 fill:#b2dfdb
+    style R1Response fill:#a5d6a7
+    style R2Response fill:#fff59d
+    style R3Response fill:#ffab91
+    style R4Response fill:#ce93d8
+    style R5Response fill:#80cbc4

@@ -1,0 +1,34 @@
+flowchart TD
+    Start([AUTH ROUTES - /auth]) --> R1["POST /send-otp"]
+    Start --> R2["POST /verify-otp"]
+    Start --> R3["POST /logout"]
+    Start --> R4["POST /new-access-token"]
+    
+    R1 --> R1Body["📥 REQUEST BODY:<br/>{ mobile: string }"]
+    R1Body --> R1Validation["✅ Validation:<br/>- Mobile required"]
+    R1Validation --> R1Service["🔄 AuthService.sendOtp"]
+    R1Service --> R1Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'OTP sent',<br/>data: any }"]
+    
+    R2 --> R2Body["📥 REQUEST BODY:<br/>{ code: string,<br/>mobile: string,<br/>user_id?: string }"]
+    R2Body --> R2Validation["✅ Validation:<br/>- Code required<br/>- Mobile required"]
+    R2Validation --> R2Service["🔄 AuthService.verifyOTP"]
+    R2Service --> R2Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'OTP verified',<br/>data: { tokens,<br/>user_info } }"]
+    
+    R3 --> R3Auth["🔐 Middleware:<br/>authMiddleware"]
+    R3Auth --> R3Header["📥 REQUEST HEADER:<br/>Authorization: Bearer token"]
+    R3Header --> R3Service["🔄 AuthService.logoutUser"]
+    R3Service --> R3Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'Logged out' }"]
+    
+    R4 --> R4Body["📥 REQUEST BODY:<br/>{ refresh_token: string }"]
+    R4Body --> R4Service["🔄 AuthService.generateNewAccessToken"]
+    R4Service --> R4Response["📤 RESPONSE:<br/>{ success: true,<br/>data: { access_token,<br/>expires_in } }"]
+    
+    style Start fill:#e3f2fd
+    style R1 fill:#bbdefb
+    style R2 fill:#bbdefb
+    style R3 fill:#bbdefb
+    style R4 fill:#bbdefb
+    style R1Response fill:#c8e6c9
+    style R2Response fill:#c8e6c9
+    style R3Response fill:#c8e6c9
+    style R4Response fill:#c8e6c9

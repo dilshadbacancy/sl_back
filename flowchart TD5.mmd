@@ -1,0 +1,35 @@
+flowchart TD
+    Start([COMMON ROUTES - /common]) --> R1["POST /update-device-info"]
+    Start --> R2["GET /device-info"]
+    Start --> R3["POST /save-token"]
+    Start --> R4["GET /fcm-token"]
+    
+    R1 --> R1Auth["🔐 Middleware:<br/>authMiddleware"]
+    R1Auth --> R1Body["📥 REQUEST BODY:<br/>{ user_id: UUID,<br/>device_id: string,<br/>device_name?: string,<br/>os_type: enum,<br/>os_version?: string,<br/>device_model?: string,<br/>app_version?: string,<br/>app_installed_time?: date }"]
+    R1Body --> R1Service["🔄 CommonService.saveDeviceInfo"]
+    R1Service --> R1Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'Device info saved',<br/>data: { device_id,<br/>user_id,<br/>os_type,<br/>device_name } }"]
+    
+    R2 --> R2Auth["🔐 Middleware:<br/>authMiddleware"]
+    R2Auth --> R2Query["📥 QUERY PARAMS:<br/>?user_id=UUID"]
+    R2Query --> R2Service["🔄 CommonService.getDeviceInfo"]
+    R2Service --> R2Response["📤 RESPONSE:<br/>{ success: true,<br/>data: { device_id,<br/>device_name,<br/>os_type,<br/>os_version,<br/>device_model,<br/>app_version } }"]
+    
+    R3 --> R3Auth["🔐 Middleware:<br/>authMiddleware"]
+    R3Auth --> R3Body["📥 REQUEST BODY:<br/>{ user_id: UUID,<br/>fcm_token: string,<br/>device_id?: string }"]
+    R3Body --> R3Service["🔄 CommonService.saveFCMToken"]
+    R3Service --> R3Response["📤 RESPONSE:<br/>{ success: true,<br/>message: 'Token saved',<br/>data: { token_id,<br/>user_id,<br/>fcm_token,<br/>created_at } }"]
+    
+    R4 --> R4Auth["🔐 Middleware:<br/>authMiddleware"]
+    R4Auth --> R4Query["📥 QUERY PARAMS:<br/>?user_id=UUID"]
+    R4Query --> R4Service["🔄 CommonService.getFCMToken"]
+    R4Service --> R4Response["📤 RESPONSE:<br/>{ success: true,<br/>data: { fcm_token,<br/>user_id,<br/>device_id,<br/>is_active } }"]
+    
+    style Start fill:#e3f2fd
+    style R1 fill:#c8e6c9
+    style R2 fill:#fff9c4
+    style R3 fill:#ffccbc
+    style R4 fill:#e1bee7
+    style R1Response fill:#a5d6a7
+    style R2Response fill:#fff59d
+    style R3Response fill:#ffab91
+    style R4Response fill:#ce93d8
