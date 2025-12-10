@@ -148,6 +148,38 @@ ${Object.keys(routesByCategory).map(cat => {
 }
 
 /**
+ * Update README.md with latest route counts
+ */
+function updateReadmeStats() {
+  const README_PATH = path.join(__dirname, '../README.md');
+  if (!fs.existsSync(README_PATH)) return;
+  
+  let content = fs.readFileSync(README_PATH, 'utf8');
+  
+  // Update documentation reference count
+  content = content.replace(
+    /All \d+ endpoints with examples/,
+    `All ${totalRoutes} endpoints with examples`
+  );
+  
+  // Update API Statistics table
+  const statsTablePattern = /\| Metric \| Value \|\n\|--------|-------\|\n[\s\S]*?\n(?=\n---)/;
+  const newStatsTable = `| Metric | Value |
+|--------|-------|
+| **Total Endpoints** | ${totalRoutes} |
+| **Common Routes** | ${routesByCategory['common']?.length || 0} |
+| **User Routes** | ${routesByCategory['user']?.length || 0} |
+| **Vendor Routes** | ${routesByCategory['vendor']?.length || 0} |
+| **HTTP Methods** | GET + POST |
+| **Last Updated** | Auto-generated |`;
+
+  content = content.replace(statsTablePattern, newStatsTable);
+  
+  fs.writeFileSync(README_PATH, content, 'utf8');
+  console.log(`✅ README.md statistics updated`);
+}
+
+/**
  * Main execution
  */
 function main() {
@@ -159,6 +191,7 @@ function main() {
     
     generateAPIDocumentation();
     updateQuickStartStats();
+    updateReadmeStats();
     
     console.log('\n✨ Documentation generation complete!');
     process.exit(0);

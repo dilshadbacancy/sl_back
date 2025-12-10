@@ -14,6 +14,7 @@ if git diff --cached --name-only | grep -E "src/routes/.*\.ts$" > /dev/null; the
     # Add generated documentation to the commit
     git add documentation/01-API-Reference/API_DOCUMENTATION.md
     git add documentation/QUICK_START.md
+    git add README.md
     echo "✅ Documentation updated and added to commit"
   else
     echo "⚠️  Documentation generation failed. Proceeding without update."
