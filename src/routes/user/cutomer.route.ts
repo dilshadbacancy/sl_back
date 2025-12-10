@@ -18,4 +18,4 @@ router.get("/payment-modes", CustomerController.getPaymentsModes);
 router.get("/appointment-statuses", CustomerController.getAppointmentsStatus);
 
 
-export default router;
+export default router;// test change

@@ -51,6 +51,9 @@
 | common | 8 | 2 methods |
 | user | 18 | 2 methods |
 | vendor | 14 | 2 methods ||-------|-----------|
+| common | 8 | 2 methods |
+| user | 18 | 2 methods |
+| vendor | 14 | 2 methods ||-------|-----------|
 |-------|-----------|
 |-------|-----------|
 
