@@ -14,6 +14,8 @@ const ROUTES_DIR = path.join(__dirname, '../src/routes');
 const DOCS_DIR = path.join(__dirname, '../documentation');
 const API_DOC_PATH = path.join(DOCS_DIR, '01-API-Reference/API_DOCUMENTATION.md');
 const QUICK_START_PATH = path.join(DOCS_DIR, 'QUICK_START.md');
+const ROUTES_GUIDE_PATH = path.join(DOCS_DIR, '02-Routes-Guide/COMPLETE_ROUTES_DOCUMENTATION.md');
+const FLOWCHART_PATH = path.join(DOCS_DIR, '03-Flowcharts/ROUTES_OVERVIEW.mmd');
 
 let totalRoutes = 0;
 const routesByCategory = {};
@@ -123,6 +125,52 @@ function generateAPIDocumentation() {
 }
 
 /**
+ * Generate or update the complete routes documentation (02-Routes-Guide)
+ */
+function generateRoutesGuide() {
+  // ensure directory
+  const dir = path.dirname(ROUTES_GUIDE_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+  let doc = `# Complete Routes Documentation - Auto-Generated\n\n`;
+  doc += `**Last Updated:** ${new Date().toLocaleString()}  \n**Total Routes:** ${totalRoutes}\n\n---\n\n`;
+
+  Object.keys(routesByCategory).forEach(category => {
+    const routes = routesByCategory[category];
+    doc += `## ${category.toUpperCase()} (${routes.length})\n\n`;
+
+    routes.forEach(route => {
+      doc += `### ${route.method} ${route.path}\n`;
+      doc += `- **Defined In:** \`${route.file}\`\n`;
+      doc += `- **Category:** ${route.category}\n\n`;
+    });
+  });
+
+  fs.writeFileSync(ROUTES_GUIDE_PATH, doc, 'utf8');
+  console.log(`✅ Routes Guide updated: ${ROUTES_GUIDE_PATH}`);
+}
+
+/**
+ * Generate a simple mermaid flowchart overview of routes by category
+ */
+function generateFlowchartOverview() {
+  const dir = path.dirname(FLOWCHART_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+  // Build a simple flowchart showing categories and counts
+  let chart = `flowchart TD\n`;
+  chart += `    A[Routes] --> B[Categories]\n`;
+  Object.keys(routesByCategory).forEach((cat, i) => {
+    const node = `C${i}`;
+    const count = routesByCategory[cat].length || 0;
+    chart += `    B --> ${node}[${cat} (${count})]\n`;
+  });
+
+  fs.writeFileSync(FLOWCHART_PATH, chart, 'utf8');
+  console.log(`✅ Flowchart overview updated: ${FLOWCHART_PATH}`);
+}
+
+/**
  * Update route statistics in QUICK_START.md
  */
 function updateQuickStartStats() {
@@ -162,9 +210,12 @@ function updateReadmeStats() {
     `All ${totalRoutes} endpoints with examples`
   );
   
-  // Update API Statistics table - use specific markers to avoid matching wrong content
-  const statsTablePattern = /## 📊 API Statistics\n\n\| Metric \| Value \|\n\|--------|-------\|\n[\s\S]*?\n(?=\n---)/;
-  const newStatsTable = `## 📊 API Statistics
+  // Update API Statistics table - use HTML comments as precise markers
+  const startMarker = '<!-- API_STATS_START -->';
+  const endMarker = '<!-- API_STATS_END -->';
+  
+  const newStatsContent = `<!-- API_STATS_START -->
+## 📊 API Statistics
 
 | Metric | Value |
 |--------|-------|
@@ -173,9 +224,17 @@ function updateReadmeStats() {
 | **User Routes** | ${routesByCategory['user']?.length || 0} |
 | **Vendor Routes** | ${routesByCategory['vendor']?.length || 0} |
 | **HTTP Methods** | GET + POST |
-| **Last Updated** | Auto-generated |`;
+| **Last Updated** | Auto-generated |
 
-  content = content.replace(statsTablePattern, newStatsTable);
+---
+<!-- API_STATS_END -->`;
+
+  // Find and replace content between markers
+  const markerPattern = /<!-- API_STATS_START -->[\s\S]*?<!-- API_STATS_END -->/;
+  
+  if (markerPattern.test(content)) {
+    content = content.replace(markerPattern, newStatsContent);
+  }
   
   fs.writeFileSync(README_PATH, content, 'utf8');
   console.log(`✅ README.md statistics updated`);
@@ -192,6 +251,8 @@ function main() {
     console.log(`📍 Found ${totalRoutes} routes across ${Object.keys(routesByCategory).length} categories`);
     
     generateAPIDocumentation();
+    generateRoutesGuide();
+    generateFlowchartOverview();
     updateQuickStartStats();
     updateReadmeStats();
     
