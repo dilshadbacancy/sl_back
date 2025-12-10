@@ -162,9 +162,11 @@ function updateReadmeStats() {
     `All ${totalRoutes} endpoints with examples`
   );
   
-  // Update API Statistics table
-  const statsTablePattern = /\| Metric \| Value \|\n\|--------|-------\|\n[\s\S]*?\n(?=\n---)/;
-  const newStatsTable = `| Metric | Value |
+  // Update API Statistics table - use specific markers to avoid matching wrong content
+  const statsTablePattern = /## 📊 API Statistics\n\n\| Metric \| Value \|\n\|--------|-------\|\n[\s\S]*?\n(?=\n---)/;
+  const newStatsTable = `## 📊 API Statistics
+
+| Metric | Value |
 |--------|-------|
 | **Total Endpoints** | ${totalRoutes} |
 | **Common Routes** | ${routesByCategory['common']?.length || 0} |
