@@ -1,0 +1,158 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# Node Modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build Output
+dist/
+build/
+*.js.map
+*.d.ts
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.*.swp
+.history/
+*.sublime-workspace
+*.sublime-project
+
+# OS Files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+*.log
+
+# Temporary Files
+tmp/
+temp/
+.cache/
+.parcel-cache/
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+.mocha_output/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Lock Files (Optional - uncomment if using npm, comment if using yarn)
+# package-lock.json
+# yarn.lock
+
+# PM2
+ecosystem-config.js.bak
+
+# Local development
+.local/
+.dev/
+.test/
+
+# Generated Files
+*.generated.js
+*.generated.ts
+
+# Optional REPL history
+.node_repl_history
+
+# Credentials & Secrets
+*.pem
+*.key
+*.cert
+*.crt
+credentials.json
+secrets.json
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# IDE Generated Files
+jsconfig.json.tmp
+tsconfig.json.tmp
+
+# Compiled TypeScript
+**/*.js
+**/*.js.map
+!scripts/**/*.js
+!dist/**/*.js
+
+# Session Files
+.session
+.sessions/
+
+# Backup Files
+*.bak
+*.backup
+*~
+*.tmp
+
+# OS specific
+.env.production.local
+.env.test.local
+
+# Firebase
+firebase-debug.log
+.firebaserc
+
+# Husky Git Hooks (local install)
+.husky/_
+
+# Package Manager Lock (if not using)
+# pnpm-lock.yaml
+# yarn.lock
+
+# Development Tools
+.prettierignore.local
+.eslintignore.local
+
+# Config Backups
+config.backup.json
+
+# SSL Certificates (local development)
+*.pem
+*.crt
+*.key
+!public/*.pem
+
+# Temporary Test Files
+__tests__/__temp__/
+test-output/
+
+# IDE Cache
+.eslintcache
+.stylelintcache
+
+# Bundle Analysis
+dist-stats.json
+bundle-stats.json
+
+# Compiled Database Migrations
+migrations/*.js
+!src/migrations/*.ts
