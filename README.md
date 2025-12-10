@@ -19,7 +19,7 @@ Complete Node.js API for a salon/barber shop booking system with flowcharts, doc
 
 Complete documentation in `/documentation/`:
 
-- **[01-API-Reference](./documentation/01-API-Reference/)** - All 36 endpoints with examples
+- **[01-API-Reference](./documentation/01-API-Reference/)** - All 40 endpoints with examples
 - **[02-Routes-Guide](./documentation/02-Routes-Guide/)** - Detailed route breakdown  
 - **[03-Flowcharts](./documentation/03-Flowcharts/)** - Visual diagrams & flowchart guides
 - **[04-Integration-Examples](./documentation/04-Integration-Examples/)** - Real code examples
@@ -74,14 +74,12 @@ Salon booking API that connects customers with barber shops for appointments:
 
 | Metric | Value |
 |--------|-------|
-| **Total Endpoints** | 36 |
-| **Authentication Routes** | 4 |
-| **Customer Routes** | 5 |
-| **Barber Routes** | 7 |
-| **Shop Routes** | 7 |
-| **User Routes** | 9 |
-| **Common Routes** | 4 |
-| **HTTP Methods** | GET (13), POST (23) |
+| **Total Endpoints** | 40 |
+| **Common Routes** | 8 |
+| **User Routes** | 18 |
+| **Vendor Routes** | 14 |
+| **HTTP Methods** | GET + POST |
+| **Last Updated** | Auto-generated |
 
 ---
 
