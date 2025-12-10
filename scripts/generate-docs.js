@@ -16,6 +16,7 @@ const API_DOC_PATH = path.join(DOCS_DIR, '01-API-Reference/API_DOCUMENTATION.md'
 const QUICK_START_PATH = path.join(DOCS_DIR, 'QUICK_START.md');
 const ROUTES_GUIDE_PATH = path.join(DOCS_DIR, '02-Routes-Guide/COMPLETE_ROUTES_DOCUMENTATION.md');
 const FLOWCHART_PATH = path.join(DOCS_DIR, '03-Flowcharts/ROUTES_OVERVIEW.mmd');
+const TABLE_OF_CONTENTS_PATH = path.join(DOCS_DIR, 'TABLE_OF_CONTENTS.md');
 
 let totalRoutes = 0;
 const routesByCategory = {};
@@ -168,6 +169,31 @@ function generateFlowchartOverview() {
 
   fs.writeFileSync(FLOWCHART_PATH, chart, 'utf8');
   console.log(`✅ Flowchart overview updated: ${FLOWCHART_PATH}`);
+}
+
+/**
+ * Update / regenerate documentation/TABLE_OF_CONTENTS.md with links to generated docs
+ */
+function updateTableOfContents() {
+  const dir = path.dirname(TABLE_OF_CONTENTS_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+  const now = new Date().toLocaleString();
+  let toc = `# Documentation Index - Auto-Generated\n\n`;
+  toc += `**Last Updated:** ${now}\n\n`;
+  toc += `- [API Reference](./01-API-Reference/API_DOCUMENTATION.md) - Auto-generated\n`;
+  toc += `- [Complete Routes Guide](./02-Routes-Guide/COMPLETE_ROUTES_DOCUMENTATION.md) - Auto-generated\n`;
+  toc += `- [Quick Start](./QUICK_START.md)\n`;
+  toc += `- [Routes Overview Flowchart](./03-Flowcharts/ROUTES_OVERVIEW.mmd)\n\n`;
+  toc += `## Routes Summary\n\n`;
+
+  Object.keys(routesByCategory).forEach(cat => {
+    const count = routesByCategory[cat].length || 0;
+    toc += `- **${cat}**: ${count} routes\n`;
+  });
+
+  fs.writeFileSync(TABLE_OF_CONTENTS_PATH, toc, 'utf8');
+  console.log(`✅ Table of Contents updated: ${TABLE_OF_CONTENTS_PATH}`);
 }
 
 /**

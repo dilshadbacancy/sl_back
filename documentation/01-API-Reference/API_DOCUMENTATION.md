@@ -1,6 +1,6 @@
 # API Documentation - Auto-Generated
 
-**Last Updated:** 12/10/2025, 12:42:03 PM  
+**Last Updated:** 12/10/2025, 12:52:55 PM  
 **Total Routes:** 40
 
 ---
@@ -228,4 +228,4 @@
 
 - Total endpoints: **40**
 - Categories: **3**
-- Generated: **12/10/2025, 12:42:03 PM**
+- Generated: **12/10/2025, 12:52:55 PM**

@@ -1,26 +1,13 @@
 #!/bin/sh
-# Pre-commit hook: Auto-generate documentation before commit
+# Pre-commit hook: Documentation generation moved to CI
 
 echo "📚 Checking for route changes..."
 
-# Check if any route files were modified
+# If route files changed, inform developer that CI will generate docs
 if git diff --cached --name-only | grep -E "src/routes/.*\.ts$" > /dev/null; then
-  echo "✏️  Route files detected. Generating documentation..."
-  
-  # Run documentation generator
-  npm run generate-docs
-  
-  if [ $? -eq 0 ]; then
-    # Add generated documentation to the commit
-    git add documentation/01-API-Reference/API_DOCUMENTATION.md
-    git add documentation/QUICK_START.md
-      git add documentation/02-Routes-Guide/COMPLETE_ROUTES_DOCUMENTATION.md
-      git add documentation/03-Flowcharts/ROUTES_OVERVIEW.mmd
-    git add README.md
-    echo "✅ Documentation updated and added to commit"
-  else
-    echo "⚠️  Documentation generation failed. Proceeding without update."
-  fi
+  echo "✏️  Route files detected. Documentation generation has been moved to CI (GitHub Actions)."
+  echo "If you need to generate docs locally, run: npm run generate-docs"
+  echo "Generated docs will be committed by CI; local commits will not run the generator by default."
 else
   echo "✓ No route changes detected"
 fi
