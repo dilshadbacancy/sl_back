@@ -32,13 +32,13 @@ function extractRoutesFromFile(filePath, category) {
     
     while ((match = routePattern.exec(content)) !== null) {
       const method = match[1].toUpperCase();
-      const path = match[2];
+      const routePath = match[2];
       
       totalRoutes++;
       
       const route = {
         method,
-        path: `/${category}${path}`,
+        path: `/${category}${routePath}`,
         category,
         file: path.relative(ROUTES_DIR, filePath)
       };
