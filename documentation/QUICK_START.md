@@ -1,6 +1,6 @@
-# 🚀 Quick Start Guide
-
-Get up to speed in 5 minutes.
+| Category | Count | Key Routes |
+|----------|-------|-----------|
+|-------|-----------|
 
 ---
 
