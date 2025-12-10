@@ -68,5 +68,17 @@ export class CustomerController {
 
     }
 
+    static async getPaymentsModes(req: AuthRequest, res: Response): Promise<void> {
+        await CustomerServies.getPaymentModes()
+            .then((value) => ApiResponse.success("Payment modes fetched successfully", value))
+            .catch((e) => ApiResponse.error(e))
+    }
+
+    static async getAppointmentsStatus(req: AuthRequest, res: Response): Promise<void> {
+        await CustomerServies.getAppointmentsStatus()
+            .then((value) => ApiResponse.success("Appointment status fetched successfully", value))
+            .catch((e) => ApiResponse.error(e))
+    }
+
 
 }

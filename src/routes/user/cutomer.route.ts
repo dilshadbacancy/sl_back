@@ -14,5 +14,8 @@ router.post("/assign-appointments", CustomerController.assignAppointments);
 router.get("/appointments", CustomerController.getAllAppoitments)
 router.post("/change-appointment-status", CustomerController.changeAppointmentStatus);
 
+router.get("/payment-modes", CustomerController.getPaymentsModes);
+router.get("/appointment-statuses", CustomerController.getAppointmentsStatus);
+
 
 export default router;

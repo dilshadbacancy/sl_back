@@ -3,7 +3,7 @@ import { Appointment } from "../../models/user/appointment";
 import { Shop } from "../../models/vendor/shop.model";
 import { ShopLocation } from "../../models/vendor/shop_location";
 import { JSON, literal, Op } from "sequelize";
-import { AppointmentStatus, PaymentStatus } from "../../utils/enum.utils";
+import { AppointmentStatus, PaymentMode, PaymentStatus } from "../../utils/enum.utils";
 import { Barber } from "../../models/vendor/barber.mode";
 import { HelperUtils } from "../../utils/helper";
 import { User } from "../../models/user/user.model";
@@ -513,4 +513,20 @@ export class CustomerServies {
     }
 
 
+    static async getPaymentModes(): Promise<any> {
+        const list = Object.values(PaymentMode).map(mode => ({
+            label: mode.toUpperCase(),
+            value: mode.toLowerCase(),
+        }));
+        return list;
+
+    }
+
+    static async getAppointmentsStatus(): Promise<any> {
+        const list = Object.values(AppointmentStatus).map(status => ({
+            label: HelperUtils.getAppointmentStatusLabel(status.toLowerCase()),
+            value: status.toLowerCase(),
+        }));
+        return list;
+    }
 }

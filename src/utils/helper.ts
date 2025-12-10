@@ -1,5 +1,7 @@
 
 import bcrypt from "bcrypt";
+import { Barber } from "../models/vendor/barber.mode";
+import { User } from "../models/user/user.model";
 
 export class HelperUtils {
 
@@ -68,34 +70,26 @@ export class HelperUtils {
     }
 
 
+    static getAppointmentStatusLabel(label: string): string {
+
+        switch (label) {
+            case 'pending':
+                return 'PENDING';
+            case 'accepted':
+                return 'ACCEPT';
+            case 'inProgress':
+                return 'IN PROGRESS';
+            case 'conmpleted':
+                return 'COMPLETE';
+            case 'rejected':
+                return 'REJECT';
+            case 'cancelled':
+                return 'CANCELL';
+            default:
+                return label.toUpperCase();
+        }
+    }
+
+
 
 }
-
-import { ZodError, ZodObject } from "zod";
-import { Request, Response, NextFunction } from "express";
-import { formatZodError } from "../errors/app.errors";
-import { User } from "../models/user/user.model";
-import { Barber } from "../models/vendor/barber.mode";
-
-export const validateBody =
-    (schema: ZodObject) =>
-        (req: Request, res: Response, next: NextFunction) => {
-            try {
-                schema.parse(req.body);
-                next();
-            } catch (error: any) {
-
-                if (error instanceof ZodError) {
-                    return res.status(400).json({
-                        status: "error",
-                        message: "Validation failed",
-                        errors: formatZodError(error)
-                    });
-                }
-                return res.status(400).json({
-                    status: "error",
-                    message: "Validation failed",
-                    errors: error.errors,
-                });
-            }
-        };
