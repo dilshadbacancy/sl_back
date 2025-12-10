@@ -105,7 +105,30 @@ Security
 
 ---
 
-## 🛠️ Installation & Setup
+## 🤖 Automated Documentation
+
+Documentation auto-generates when you commit route changes!
+
+**Setup (2 minutes):**
+```bash
+bash documentation/setup-auto-docs.sh
+```
+
+**Then just commit normally** - docs update automatically:
+```bash
+git add .
+git commit -m "Add new route"
+# → Hook detects changes → npm run generate-docs → Docs updated
+```
+
+📖 **Setup Guides in `/documentation/`:**
+- `DOCUMENTATION_AUTOMATION.md` - Overview & how it works
+- `AUTOMATED_DOCS_SETUP.md` - Complete setup guide
+- `SETUP_DOCS.txt` - Quick reference
+
+---
+
+
 
 ### Prerequisites
 - Node.js (v14+)

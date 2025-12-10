@@ -1,0 +1,25 @@
+#!/bin/sh
+# Pre-commit hook: Auto-generate documentation before commit
+
+echo "📚 Checking for route changes..."
+
+# Check if any route files were modified
+if git diff --cached --name-only | grep -E "src/routes/.*\.ts$" > /dev/null; then
+  echo "✏️  Route files detected. Generating documentation..."
+  
+  # Run documentation generator
+  npm run generate-docs
+  
+  if [ $? -eq 0 ]; then
+    # Add generated documentation to the commit
+    git add documentation/01-API-Reference/API_DOCUMENTATION.md
+    git add documentation/QUICK_START.md
+    echo "✅ Documentation updated and added to commit"
+  else
+    echo "⚠️  Documentation generation failed. Proceeding without update."
+  fi
+else
+  echo "✓ No route changes detected"
+fi
+
+exit 0

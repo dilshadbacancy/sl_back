@@ -1,0 +1,134 @@
+# Quick Reference: Auto-Docs
+
+## One-Time Setup
+
+```bash
+# 1. Install husky (manages git hooks)
+npm install husky --save-dev
+
+# 2. Setup husky
+npm exec husky install
+
+# 3. Make pre-commit hook executable
+chmod +x .husky/pre-commit
+
+# Done! ✨
+```
+
+---
+
+## Daily Usage
+
+### Generate docs manually
+```bash
+npm run generate-docs
+```
+
+### Commit (docs auto-generate if you change routes)
+```bash
+git add .
+git commit -m "your message"
+# ↓ Hook detects route changes → auto-generates docs
+```
+
+### Skip auto-generation (if needed)
+```bash
+git commit --no-verify -m "message"
+```
+
+---
+
+## How It Works
+
+```
+You modify src/routes/*.ts
+        ↓
+git commit
+        ↓
+🪝 Pre-commit hook activates
+        ↓
+✅ Check: Did any routes change?
+        ↓
+YES → npm run generate-docs → Updates docs → Adds to commit
+NO  → Proceed normally
+```
+
+---
+
+## What Gets Updated Automatically
+
+✅ `documentation/01-API-Reference/API_DOCUMENTATION.md`
+- All endpoint methods
+- All endpoint paths
+- Route counts
+- Category breakdown
+
+✅ `documentation/QUICK_START.md`
+- Route statistics
+- Method counts
+- Last updated timestamp
+
+✅ Git commit
+- Documentation included automatically
+
+---
+
+## Examples
+
+### Add new route
+```bash
+# src/routes/customer/cutomer.route.ts
+router.post('/new-endpoint', ...)
+
+git add .
+git commit -m "Add new endpoint"
+# → Docs auto-updated with new endpoint
+```
+
+### Modify existing routes
+```bash
+git add src/routes/**/*.ts
+git commit -m "Refactor routes"
+# → Docs automatically refreshed
+```
+
+### No route changes
+```bash
+git add src/config/
+git commit -m "Update config"
+# → Hook detects no route changes, skips doc generation
+```
+
+---
+
+## Troubleshooting
+
+**Hook not running?**
+```bash
+chmod +x .husky/pre-commit
+```
+
+**Docs not generating?**
+```bash
+npm run generate-docs
+# Check output for errors
+```
+
+**Want to disable temporarily?**
+```bash
+git config core.hooksPath ''
+# To re-enable: git config core.hooksPath .husky
+```
+
+---
+
+## Files Modified
+
+- `package.json` - Added scripts
+- `scripts/generate-docs.js` - Doc generator
+- `.husky/pre-commit` - Git hook
+- `AUTOMATED_DOCS_SETUP.md` - Full guide (this file)
+
+---
+
+**That's it! Your docs are now self-updating.** 🎉
