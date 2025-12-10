@@ -1,11 +1,11 @@
 # Complete Routes Documentation - Auto-Generated
 
-**Last Updated:** 12/10/2025, 12:52:55 PM  
-**Total Routes:** 40
+**Last Updated:** 12/10/2025, 1:45:11 PM  
+**Total Routes:** 41
 
 ---
 
-## COMMON (8)
+## COMMON (9)
 
 ### POST /common/send-otp
 - **Defined In:** `common/auth.route.ts`
@@ -36,6 +36,10 @@
 - **Category:** common
 
 ### GET /common/fcm-token
+- **Defined In:** `common/common.route.ts`
+- **Category:** common
+
+### POST /common/upload-image
 - **Defined In:** `common/common.route.ts`
 - **Category:** common
 

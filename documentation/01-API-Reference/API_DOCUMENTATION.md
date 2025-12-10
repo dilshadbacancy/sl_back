@@ -1,7 +1,7 @@
 # API Documentation - Auto-Generated
 
-**Last Updated:** 12/10/2025, 12:52:55 PM  
-**Total Routes:** 40
+**Last Updated:** 12/10/2025, 1:45:10 PM  
+**Total Routes:** 41
 
 ---
 
@@ -9,13 +9,13 @@
 
 | Category | Routes | Methods |
 |----------|--------|----------|
-| common | 8 | 2 |
+| common | 9 | 2 |
 | user | 18 | 2 |
 | vendor | 14 | 2 |
 
 ---
 
-## COMMON Routes (8)
+## COMMON Routes (9)
 
 ### POST /common/send-otp
 - **File:** `common/auth.route.ts`
@@ -56,6 +56,11 @@
 - **File:** `common/common.route.ts`
 - **Method:** GET
 - **Endpoint:** `/common/fcm-token`
+
+### POST /common/upload-image
+- **File:** `common/common.route.ts`
+- **Method:** POST
+- **Endpoint:** `/common/upload-image`
 
 ## USER Routes (18)
 
@@ -226,6 +231,6 @@
 
 ## Summary
 
-- Total endpoints: **40**
+- Total endpoints: **41**
 - Categories: **3**
-- Generated: **12/10/2025, 12:52:55 PM**
+- Generated: **12/10/2025, 1:45:11 PM**

@@ -2,6 +2,7 @@ import { AuthRequest } from "../../middlewares/auth.middleware";
 import { CreateFCMRecordSchema } from "../../schema/fcm_token.schema";
 import { CommonService } from "../../service/common/common.service";
 import { ApiResponse } from "../../utils/apiResponse";
+import { CloudinaryService } from "../../utils/cloudinary.helper";
 import { Request, Response } from "express";
 
 export class CommonController {
@@ -23,7 +24,25 @@ export class CommonController {
             .catch((e) => ApiResponse.error(e))
     }
 
+    static async uploadImage(req: AuthRequest, res: Response): Promise<void> {
+        try {
+            if (!req.file) {
+                ApiResponse.error("No file provided");
+                return;
+            }
 
+            const folder = req.query.folder as string || 'salon-booking';
+            await CloudinaryService.uploadImage(req.file, folder)
+                .then((result) => ApiResponse.success("Image uploaded successfully", {
+                    url: result.secure_url,
+                    public_id: result.public_id,
+                    original: result
+                }))
+                .catch((e) => ApiResponse.error(e));
+        } catch (error) {
+            ApiResponse.error(error);
+        }
+    }
 
     static async saveFCMToken(req: AuthRequest, res: Response): Promise<any> {
         const parsed = CreateFCMRecordSchema.safeParse(req.body);

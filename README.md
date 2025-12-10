@@ -41,7 +41,7 @@ Complete Node.js API for a salon/barber shop booking system with flowcharts, doc
 
 Complete documentation in `/documentation/`:
 
-- **[01-API-Reference](./documentation/01-API-Reference/)** - All 40 endpoints with examples
+- **[01-API-Reference](./documentation/01-API-Reference/)** - All 41 endpoints with examples
 - **[02-Routes-Guide](./documentation/02-Routes-Guide/)** - Detailed route breakdown  
 - **[03-Flowcharts](./documentation/03-Flowcharts/)** - Visual diagrams & flowchart guides
 - **[04-Integration-Examples](./documentation/04-Integration-Examples/)** - Real code examples
