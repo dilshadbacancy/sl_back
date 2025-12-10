@@ -76,7 +76,6 @@ User.init(
         gender: {
             type: DataTypes.ENUM(...Object.values(Gender)),
             allowNull: true,
-            defaultValue: Gender.MALE,
         },
         is_verified: {
             type: DataTypes.BOOLEAN,

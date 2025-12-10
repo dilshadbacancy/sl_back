@@ -24,26 +24,6 @@ export class CommonController {
             .catch((e) => ApiResponse.error(e))
     }
 
-    static async uploadImage(req: AuthRequest, res: Response): Promise<void> {
-        try {
-            if (!req.file) {
-                ApiResponse.error("No file provided");
-                return;
-            }
-
-            const folder = req.query.folder as string || 'salon-booking';
-            await CloudinaryService.uploadImage(req.file, folder)
-                .then((result) => ApiResponse.success("Image uploaded successfully", {
-                    url: result.secure_url,
-                    public_id: result.public_id,
-                    original: result
-                }))
-                .catch((e) => ApiResponse.error(e));
-        } catch (error) {
-            ApiResponse.error(error);
-        }
-    }
-
     static async saveFCMToken(req: AuthRequest, res: Response): Promise<any> {
         const parsed = CreateFCMRecordSchema.safeParse(req.body);
 

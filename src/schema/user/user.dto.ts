@@ -21,3 +21,12 @@ export const CreateUserDto = z.object(
         gender: z.enum(Object.values(Gender), { error: "Gender is required" }),
     }
 ).strict()
+
+
+
+export const SendOtpSchema = z.object(
+    {
+        mobile: z.string({ error: "Mobile number is required" }).length(10, { message: "Mobile number must be 10 digits" }),
+        role: z.enum(Object.values(Roles), { error: "Role is required" }),
+    }
+)

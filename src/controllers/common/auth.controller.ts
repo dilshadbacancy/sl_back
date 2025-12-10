@@ -2,11 +2,15 @@ import { Request, Response } from "express";
 import { AuthService } from "../../service/common/auth.service";
 import { ApiResponse } from "../../utils/apiResponse";
 import { AuthRequest } from "../../middlewares/auth.middleware";
+import { SendOtpSchema } from "../../schema/user/user.dto";
 
 export class AuthController {
     static async sendOtp(req: Request, res: Response): Promise<void> {
-        const { mobile } = req.body;
-        await AuthService.sendOtp(mobile)
+        const parsed = SendOtpSchema.safeParse(req.body);
+        if (!parsed.success) {
+            ApiResponse.error(parsed.error);
+        }
+        await AuthService.sendOtp(parsed.data?.mobile!, parsed.data!.role!)
             .then((value) => ApiResponse.success("OTP send successfully", value))
             .catch((e) => ApiResponse.error(e))
     }

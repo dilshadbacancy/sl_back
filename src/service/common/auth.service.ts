@@ -9,14 +9,14 @@ import { JwtUtils } from "../../utils/jwt_utils";
 
 export class AuthService {
 
-    static async sendOtp(mobile: string): Promise<any> {
+    static async sendOtp(mobile: string, role: string): Promise<any> {
         try {
             if (mobile.length !== 10) {
                 throw new AppErrors("Mobile number is not valid, It should be 10 digit");
             }
             let user = await HelperUtils.findUserByPhone(mobile);
             if (!user) {
-                user = await User.create({ mobile: mobile })
+                user = await User.create({ mobile: mobile, role: role })
             }
             const otp = HelperUtils.generateOTP();
             const expireAt = new Date(Date.now() + 5 * 60 * 1000)
@@ -81,7 +81,6 @@ export class AuthService {
             const res = {
                 user: user.toJSON(),
                 access_token: token,
-                role: user.role,
                 refresh_token: refreshtoken,
             }
 
