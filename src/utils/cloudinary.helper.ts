@@ -20,39 +20,33 @@ export class CloudinaryService {
    * @param folder - optional folder path in Cloudinary
    * @returns promise with upload result containing secure_url
    */
-  static async uploadImage(
-    file: any,
-    folder: string = 'salon-booking'
-  ): Promise<CloudinaryUploadResponse> {
+  static async uploadImage(file: Express.Multer.File, folder: string = "salon-booking") {
     try {
-      if (!file) {
-        throw new AppErrors('No file provided');
-      }
+      if (!file) throw new AppErrors("No file provided");
 
-      return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
+      return await new Promise((resolve, reject) => {
+        const upload = cloudinary.uploader.upload_stream(
           {
-            folder: folder,
-            resource_type: 'auto',
-            allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+            folder,
+            resource_type: "auto",
           },
-          (error: any, result: any) => {
-            if (error) {
-              reject(new AppErrors(`Upload failed: ${error.message}`));
-            } else {
-              resolve(result);
+          (err, result) => {
+            if (err) {
+              return reject(new AppErrors(`Upload failed: ${err.message}`));
             }
+            resolve(result);
           }
         );
 
-        // Convert buffer to stream and pipe to Cloudinary
-        const bufferStream = Readable.from(file.buffer);
-        bufferStream.pipe(uploadStream);
+        // Pipe buffer to Cloudinary
+        Readable.from(file.buffer).pipe(upload);
       });
-    } catch (error) {
-      throw new AppErrors(`Image upload error: ${error}`);
+
+    } catch (e: any) {
+      throw new AppErrors(`Image upload failed: ${e.message}`);
     }
   }
+
 
   /**
    * Delete image from Cloudinary by public_id

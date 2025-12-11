@@ -1,7 +1,9 @@
+import multer from "multer";
 import { AppErrors } from "../../errors/app.errors";
 import { DeviceInfo } from "../../models/user/device_info.model";
 import { FCM } from "../../models/user/fcm.model";
 import { User } from "../../models/user/user.model";
+import { CloudinaryService } from "../../utils/cloudinary.helper";
 
 
 export class CommonService {
@@ -74,5 +76,20 @@ export class CommonService {
         } catch (error) {
             throw new AppErrors(error)
         }
+    }
+
+
+    static async uploadMedia(role: string, userId: string, file: Express.Multer.File, folder?: string): Promise<any> {
+        try {
+            const inputFolder = typeof folder === "string" ? folder.trim() : "";
+            const safeFolder = inputFolder.replace(/[^a-zA-Z0-9/_-]/g, "");
+            const folderPath = safeFolder ? `${role}/${userId}/${safeFolder}` : `${role}/${userId}`;
+
+            const uploadResult = await CloudinaryService.uploadImage(file, folderPath);
+            return uploadResult;
+        } catch (e: any) {
+            throw new AppErrors(e)
+        }
+
     }
 }   
