@@ -132,14 +132,14 @@ export class HelperUtils {
                         where: { shop_id: shopProfile.id }
                     });
 
-                    if (!kyc || kyc.is_verified === false) {
+                    if (!kyc) {
                         resolvedRoute = ScreenSteps.ADD_SHOP_KYC_SCREEN;
                     } else {
                         const bank = await ShopBankDetails.findOne({
                             where: { shop_id: shopProfile.id }
                         });
 
-                        if (!bank || bank.is_verified === false) {
+                        if (!bank) {
                             resolvedRoute = ScreenSteps.ADD_BANK_DETAILS_SCREEN;
                         } else {
                             resolvedRoute = ScreenSteps.DASHBOARD_SCREEN;
