@@ -2,6 +2,13 @@
 import bcrypt from "bcrypt";
 import { Barber } from "../models/vendor/barber.mode";
 import { User } from "../models/user/user.model";
+import { ScreenSteps } from "./enum.utils";
+import { Shop } from "../models/vendor/shop.model";
+import { ShopLocation } from "../models/vendor/shop_location";
+import { ShopKycDetail } from "../models/vendor/shop_kyc.model";
+import ShopBankDetails from "../models/vendor/shop_bank_details";
+import { AppErrors } from "../errors/app.errors";
+import { OTP } from "../models/auth/otp.model";
 
 export class HelperUtils {
 
@@ -89,6 +96,66 @@ export class HelperUtils {
                 return label.toUpperCase();
         }
     }
+    static async resolveAndUpdateUserRoute(userId: string): Promise<ScreenSteps> {
+        const user = await User.findByPk(userId);
+        if (!user) throw new AppErrors("User not found");
+
+        let resolvedRoute: ScreenSteps;
+
+        const otp = await OTP.findOne({
+            where: { user_id: userId },
+            order: [['createdAt', 'DESC']],
+        });
+
+        if (!otp) {
+            resolvedRoute = ScreenSteps.INITIAL_SCREEN;
+        }
+        else if (!otp.is_otp_verified) {
+            resolvedRoute = ScreenSteps.OTP_SCREEN;
+        }
+        else {
+            const shopProfile = await Shop.findOne({
+                where: { user_id: userId }
+            });
+
+            if (!shopProfile) {
+                resolvedRoute = ScreenSteps.CREATE_SHOP_PROFILE_SCREEN;
+            } else {
+                const location = await ShopLocation.findOne({
+                    where: { shop_id: shopProfile.id }
+                });
+
+                if (!location) {
+                    resolvedRoute = ScreenSteps.ADD_LOCATION_SCREEN;
+                } else {
+                    const kyc = await ShopKycDetail.findOne({
+                        where: { shop_id: shopProfile.id }
+                    });
+
+                    if (!kyc || kyc.is_verified === false) {
+                        resolvedRoute = ScreenSteps.ADD_SHOP_KYC_SCREEN;
+                    } else {
+                        const bank = await ShopBankDetails.findOne({
+                            where: { shop_id: shopProfile.id }
+                        });
+
+                        if (!bank || bank.is_verified === false) {
+                            resolvedRoute = ScreenSteps.ADD_BANK_DETAILS_SCREEN;
+                        } else {
+                            resolvedRoute = ScreenSteps.DASHBOARD_SCREEN;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (user.route !== resolvedRoute) {
+            await user.update({ route: resolvedRoute });
+        }
+
+        return resolvedRoute;
+    }
+
 
 
 

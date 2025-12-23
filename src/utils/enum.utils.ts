@@ -5,6 +5,16 @@ export enum Roles {
     BARBER = "barber",
 }
 
+export enum ScreenSteps {
+    INITIAL_SCREEN = "login_screen",
+    OTP_SCREEN = "otp_screen",
+    CREATE_SHOP_PROFILE_SCREEN = "create_shop_profile_screen",
+    ADD_LOCATION_SCREEN = "add_shop_location_screen",
+    ADD_SHOP_KYC_SCREEN = "add_shop_kyc_details_screen",
+    ADD_BANK_DETAILS_SCREEN = "add_bank_details_screen",
+    DASHBOARD_SCREEN = "dashboad_screen",
+}
+
 
 export enum Status {
     ACTIVE = "active",

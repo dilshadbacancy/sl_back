@@ -80,7 +80,6 @@ export const ShopLoactionSchema = z.object({
 
 
 export const ShopKycDetailSchema = z.object({
-    id: z.string().uuid().optional(),        // optional if auto-generated
     shop_id: z.string({ error: "Shop ID is required" }),
     user_id: z.string({ error: "User ID is required" }),
     aadhar_number: z.string().nullable().optional(),

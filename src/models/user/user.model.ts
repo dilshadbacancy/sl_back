@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { string } from "zod";
-import { Gender, Roles, Status } from "../../utils/enum.utils";
+import { Gender, Roles, ScreenSteps, Status } from "../../utils/enum.utils";
 import { SequelizeConnection } from "../../config/database.config";
 
 
@@ -11,7 +10,6 @@ interface UserLocationDetails {
     landmark: string;
     latitude: string;
     longitude: string;
-
 }
 
 export class User extends Model {
@@ -24,10 +22,11 @@ export class User extends Model {
     role!: Roles;
     gender!: Gender;
     is_verified!: boolean;
-    is_profile_completed!: boolean;
+    is_onboarding_completed!: boolean;
     created_at!: Date;
     updated_at!: Date;
     status!: Status
+    route!: ScreenSteps;
 
 }
 
@@ -82,7 +81,7 @@ User.init(
             allowNull: false,
             defaultValue: false,
         },
-        is_profile_completed: {
+        is_onboarding_completed: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
@@ -90,6 +89,11 @@ User.init(
         status: {
             type: DataTypes.ENUM(...Object.values(Status)),
             defaultValue: Status.ACTIVE,
+            allowNull: false,
+        },
+        route: {
+            type: DataTypes.ENUM(...Object.values(ScreenSteps)),
+            defaultValue: ScreenSteps.INITIAL_SCREEN,
             allowNull: false,
         }
     },

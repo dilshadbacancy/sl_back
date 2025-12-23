@@ -1,6 +1,6 @@
 import { AppErrors } from "../../errors/app.errors";
 import { User } from "../../models/user/user.model";
-import { Gender, Roles, Status } from "../../utils/enum.utils";
+import { Gender, Roles, ScreenSteps, Status } from "../../utils/enum.utils";
 
 
 export class UserService {
@@ -13,7 +13,7 @@ export class UserService {
                 throw new AppErrors("User not found")
             }
 
-            await user.update({ ...data })
+            await user.update({ ...data, is_onboarding_completed: user.route === ScreenSteps.DASHBOARD_SCREEN })
 
             return user;
         } catch (error) {

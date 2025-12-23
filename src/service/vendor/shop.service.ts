@@ -6,6 +6,7 @@ import Service from "../../models/vendor/service.model";
 import { User } from "../../models/user/user.model";
 import ShopBankDetails from "../../models/vendor/shop_bank_details";
 import { Barber } from "../../models/vendor/barber.mode";
+import { HelperUtils } from "../../utils/helper";
 
 export class ShopServices {
 
@@ -19,11 +20,12 @@ export class ShopServices {
             throw new AppErrors("Shop is already exist with the same shop name")
         }
         shop = await Shop.create(data);
+        const route = await HelperUtils.resolveAndUpdateUserRoute(shop.user_id);
         return {
             shop_id: shop.id,
             user_id: shop.user_id,
             message: "Shop saved successfully",
-            profile_completed: false,
+            route: route,
         }
     }
 
@@ -32,11 +34,12 @@ export class ShopServices {
         try {
 
             const location = await ShopLocation.create(data)
+            const route = await HelperUtils.resolveAndUpdateUserRoute(location.user_id);
             return {
                 shop_id: location.shop_id,
                 user_id: location.user_id,
                 message: "Shop location updated successfuly",
-                profile_completed: false,
+                route: route,
             }
         } catch (e) {
             throw new AppErrors(e);
@@ -46,23 +49,24 @@ export class ShopServices {
 
     static async saveSaloonShopKyc(data: any): Promise<any> {
 
-        const shopId = data.shop_id;
 
         const kyc = await ShopKycDetail.create(data);
+        const route = await HelperUtils.resolveAndUpdateUserRoute(kyc.user_id);
         return {
             shop_id: kyc.shop_id,
             message: "Vendor KYC details updated successfuly",
-            profile_completed: false,
+            route: route,
         }
     }
 
     static async saveSaloonShopBankDetails(data: any): Promise<any> {
 
         const bank = await ShopBankDetails.create(data);
+        const route = await HelperUtils.resolveAndUpdateUserRoute(bank.user_id);
         return {
             bank: bank.shop_id,
             message: "Vendor bank details updated successfuly",
-            profile_completed: true,
+            route: route,
         }
     }
 

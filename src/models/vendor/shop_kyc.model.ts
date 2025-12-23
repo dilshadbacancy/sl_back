@@ -11,6 +11,7 @@ export class ShopKycDetail extends Model {
     aadhar_back!: string | null;
     pan_card!: string | null;
     shop_license!: string | null;
+    is_verified!: boolean;
 }
 
 const sequelize = SequelizeConnection.getInstance();
@@ -56,6 +57,10 @@ ShopKycDetail.init(
         shop_license: {
             type: DataTypes.STRING,
             allowNull: true,
+        },
+        is_verified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
         },
     },
     {

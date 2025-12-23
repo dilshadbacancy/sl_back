@@ -5,7 +5,7 @@ export class OTP extends Model {
     id!: string;
     code!: string;
     mobile!: string;
-    isVerified!: string;
+    is_otp_verified!: boolean;
     user_id!: string;
     expire_at!: Date
     role!: string
@@ -44,8 +44,8 @@ OTP.init(
                 }
             }
         },
-        isVerified: {
-            type: DataTypes.STRING,
+        is_otp_verified: {
+            type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
         },

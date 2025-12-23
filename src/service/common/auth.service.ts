@@ -1,9 +1,12 @@
+import { ota } from "zod/v4/locales";
 import { AppErrors } from "../../errors/app.errors";
 import { TokenPayload } from "../../interfaces/jwt.payload";
 import { blackListToken } from "../../middlewares/auth.middleware";
 import { OTP } from "../../models/auth/otp.model";
 import { RefreshToken } from "../../models/auth/RefreshToken.model";
 import { User } from "../../models/user/user.model";
+import router from "../../routes/common/auth.route";
+import { ScreenSteps } from "../../utils/enum.utils";
 import { HelperUtils } from "../../utils/helper";
 import { JwtUtils } from "../../utils/jwt_utils";
 
@@ -12,80 +15,91 @@ export class AuthService {
     static async sendOtp(mobile: string, role: string): Promise<any> {
         try {
             if (mobile.length !== 10) {
-                throw new AppErrors("Mobile number is not valid, It should be 10 digit");
+                throw new AppErrors("Mobile number must be 10 digits");
             }
+
             let user = await HelperUtils.findUserByPhone(mobile);
+
             if (!user) {
-                user = await User.create({ mobile: mobile, role: role })
+                user = await User.create({
+                    mobile,
+                    role,
+                    is_verified: false,
+                });
             }
-            const otp = HelperUtils.generateOTP();
-            const expireAt = new Date(Date.now() + 5 * 60 * 1000)
-            let otpRecords = await OTP.findOne({ where: { mobile: mobile, user_id: user.id } })
-            if (!otpRecords) {
-                otpRecords = await OTP.create({ code: otp, mobile: mobile, user_id: user.id, expireAt: expireAt });
-            }
-            otpRecords.update({ code: otp, mobile: mobile, expire_at: expireAt });
-            const res = {
-                code: otp,
+
+            const newOtp = HelperUtils.generateOTP();
+            const expireAt = new Date(Date.now() + 5 * 60 * 1000);
+
+            const otp = await OTP.upsert({
                 user_id: user.id,
-                mobile: mobile,
+                mobile,
+                code: newOtp,
+                expire_at: expireAt,
+                is_otp_verified: false,
+            });
+
+            // ✅ get updated route
+            const route = await HelperUtils.resolveAndUpdateUserRoute(user.id);
+            const otpJson = otp[0].toJSON();
+            delete otpJson.id;
+            return {
+                ...otpJson,
+                route, // ✅ correct route
             };
-            return res;
-
-
         } catch (error: any) {
-            throw new AppErrors(error);
+            throw new AppErrors(error.message || "Error sending OTP");
         }
     }
 
-
-    static async verifyOTP(code: string, mobile: string, user_id?: string): Promise<any> {
+    static async verifyOTP(
+        code: string,
+        mobile: string,
+        user_id?: string
+    ): Promise<any> {
         try {
-            const whereClause: any = { code, mobile };
-            if (user_id) whereClause.user_id = user_id;
+            const record = await OTP.findOne({
+                where: { code, mobile, user_id },
+            });
 
-            const record = await OTP.findOne({ where: whereClause });
             if (!record) throw new AppErrors("Invalid OTP or mobile number");
 
-            if (new Date() > record.expire_at)
-                throw new AppErrors("OTP has expired. Please request a new one.");
+            if (new Date() > record.expire_at) {
+                throw new AppErrors("OTP has expired");
+            }
 
-            await record.update({ is_verified: true });
+            await record.update({ is_otp_verified: true });
 
-            const user = await User.findOne({ where: { id: user_id } });
+            const user = await User.findByPk(user_id);
             if (!user) throw new AppErrors("User not found");
-            const isProfileCompleted =
-                !!(user.first_name && user.last_name && user.email);
 
-            await user.update({ is_profile_completeed: isProfileCompleted, is_verified: true });
+            // 🔑 THIS IS WHAT FRONTEND NEEDS
+            await HelperUtils.resolveAndUpdateUserRoute(user.id)
 
-
-
+            // Tokens
             const payload: TokenPayload = user;
-            const token = JwtUtils.generateAccessToken(payload)
-            const refreshtoken = JwtUtils.generateRefreshToken(payload);
+
+            const accessToken = JwtUtils.generateAccessToken(payload);
+            const refreshToken = JwtUtils.generateRefreshToken(payload);
 
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + 7);
-            let refresh = await RefreshToken.findOne({ where: { user_id: user.id } })
-            if (!refresh) {
-                refresh = await RefreshToken.create({
-                    user_id: user.id,
-                    role: user.role,
-                    token: refreshtoken,
-                    expire_at: expiresAt,
-                    is_revoked: false
-                })
-            }
-            await refresh.update({ token: refreshtoken, role: user.role, user_id: user.id, is_revoked: false })
-            const res = {
+
+            await user.update({ is_verified: record.is_otp_verified })
+
+            await RefreshToken.upsert({
+                user_id: user.id,
+                role: user.role,
+                token: refreshToken,
+                expire_at: expiresAt,
+                is_revoked: false,
+            });
+
+            return {
                 user: user.toJSON(),
-                access_token: token,
-                refresh_token: refreshtoken,
-            }
-
-            return res;
-
+                access_token: accessToken,
+                refresh_token: refreshToken
+            };
         } catch (error: any) {
             throw new AppErrors(error.message || "Error verifying OTP");
         }

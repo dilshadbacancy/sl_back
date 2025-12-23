@@ -17,7 +17,7 @@ export const CreateUserDto = z.object(
                 longitude: z.string({ error: "Longitude is required" }),
             }
         ).strict(),
-        is_profile_completed: z.boolean({ error: "this is required" }),
+        is_onboarding_completed: z.boolean({ error: "this is required" }).optional(),
         gender: z.enum(Object.values(Gender), { error: "Gender is required" }),
     }
 ).strict()

@@ -9,6 +9,7 @@ export class ShopBankDetails extends Model {
     account_number!: string | null;
     ifsc_code!: string | null;
     account_holder_name!: string | null;
+    is_verified!: boolean;
 }
 
 const sequelize = SequelizeConnection.getInstance();
@@ -47,6 +48,10 @@ ShopBankDetails.init(
         account_holder_name: {
             type: DataTypes.STRING,
             allowNull: true,
+        },
+        is_verified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
         },
     },
     {
