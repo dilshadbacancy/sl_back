@@ -73,8 +73,7 @@ export class AuthService {
             const user = await User.findByPk(user_id);
             if (!user) throw new AppErrors("User not found");
 
-            // 🔑 THIS IS WHAT FRONTEND NEEDS
-            await HelperUtils.resolveAndUpdateUserRoute(user.id)
+
 
             // Tokens
             const payload: TokenPayload = user;
@@ -94,7 +93,8 @@ export class AuthService {
                 expire_at: expiresAt,
                 is_revoked: false,
             });
-
+            // 🔑 THIS IS WHAT FRONTEND NEEDS
+            await HelperUtils.resolveAndUpdateUserRoute(user.id)
             return {
                 user: user.toJSON(),
                 access_token: accessToken,
