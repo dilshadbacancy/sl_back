@@ -76,21 +76,17 @@ export class ShopServices {
                 where: { user_id: user_id }, include: [
                     {
                         model: User,
-                        as: "shop_user"
+                        as: "shop_user",
                     },
                     {
                         model: ShopLocation,
-                        as: "location"
+                        as: "shop_location"
                     },
                     {
                         model: ShopKycDetail,
                         as: "shop_kyc_details"
                     },
-                    {
-                        model: User,
-                        as: "shop_user",
-                        attributes: { exclude: ["location"] }
-                    },
+
                     {
                         model: ShopBankDetails,
                         as: "shop_bank_details"

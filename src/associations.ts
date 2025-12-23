@@ -82,7 +82,7 @@ Shop.belongsTo(User, {
 
 Shop.hasOne(ShopLocation, {
     foreignKey: "shop_id",
-    as: "location",
+    as: "shop_location",
     onDelete: "CASCADE"
 });
 
