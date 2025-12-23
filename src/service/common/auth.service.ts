@@ -70,6 +70,9 @@ export class AuthService {
 
             await record.update({ is_otp_verified: true });
 
+            // 🔑 THIS IS WHAT FRONTEND NEEDS
+            await HelperUtils.resolveAndUpdateUserRoute(record.user_id)
+
             const user = await User.findByPk(user_id);
             if (!user) throw new AppErrors("User not found");
 
@@ -93,8 +96,6 @@ export class AuthService {
                 expire_at: expiresAt,
                 is_revoked: false,
             });
-            // 🔑 THIS IS WHAT FRONTEND NEEDS
-            await HelperUtils.resolveAndUpdateUserRoute(user.id)
             return {
                 user: user.toJSON(),
                 access_token: accessToken,
