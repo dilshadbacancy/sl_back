@@ -28,7 +28,10 @@ ShopKycDetail.init(
             type: DataTypes.UUID,
             allowNull: false,
         },
-
+        user_id: {
+            type: DataTypes.UUID,
+            allowNull: false,
+        },
         aadhar_number: {
             type: DataTypes.STRING,
             allowNull: true,
