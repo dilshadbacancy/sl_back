@@ -8,6 +8,7 @@ export enum Roles {
 export enum ScreenSteps {
     INITIAL_SCREEN = "login_screen",
     OTP_SCREEN = "otp_screen",
+    USER_PROFILE_SCREEN = "user_profile_screen",
     CREATE_SHOP_PROFILE_SCREEN = "create_shop_profile_screen",
     ADD_LOCATION_SCREEN = "add_shop_location_screen",
     ADD_SHOP_KYC_SCREEN = "add_shop_kyc_details_screen",

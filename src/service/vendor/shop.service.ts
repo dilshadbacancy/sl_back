@@ -25,7 +25,7 @@ export class ShopServices {
             shop_id: shop.id,
             user_id: shop.user_id,
             message: "Shop saved successfully",
-            route: route,
+            route: route.route,
         }
     }
 
@@ -39,7 +39,7 @@ export class ShopServices {
                 shop_id: location.shop_id,
                 user_id: location.user_id,
                 message: "Shop location updated successfuly",
-                route: route,
+                route: route.route,
             }
         } catch (e) {
             throw new AppErrors(e);
@@ -55,7 +55,7 @@ export class ShopServices {
         return {
             shop_id: kyc.shop_id,
             message: "Vendor KYC details updated successfuly",
-            route: route,
+            route: route.route,
         }
     }
 
@@ -66,7 +66,7 @@ export class ShopServices {
         return {
             bank: bank.shop_id,
             message: "Vendor bank details updated successfuly",
-            route: route,
+            route: route.route,
         }
     }
 

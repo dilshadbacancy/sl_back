@@ -45,7 +45,7 @@ export class AuthService {
             delete otpJson.id;
             return {
                 ...otpJson,
-                route, // ✅ correct route
+                route: route.route, // ✅ correct route
             };
         } catch (error: any) {
             throw new AppErrors(error.message || "Error sending OTP");
@@ -71,7 +71,7 @@ export class AuthService {
             await record.update({ is_otp_verified: true });
 
             // 🔑 THIS IS WHAT FRONTEND NEEDS
-            await HelperUtils.resolveAndUpdateUserRoute(record.user_id)
+            const route = await HelperUtils.resolveAndUpdateUserRoute(record.user_id)
 
             const user = await User.findByPk(user_id);
             if (!user) throw new AppErrors("User not found");
@@ -97,7 +97,10 @@ export class AuthService {
                 is_revoked: false,
             });
             return {
-                user: user.toJSON(),
+                user: {
+                    ...user.toJSON(),
+                    shop_id: route.shop_id,
+                },
                 access_token: accessToken,
                 refresh_token: refreshToken
             };

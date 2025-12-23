@@ -96,61 +96,91 @@ export class HelperUtils {
                 return label.toUpperCase();
         }
     }
-    static async resolveAndUpdateUserRoute(userId: string): Promise<ScreenSteps> {
+
+
+
+    static async resolveAndUpdateUserRoute(userId: string): Promise<any> {
         const user = await User.findByPk(userId);
         if (!user) throw new AppErrors("User not found");
 
-        let resolvedRoute: ScreenSteps;
+        let resolvedRoute: any = {};
 
         const otp = await OTP.findOne({
             where: { user_id: userId },
             order: [['createdAt', 'DESC']],
         });
 
+        // 1️⃣ No OTP requested
         if (!otp) {
-            resolvedRoute = ScreenSteps.INITIAL_SCREEN;
+            resolvedRoute.route = ScreenSteps.INITIAL_SCREEN;
         }
+        // 2️⃣ OTP requested but not verified
         else if (!otp.is_otp_verified) {
-            resolvedRoute = ScreenSteps.OTP_SCREEN;
+            resolvedRoute.route = ScreenSteps.OTP_SCREEN;
         }
+        // 3️⃣ OTP verified → start onboarding
         else {
-            const shopProfile = await Shop.findOne({
-                where: { user_id: userId }
-            });
+            // 🔹 NEW STEP: User basic profile check
+            const isUserProfileIncomplete =
+                !user.first_name ||
+                !user.last_name ||
+                !user.email ||
+                !user.gender ||
+                !user.location;
 
-            if (!shopProfile) {
-                resolvedRoute = ScreenSteps.CREATE_SHOP_PROFILE_SCREEN;
+            if (isUserProfileIncomplete) {
+                resolvedRoute.route = ScreenSteps.USER_PROFILE_SCREEN;
             } else {
-                const location = await ShopLocation.findOne({
-                    where: { shop_id: shopProfile.id }
+                // 🔹 Shop profile check
+                const shopProfile = await Shop.findOne({
+                    where: { user_id: userId }
                 });
 
-                if (!location) {
-                    resolvedRoute = ScreenSteps.ADD_LOCATION_SCREEN;
+                if (!shopProfile) {
+                    resolvedRoute.route = ScreenSteps.CREATE_SHOP_PROFILE_SCREEN;
                 } else {
-                    const kyc = await ShopKycDetail.findOne({
+                    const location = await ShopLocation.findOne({
                         where: { shop_id: shopProfile.id }
                     });
 
-                    if (!kyc) {
-                        resolvedRoute = ScreenSteps.ADD_SHOP_KYC_SCREEN;
+                    if (!location) {
+                        resolvedRoute.route = ScreenSteps.ADD_LOCATION_SCREEN;
+                        resolvedRoute.shop_id = shopProfile.id;
                     } else {
-                        const bank = await ShopBankDetails.findOne({
+                        const kyc = await ShopKycDetail.findOne({
                             where: { shop_id: shopProfile.id }
                         });
 
-                        if (!bank) {
-                            resolvedRoute = ScreenSteps.ADD_BANK_DETAILS_SCREEN;
+                        if (!kyc) {
+                            resolvedRoute.route = ScreenSteps.ADD_SHOP_KYC_SCREEN;
+                            resolvedRoute.shop_id = shopProfile.id;
                         } else {
-                            resolvedRoute = ScreenSteps.DASHBOARD_SCREEN;
+                            const bank = await ShopBankDetails.findOne({
+                                where: { shop_id: shopProfile.id }
+                            });
+
+                            if (!bank) {
+                                resolvedRoute.route = ScreenSteps.ADD_BANK_DETAILS_SCREEN;
+                                resolvedRoute.shop_id = shopProfile.id;
+                            } else {
+                                resolvedRoute.route = ScreenSteps.DASHBOARD_SCREEN;
+                                resolvedRoute.shop_id = shopProfile.id;
+                            }
                         }
                     }
                 }
             }
         }
 
-        if (user.route !== resolvedRoute) {
-            await user.update({ route: resolvedRoute });
+        // 🔐 Persist route safely
+        if (user.route !== resolvedRoute.route) {
+            const isOnboardingCompleted =
+                resolvedRoute.route === ScreenSteps.DASHBOARD_SCREEN;
+
+            await user.update({
+                route: resolvedRoute.route,
+                is_onboarding_completed: isOnboardingCompleted,
+            });
         }
 
         return resolvedRoute;
