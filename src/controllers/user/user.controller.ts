@@ -6,19 +6,25 @@ import { UpdateStatusDto } from "../../schema/user/soft_delete.dto";
 import { UserService } from "../../service/user/user.service";
 import { CreateUserDto } from "../../schema/user/user.dto";
 export class UserController {
+
     static async saveUserProfile(req: AuthRequest, res: Response): Promise<void> {
-        const body = req.body;
-        const user_id = body.user_id || req.user?.id;
+        try {
+            const body = req.body;
+            const user_id = body.user_id || req.user?.id;
 
+            const parsed = CreateUserDto.safeParse(req.body);
+            if (!parsed.success) {
+                ApiResponse.error(parsed.error);
+            }
 
-        const parsed = CreateUserDto.safeParse(req.body)
-        if (!parsed.success) {
-            ApiResponse.error(parsed.error);
+            const user = await UserService.saveUserProfile(parsed.data, user_id!);
+
+            ApiResponse.success("User saved successfully", user);
+        } catch (error) {
+            ApiResponse.error(error);
         }
-        await UserService.saveUserProfile(parsed.data, user_id!)
-            .then((value) => ApiResponse.success("User saved successfully", value))
-            .then((error) => ApiResponse.error(error))
     }
+
 
 
     static async updateUserProfile(req: AuthRequest, res: Response): Promise<void> {
