@@ -32,6 +32,11 @@ ShopLocation.init(
             allowNull: false,
         },
 
+        user_id: {
+            type: DataTypes.UUID,
+            allowNull: false,
+        },
+
         address_line1: {
             type: DataTypes.STRING(255),
             allowNull: false,
