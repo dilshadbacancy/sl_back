@@ -27,7 +27,7 @@ export const CreateSaloonShopSchema = z.object(
         shop_close_time: z.string().nullable().optional(),  // "21:00" or "9PM"
 
         weekly_holiday: z.string().nullable().optional(),   // "Sunday" etc.
-        services: z.array(z.string()).nonempty("At least one service is required"),
+        services: z.array(z.string()).optional().nullable(),
 
     }
 ).strict()

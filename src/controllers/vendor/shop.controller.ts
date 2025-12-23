@@ -15,7 +15,7 @@ export class ShopController {
             ApiResponse.error(parsed.error);
         }
         await ShopServices.saveSaloonShop(parsed.data)
-            .then((value) => ApiResponse.success(value))
+            .then((value) => ApiResponse.success("Shop details saved successfully", value))
             .catch((e) => ApiResponse.error(e));
     }
 
