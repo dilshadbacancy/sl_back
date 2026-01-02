@@ -16,14 +16,17 @@ export class CustomerServies {
     static async fetchNearByShops(data: any): Promise<any> {
         const { latitude, longitude, radius = 5 } = data;
 
+        // PostgreSQL-compatible haversine distance calculation
         const distance = `
         ROUND(
             (6371 * acos(
-                cos(radians(${latitude})) *
-                cos(radians(location.latitude)) *
-                cos(radians(location.longitude) - radians(${longitude})) +
-                sin(radians(${latitude})) *
-                sin(radians(location.latitude))
+                LEAST(1.0, 
+                    cos(radians(${latitude})) *
+                    cos(radians(location.latitude)) *
+                    cos(radians(location.longitude) - radians(${longitude})) +
+                    sin(radians(${latitude})) *
+                    sin(radians(location.latitude))
+                )
             ))
         , 3)
     `;

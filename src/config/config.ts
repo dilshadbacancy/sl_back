@@ -13,6 +13,7 @@ export interface DBConfig {
     user: string;
     password: string;
     name: string;
+    port?: number;
 }
 
 export interface AppConfig {
@@ -31,9 +32,10 @@ export interface Config {
 const config: Config = {
     database: {
         host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "root",
+        user: process.env.DB_USER || "postgres",
         password: process.env.DB_PASSWORD || "",
-        name: process.env.DB_NAME || "trimly"
+        name: process.env.DB_NAME || "trimly",
+        port: parseInt(process.env.DB_PORT || "5432", 10)
     },
     app: {
         port: parseInt(process.env.PORT || "5000", 10),

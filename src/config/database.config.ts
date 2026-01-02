@@ -15,7 +15,8 @@ export class SequelizeConnection {
                 config.database.password,
                 {
                     host: config.database.host,
-                    dialect: "mysql",
+                    port: config.database.port || 5432,
+                    dialect: "postgres",
                     logging: console.log,
                     pool: {
                         max: 5,

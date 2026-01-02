@@ -12,7 +12,7 @@ async function migrate() {
     console.log('Starting migration: Make shops.updatedAt NOT NULL...');
 
     await sequelize.query(`
-      ALTER TABLE \`shops\` CHANGE \`updatedAt\` \`updatedAt\` DATETIME NOT NULL;
+      ALTER TABLE "shops" ALTER COLUMN "updatedAt" SET NOT NULL;
     `);
 
     console.log('✅ Migration completed successfully!');

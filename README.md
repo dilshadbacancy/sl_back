@@ -25,7 +25,7 @@ Complete Node.js API for a salon/barber shop booking system with PM2 production 
 
 ### Prerequisites
 - Node.js (v14+)
-- MySQL (v8+)
+- PostgreSQL (v12+)
 - PM2 (for production)
 - Firebase account for FCM (optional)
 
@@ -337,15 +337,16 @@ ecosystem.config.js     # PM2 configuration
 ## 🗄️ Database Setup
 
 ```bash
-# Create database
-mysql -u root -p
+# Create database (PostgreSQL)
+psql -U postgres
 CREATE DATABASE trimly;
 
 # Update .env with database credentials
 # DB_HOST=localhost
-# DB_USER=root
+# DB_USER=postgres
 # DB_PASSWORD=your_password
 # DB_NAME=trimly
+# DB_PORT=5432
 ```
 
 The application uses Sequelize ORM with `sync({ alter: true })` which automatically creates/updates tables based on models.
@@ -357,11 +358,12 @@ The application uses Sequelize ORM with `sync({ alter: true })` which automatica
 Create a `.env` file in the root directory:
 
 ```bash
-# Database
+# Database (PostgreSQL)
 DB_HOST=localhost
-DB_USER=root
+DB_USER=postgres
 DB_PASSWORD=your_password
 DB_NAME=trimly
+DB_PORT=5432
 
 # Server
 PORT=3036
@@ -513,8 +515,8 @@ lsof -i :3036
 ### Database Connection Error
 
 ```bash
-# Check MySQL is running
-mysql -u root -p
+# Check PostgreSQL is running
+psql -U postgres -d trimly
 
 # Verify .env file has correct credentials
 cat .env | grep DB_
