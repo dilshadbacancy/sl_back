@@ -1,5 +1,5 @@
 import Router from "express";
-import { barberAuthMiddleware } from "../../middlewares/barbar.auth.middleware";
+import { barberAuthMiddleware } from "../../middlewares/barber.auth.middleware";
 import { BarberController } from "../../controllers/vendor/barber.controller";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 
@@ -15,10 +15,10 @@ router.get("/barbers-appointments", barberAuthMiddleware, BarberController.getAl
 
 router.use(authMiddleware)
 router.post("/create-barber", BarberController.createBarber);
-router.post("/update-barber", BarberController.updateBarber);
+router.put("/update-barber", BarberController.updateBarber);
 
 router.get("/barbers/:id", BarberController.getAllBarbersOfShop)
-router.post("/availability", BarberController.toggelBarberAvailability);
+router.put("/availability", BarberController.toggelBarberAvailability);
 
 
 

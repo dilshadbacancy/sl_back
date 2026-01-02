@@ -9,17 +9,18 @@ import { AppErrors } from "../../errors/app.errors";
 export class CommonController {
 
     static async saveDeviceInfo(req: AuthRequest, res: Response): Promise<void> {
-
         const body = req.body;
         const user_id = req.user?.id || body.user_id;
         await CommonService.saveDeviceInfo(body, user_id)
             .then((val) => ApiResponse.success("Device updated successfully", val))
             .catch((e) => ApiResponse.error(e))
-
     }
 
     static async getDeviceInfo(req: AuthRequest, res: Response): Promise<void> {
         const userId = req.user?.id || "";
+        if (!userId) {
+            return ApiResponse.error("User ID is required", 400);
+        }
         await CommonService.getDeviceInfo(userId)
             .then((val) => ApiResponse.success("Device information fetched", val))
             .catch((e) => ApiResponse.error(e))

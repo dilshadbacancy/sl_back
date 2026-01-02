@@ -69,7 +69,7 @@ User.init(
         role: {
             type: DataTypes.ENUM(...Object.values(Roles)),
             allowNull: true,
-            defaultValue: Roles.USER,
+            defaultValue: Roles.CUSTOMER,
 
         },
         gender: {

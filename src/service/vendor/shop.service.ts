@@ -5,7 +5,7 @@ import { ShopKycDetail } from "../../models/vendor/shop_kyc.model";
 import Service from "../../models/vendor/service.model";
 import { User } from "../../models/user/user.model";
 import ShopBankDetails from "../../models/vendor/shop_bank_details";
-import { Barber } from "../../models/vendor/barber.mode";
+import { Barber } from "../../models/vendor/barber.model";
 import { HelperUtils } from "../../utils/helper";
 
 export class ShopServices {
@@ -182,6 +182,39 @@ export class ShopServices {
         return await Service.findAll();
     }
 
+    // Shop Services Management (previously in saloon)
+    static async updateServiceOfShop(data: any): Promise<any> {
+        const serviceId = data.id;
+        const service = await Service.findByPk(serviceId);
 
+        if (!service) {
+            throw new AppErrors("Service does not exist for the reference id");
+        }
 
+        await service.update({ ...data });
+        return service;
+    }
+
+    static async addServicesToShop(shopId: string, ids: string[]): Promise<any> {
+        const shops = await Shop.findByPk(shopId);
+        if (!shops) {
+            throw new AppErrors("Shop not found");
+        }
+
+        const existingServices: string[] = shops.services || [];
+        const newServices = ids.filter((id) => !existingServices.includes(id));
+
+        if (newServices.length == 0) {
+            throw new AppErrors("You already have these services");
+        }
+
+        const updatedService = [...existingServices, ...newServices];
+        await shops.update({ services: updatedService });
+
+        return {
+            message: "Service added to your shops.",
+            services: newServices,
+            all_service: updatedService,
+        };
+    }
 }

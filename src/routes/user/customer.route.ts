@@ -9,10 +9,10 @@ router.get("/near-by-shops", CustomerController.fetchNearByShops)
 
 router.post("/book-appointment", CustomerController.bookAppointment);
 
-router.post("/assign-appointments", CustomerController.assignAppointments);
+router.put("/assign-appointments", CustomerController.assignAppointments);
 
 router.get("/appointments", CustomerController.getAllAppoitments)
-router.post("/change-appointment-status", CustomerController.changeAppointmentStatus);
+router.put("/change-appointment-status", CustomerController.changeAppointmentStatus);
 
 router.get("/payment-modes", CustomerController.getPaymentsModes);
 router.get("/appointment-statuses", CustomerController.getAppointmentsStatus);

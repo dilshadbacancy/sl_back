@@ -1,94 +1,6 @@
-# 📚 Salon Booking API
+# 📚 Trimly API - Salon Booking System
 
-Complete Node.js API for a salon/barber shop booking system with flowcharts, documentation, and integration guides.
-
----
-
-## 🎯 Quick Navigation
-
-| Role | Start Here |
-|------|----## 📊 API Statistics
-
-| Metric | Value |
-|--------|-------|
-| **Total Endpoints** | 40 |
-| **Common Routes** | 8 |
-| **User Routes** | 18 |
-| **Vendor Routes** | 14 |
-| **HTTP Methods** | GET + POST |
-| **Last Updated** | Auto-generated ||-------|
-| **Total Endpoints** | 40 |
-| **Common Routes** | 8 |
-| **User Routes** | 18 |
-| **Vendor Routes** | 14 |
-| **HTTP Methods** | GET + POST |
-| **Last Updated** | Auto-generated ||-------|
-| **Total Endpoints** | 40 |
-| **Common Routes** | 8 |
-| **User Routes** | 18 |
-| **Vendor Routes** | 14 |
-| **HTTP Methods** | GET + POST |
-| **Last Updated** | Auto-generated ||-------|
-| **Total Endpoints** | 40 |
-| **Common Routes** | 8 |
-| **User Routes** | 18 |
-| **Vendor Routes** | 14 |
-| **HTTP Methods** | GET + POST |
-| **Last Updated** | Auto-generated ||-------|
----
-
-## 📂 Documentation Structure
-
-Complete documentation in `/documentation/`:
-
-- **[01-API-Reference](./documentation/01-API-Reference/)** - All 41 endpoints with examples
-- **[02-Routes-Guide](./documentation/02-Routes-Guide/)** - Detailed route breakdown  
-- **[03-Flowcharts](./documentation/03-Flowcharts/)** - Visual diagrams & flowchart guides
-- **[04-Integration-Examples](./documentation/04-Integration-Examples/)** - Real code examples
-- **[05-Data-Models](./documentation/05-Data-Models/)** - Database schemas & relationships
-- **[06-Best-Practices](./documentation/06-Best-Practices/)** - Security & performance guidelines
-
----
-
-## 🚀 Project Overview
-
-### What It Does
-
-Salon booking API that connects customers with barber shops for appointments:
-- ✅ User authentication with OTP
-- ✅ Shop location discovery (nearby shops by GPS)
-- ✅ Appointment booking & tracking
-- ✅ Smart barber assignment
-- ✅ Payment processing (Cash/Online)
-- ✅ Push notifications (FCM)
-- ✅ Shop management & KYC verification
-
-### Key Features
-
-```
-📱 Customer Features
-├─ Browse nearby shops
-├─ Book appointments
-├─ Track appointment status
-├─ Manage profile
-├─ Add devices & FCM tokens
-└─ Receive notifications
-
-🏪 Shop Owner Features
-├─ Manage shop profile
-├─ Add barber staff
-├─ Create services
-├─ View appointments
-├─ Update availability
-└─ Complete KYC verification
-
-💇 Barber Features
-├─ Manage availability
-├─ View assigned appointments
-├─ Update appointment status
-├─ Track attendance
-└─ Receive notifications
-```
+Complete Node.js API for a salon/barber shop booking system with PM2 production setup, comprehensive documentation, and integration guides.
 
 ---
 
@@ -96,64 +8,26 @@ Salon booking API that connects customers with barber shops for appointments:
 
 | Metric | Value |
 |--------|-------|
-| **Total Endpoints** | 40 |
-| **Common Routes** | 8 |
-| **User Routes** | 18 |
-| **Vendor Routes** | 14 |
-| **HTTP Methods** | GET + POST |
+| **Total Endpoints** | 42 |
+| **Authentication Routes** | 4 |
+| **User Routes** | 9 |
+| **Customer Routes** | 7 |
+| **Vendor/Shop Routes** | 9 |
+| **Barber Routes** | 7 |
+| **Common Routes** | 5 |
+| **Health Check** | 1 |
+| **HTTP Methods** | GET, POST, PUT |
 | **Last Updated** | Auto-generated |
 
 ---
 
-## 💻 Tech Stack
-
-```
-Backend
-├─ Node.js + Express.js - REST API server
-├─ Sequelize - ORM for database
-├─ JWT - Authentication tokens
-├─ Zod - Input validation
-├─ Firebase FCM - Push notifications
-└─ MySQL - Database
-
-Security
-├─ Bcrypt - Password hashing
-├─ CORS - Cross-origin requests
-├─ Rate Limiting - Request throttling
-└─ Helmet - HTTP headers security
-```
-
----
-
-## 🤖 Automated Documentation
-
-Documentation auto-generates when you commit route changes!
-
-**Setup (2 minutes):**
-```bash
-bash documentation/setup-auto-docs.sh
-```
-
-**Then just commit normally** - docs update automatically:
-```bash
-git add .
-git commit -m "Add new route"
-# → Hook detects changes → npm run generate-docs → Docs updated
-```
-
-📖 **Setup Guides in `/documentation/`:**
-- `DOCUMENTATION_AUTOMATION.md` - Overview & how it works
-- `AUTOMATED_DOCS_SETUP.md` - Complete setup guide
-- `SETUP_DOCS.txt` - Quick reference
-
----
-
-
+## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js (v14+)
 - MySQL (v8+)
-- Firebase account for FCM
+- PM2 (for production)
+- Firebase account for FCM (optional)
 
 ### Installation
 
@@ -165,387 +39,499 @@ cd sl_back
 # Install dependencies
 npm install
 
+# Install PM2 globally (if not installed)
+npm install -g pm2
+
 # Setup environment
 cp .env.example .env
 
-# Configure .env
-# DATABASE_URL=mysql://user:password@localhost:3306/salon_db
+# Configure .env file
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASSWORD=your_password
+# DB_NAME=trimly
+# PORT=3036
 # JWT_SECRET=your_secret_key
-# FIREBASE_API_KEY=your_firebase_key
 # NODE_ENV=development
 ```
 
-### Database Setup
+### Build Project
 
 ```bash
-# Create database
-mysql -u root -p < schema.sql
-
-# Run migrations (if using Sequelize migrations)
-npm run migrate
-
-# Seed initial data (optional)
-npm run seed
+# Build TypeScript to JavaScript
+npm run build
 ```
-
-### Start Server
-
-```bash
-# Development
-npm run dev
-
-# Production
-npm start
-```
-
-Server runs on `http://localhost:3000`
 
 ---
 
-## 📚 Documentation
+## 🎯 PM2 Production Setup
 
-**Complete documentation available in `/documentation/` folder**
+### Initial Setup
 
-### Getting Started
-1. **[QUICK_START.md](./documentation/QUICK_START.md)** - 5-minute overview
-2. **[API_DOCUMENTATION.md](./documentation/01-API-Reference/API_DOCUMENTATION.md)** - All endpoints
-3. **[Integration Examples](./documentation/04-Integration-Examples/)** - Code samples
+```bash
+# 1. Build the project first
+npm run build
 
-### For Different Roles
+# 2. Start PM2 with development environment
+npm run pm2:start
 
-**Frontend Developer?**
-→ Read [API_DOCUMENTATION.md](./documentation/01-API-Reference/API_DOCUMENTATION.md) + [INTEGRATION_GUIDE.md](./documentation/04-Integration-Examples/INTEGRATION_GUIDE.md)
+# 3. Start PM2 with production environment
+npm run pm2:start:prod
 
-**Backend Developer?**
-→ Read [COMPLETE_ROUTES_DOCUMENTATION.md](./documentation/02-Routes-Guide/COMPLETE_ROUTES_DOCUMENTATION.md) + [DATA_MODELS.md](./documentation/05-Data-Models/DATA_MODELS.md)
+# 4. Save PM2 process list (so it persists after reboot)
+npm run pm2:save
 
-**QA Engineer?**
-→ Read [TABLE_OF_CONTENTS.md](./documentation/TABLE_OF_CONTENTS.md) + [BEST_PRACTICES.md](./documentation/06-Best-Practices/BEST_PRACTICES.md)
+# 5. Setup PM2 to start on system boot
+npm run pm2:startup
+# Follow the instructions shown in terminal
+```
+
+### PM2 Commands
+
+```bash
+# Start application
+npm run pm2:start              # Development mode
+npm run pm2:start:prod         # Production mode
+
+# Stop application
+npm run pm2:stop
+
+# Restart application
+npm run pm2:restart
+
+# Delete application from PM2
+npm run pm2:delete
+
+# View logs
+npm run pm2:logs
+
+# Monitor application (CPU, Memory)
+npm run pm2:monit
+
+# Check status
+npm run pm2:status
+
+# Save current process list
+npm run pm2:save
+```
+
+### PM2 Advanced Usage
+
+```bash
+# View detailed logs
+pm2 logs trimly-api --lines 100
+
+# Restart with zero downtime
+pm2 reload trimly-api
+
+# Stop all PM2 processes
+pm2 stop all
+
+# Delete all PM2 processes
+pm2 delete all
+
+# View PM2 dashboard
+pm2 plus
+
+# Clear logs
+pm2 flush
+```
+
+### PM2 Configuration
+
+The PM2 configuration is in `ecosystem.config.js`:
+
+- **App Name**: `trimly-api`
+- **Script**: `dist/server.js` (compiled from TypeScript)
+- **Instances**: `max` (uses all CPU cores)
+- **Mode**: `cluster` (load balancing)
+- **Memory Limit**: 500MB per instance
+- **Auto Restart**: Enabled
+- **Logs**: Stored in `./logs/` directory
+
+---
+
+## 🏃 Development
+
+```bash
+# Development mode (with auto-reload)
+npm run dev
+
+# Server runs on http://localhost:3036
+```
+
+---
+
+## 📡 API Endpoints
+
+### Base URL
+```
+Development: http://localhost:3036
+Production: https://your-domain.com
+```
+
+### Authentication Routes (`/auth`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| POST | `/auth/send-otp` | Send OTP to mobile number | No |
+| POST | `/auth/verify-otp` | Verify OTP and get tokens | No |
+| POST | `/auth/logout` | Logout user and blacklist token | Yes |
+| POST | `/auth/new-access-token` | Generate new access token | No |
+
+### User Routes (`/users`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| POST | `/users/save-profile` | Save user profile information | Yes |
+| PUT | `/users/update-profile` | Update user profile information | Yes |
+| PUT | `/users/update-location` | Update user location | Yes |
+| GET | `/users/user-profile` | Get current user profile | Yes |
+| PUT | `/users/update-status` | Update user status | Yes |
+| GET | `/users/get-status` | Get all available user statuses | Yes |
+| GET | `/users/get-genders` | Get all available genders | Yes |
+| GET | `/users/roles` | Get all available roles | Yes |
+| GET | `/users/check-profile` | Check if user profile is completed | Yes |
+
+### Customer Routes (`/customer`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| GET | `/customer/near-by-shops` | Get nearby shops based on location | No |
+| POST | `/customer/book-appointment` | Book a new appointment | Yes |
+| PUT | `/customer/assign-appointments` | Assign appointments to barbers | Yes |
+| GET | `/customer/appointments` | Get all customer appointments | Yes |
+| PUT | `/customer/change-appointment-status` | Change appointment status | Yes |
+| GET | `/customer/payment-modes` | Get all available payment modes | Yes |
+| GET | `/customer/appointment-statuses` | Get all available appointment statuses | Yes |
+
+### Vendor/Shop Routes (`/vendor`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| POST | `/vendor/save-shop-details` | Save shop details | Yes |
+| POST | `/vendor/save-shop-location` | Save shop location | Yes |
+| POST | `/vendor/save-shop-kyc` | Save shop KYC details | Yes |
+| POST | `/vendor/save-shop-bank` | Save shop bank details | Yes |
+| GET | `/vendor/get-shop-profile` | Get shop profile | Yes |
+| POST | `/vendor/create-service` | Create a new service | Yes |
+| GET | `/vendor/services` | Get all services | Yes |
+| PUT | `/vendor/add-services` | Add services to shop | Yes |
+| PUT | `/vendor/update-service` | Update service details | Yes |
+
+### Barber Routes (`/barber`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| POST | `/barber/login` | Login barber with username and PIN | No |
+| GET | `/barber/barber-profile` | Get barber profile | Yes (Barber) |
+| GET | `/barber/barbers-appointments` | Get all barber appointments | Yes (Barber) |
+| POST | `/barber/create-barber` | Create a new barber | Yes |
+| PUT | `/barber/update-barber` | Update barber details | Yes |
+| GET | `/barber/barbers/:id` | Get all barbers of a shop | Yes |
+| PUT | `/barber/availability` | Toggle barber availability | Yes |
+
+### Common Routes (`/common`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| PUT | `/common/update-device-info` | Update device information | Yes |
+| GET | `/common/device-info` | Get device information | Yes |
+| POST | `/common/save-token` | Save FCM token for push notifications | Yes |
+| GET | `/common/fcm-token` | Get FCM token | Yes |
+| POST | `/common/upload-media` | Upload media file | Yes |
+
+### Health Check
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------------|
+| GET | `/api` | Check if server is running | No |
 
 ---
 
 ## 🔐 Authentication
 
-All endpoints require authentication except public routes.
-
-### Types of Auth
-
-1. **Public** - No authentication needed
-2. **Bearer Token** - `Authorization: Bearer <token>`
-3. **Barber Auth** - Special barber token
-4. **Admin Auth** - Admin privileges
-
 ### Authentication Flow
 
 ```
 1. User calls:    POST /auth/send-otp
-2. User enters:   OTP from SMS
+   Body: { mobile: "9876543210", role: "customer" }
+
+2. User receives: OTP via SMS
+
 3. User calls:    POST /auth/verify-otp
-4. Receive:       access_token (1 hour) & refresh_token (7 days)
+   Body: { code: "123456", mobile: "9876543210" }
+
+4. Response:      { access_token, refresh_token }
+
 5. Use token:     Authorization: Bearer <access_token>
+
 6. When expired:  POST /auth/new-access-token
+   Body: { refresh_token: "..." }
+```
+
+### Authentication Types
+
+1. **Public Routes** - No authentication needed
+   - `/auth/send-otp`
+   - `/auth/verify-otp`
+   - `/auth/new-access-token`
+   - `/customer/near-by-shops`
+   - `/api` (health check)
+
+2. **Bearer Token Auth** - Standard user authentication
+   - Most routes require `Authorization: Bearer <access_token>` header
+
+3. **Barber Auth** - Special barber authentication
+   - `/barber/barber-profile`
+   - `/barber/barbers-appointments`
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├── config/              # Configuration files
+│   ├── config.ts        # App configuration
+│   ├── database.config.ts
+│   └── logger.ts
+├── controllers/         # Request handlers
+│   ├── common/
+│   ├── user/
+│   └── vendor/
+├── models/             # Database models
+│   ├── user/
+│   ├── vendor/
+│   └── auth/
+├── routes/             # API routes
+│   ├── common/
+│   ├── user/
+│   └── vendor/
+├── services/           # Business logic
+│   ├── common/
+│   ├── user/
+│   └── vendor/
+├── middlewares/        # Custom middlewares
+│   ├── auth.middleware.ts
+│   └── barber.auth.middleware.ts
+├── utils/              # Helper functions
+│   ├── apiResponse.ts
+│   └── jwt_utils.ts
+├── errors/             # Error classes
+├── interfaces/         # TypeScript interfaces
+├── schema/             # Validation schemas
+├── app.ts              # Express app setup
+└── server.ts           # Server entry point
+
+scripts/
+├── generate-docs.js
+├── generate-postman-collection.js
+└── push-to-postman.js
+
+ecosystem.config.js     # PM2 configuration
 ```
 
 ---
 
-## 📡 API Endpoints Overview
-
-### Authentication (4 routes)
-```
-POST   /auth/send-otp              - Send OTP to mobile
-POST   /auth/verify-otp            - Verify OTP & get tokens
-POST   /auth/logout                - Logout user
-POST   /auth/new-access-token      - Refresh access token
-```
-
-### Customer (5 routes)
-```
-GET    /customer/near-by-shops     - Find nearby shops
-POST   /customer/book-appointment  - Book appointment
-POST   /customer/assign-appointments - Assign to barber
-GET    /customer/get-appointment   - Get appointment details
-POST   /customer/change-appointment-status - Update status
-```
-
-### Barber (7 routes)
-```
-POST   /barber/login               - Barber login
-GET    /barber/profile             - Get profile
-GET    /barber/my-appointments     - View appointments
-POST   /barber/create-barber       - Create new barber
-PUT    /barber/update-barber       - Update profile
-GET    /barber/list-barbers        - List all barbers
-PUT    /barber/set-availability    - Update availability
-```
-
-### Shop (7 routes)
-```
-POST   /shop/save-shop-details     - Save shop info
-POST   /shop/save-shop-location    - Add location
-POST   /shop/save-shop-kyc         - Upload KYC docs
-POST   /shop/save-shop-bank        - Add bank details
-GET    /shop/get-shop-profile      - Get profile
-POST   /shop/create-service        - Add service
-GET    /shop/services              - List services
-```
-
-### User (9 routes)
-```
-POST   /user/save-profile          - Update profile
-PUT    /user/update-profile        - Modify profile
-POST   /user/update-location       - Update location
-POST   /user/update-status         - Update status
-POST   /user/check-profile-completion - Check status
-GET    /user/get-profile-status    - Get status
-GET    /user/genders               - Get gender list
-GET    /user/roles                 - Get roles list
-GET    /user/get-user              - Get user details
-```
-
-### Common (4 routes)
-```
-POST   /common/device-info         - Save device info
-GET    /common/device-info         - Get device info
-POST   /common/fcm-token           - Register FCM token
-GET    /common/fcm-token           - Get FCM tokens
-```
-
----
-
-## 🔄 Appointment Status Flow
-
-```
-Pending → Accepted → InProgress → Completed
-    ↓
-  (Can cancel before InProgress)
-```
-
----
-
-## 📱 Push Notifications
-
-Firebase Cloud Messaging for real-time notifications:
-
-```
-Notification Types:
-├─ appointment_accepted
-├─ appointment_started
-├─ appointment_completed
-├─ appointment_cancelled
-├─ new_appointment
-└─ status_updated
-```
-
----
-
-## 🗄️ Database Models
-
-14 models covering:
-- Users (with soft delete)
-- Shops (with KYC & bank details)
-- Barbers (with attendance)
-- Appointments (with status tracking)
-- Services (per shop)
-- OTP & Tokens
-- Device & FCM info
-
-📄 [Full schema details](./documentation/05-Data-Models/DATA_MODELS.md)
-
----
-
-## 🧪 Testing
+## 🗄️ Database Setup
 
 ```bash
-# Run tests
-npm test
+# Create database
+mysql -u root -p
+CREATE DATABASE trimly;
 
-# Test with coverage
-npm run test:coverage
-
-# Test specific file
-npm test -- path/to/test.js
+# Update .env with database credentials
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASSWORD=your_password
+# DB_NAME=trimly
 ```
 
----
-
-## 📈 Performance
-
-**Optimized with:**
-- ✅ Database indexes
-- ✅ Query optimization
-- ✅ Redis caching
-- ✅ Request pagination
-- ✅ Gzip compression
-- ✅ Connection pooling
-
-**Benchmarks:**
-- Average response: <100ms
-- Peak load: 1000+ req/sec
-- Database queries: Optimized with N+1 prevention
-
----
-
-## 🔒 Security Features
-
-```
-✅ JWT authentication
-✅ Password hashing (bcrypt)
-✅ OTP-based auth
-✅ Rate limiting
-✅ CORS protection
-✅ Input validation (Zod)
-✅ SQL injection prevention
-✅ XSS protection
-✅ Secure headers (Helmet)
-✅ Soft deletes (GDPR compliance)
-```
+The application uses Sequelize ORM with `sync({ alter: true })` which automatically creates/updates tables based on models.
 
 ---
 
 ## 📝 Environment Variables
 
+Create a `.env` file in the root directory:
+
 ```bash
 # Database
-DATABASE_URL=mysql://user:password@localhost:3306/salon_db
 DB_HOST=localhost
-DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=password
-DB_NAME=salon_db
-
-# Authentication
-JWT_SECRET=your_super_secret_jwt_key
-JWT_EXPIRE=1h
-REFRESH_TOKEN_EXPIRE=7d
-
-# Firebase
-FIREBASE_API_KEY=your_firebase_key
-FIREBASE_DATABASE_URL=your_firebase_url
+DB_PASSWORD=your_password
+DB_NAME=trimly
 
 # Server
+PORT=3036
 NODE_ENV=development
-PORT=3000
-LOG_LEVEL=info
 
-# CORS
-CORS_ORIGIN=http://localhost:3000,https://app.example.com
+# JWT
+JWT_SECRET=your_super_secret_jwt_key
+JWT_REFRESH_TOKEN=your_refresh_token_secret
 
-# Email/SMS
-TWILIO_ACCOUNT_SID=your_twilio_sid
-TWILIO_AUTH_TOKEN=your_twilio_token
+# Logging
+LOG_LEVEL=debug
 ```
 
 ---
 
-## 🚀 Deployment
+## 🚀 Production Deployment
 
-### Staging
+### Step 1: Build the Project
+
 ```bash
 npm run build
-npm run start:staging
 ```
 
-### Production
+### Step 2: Start with PM2
+
 ```bash
-npm run build
-npm run start:production
+# Start in production mode
+npm run pm2:start:prod
+
+# Save PM2 process list
+npm run pm2:save
+
+# Setup PM2 to start on system boot
+npm run pm2:startup
+# Follow the instructions shown
+```
+
+### Step 3: Verify
+
+```bash
+# Check status
+npm run pm2:status
+
+# View logs
+npm run pm2:logs
+
+# Monitor
+npm run pm2:monit
+```
+
+### Step 4: Nginx Configuration (Optional)
+
+If using Nginx as reverse proxy:
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:3036;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
 ```
 
 ---
 
-## 📊 Project Structure
+## 📚 Documentation
 
-```
-src/
-├── config/              # Configuration files
-├── controllers/         # Request handlers
-├── models/             # Database models
-├── routes/             # API routes
-├── services/           # Business logic
-├── middlewares/        # Custom middlewares
-├── utils/              # Helper functions
-├── errors/             # Error classes
-├── interfaces/         # TypeScript interfaces
-└── schema/             # Validation schemas
+Complete documentation available in `/documentation/` folder:
 
-documentation/         # Complete API documentation
-├── 01-API-Reference/   # All endpoints
-├── 02-Routes-Guide/    # Detailed routes
-├── 03-Flowcharts/      # Visual diagrams
-├── 04-Integration-Examples/  # Code examples
-├── 05-Data-Models/     # Database schemas
-└── 06-Best-Practices/  # Guidelines
+- **[01-API-Reference](./documentation/01-API-Reference/)** - All endpoints with examples
+- **[02-Routes-Guide](./documentation/02-Routes-Guide/)** - Detailed route breakdown  
+- **[03-Flowcharts](./documentation/03-Flowcharts/)** - Visual diagrams & flowchart guides
+- **[04-Integration-Examples](./documentation/04-Integration-Examples/)** - Real code examples
+- **[05-Data-Models](./documentation/05-Data-Models/)** - Database schemas & relationships
+- **[06-Best-Practices](./documentation/06-Best-Practices/)** - Security & performance guidelines
+
+---
+
+## 🛠️ Available Scripts
+
+```bash
+# Development
+npm run dev              # Start development server with nodemon
+
+# Build
+npm run build            # Compile TypeScript to JavaScript
+
+# Production
+npm start                # Start compiled server
+npm run pm2:start        # Start with PM2 (development)
+npm run pm2:start:prod   # Start with PM2 (production)
+
+# PM2 Management
+npm run pm2:stop         # Stop PM2 process
+npm run pm2:restart      # Restart PM2 process
+npm run pm2:logs         # View PM2 logs
+npm run pm2:monit        # Monitor PM2 processes
+npm run pm2:status       # Check PM2 status
+
+# Documentation
+npm run generate-docs    # Generate API documentation
+
+# Postman
+npm run generate-postman    # Generate Postman collection
+npm run postman:push        # Push collection to Postman
+npm run postman            # Generate and push to Postman
 ```
+
+---
+
+## 🔒 Security Features
+
+- ✅ JWT authentication with access & refresh tokens
+- ✅ OTP-based authentication
+- ✅ Password hashing (bcrypt)
+- ✅ Input validation (Zod)
+- ✅ SQL injection prevention (Sequelize ORM)
+- ✅ CORS protection
+- ✅ Rate limiting
+- ✅ Secure headers
+- ✅ Soft deletes (GDPR compliance)
 
 ---
 
 ## 🐛 Troubleshooting
 
+### PM2 Issues
+
+```bash
+# PM2 process not starting
+pm2 delete all
+npm run build
+npm run pm2:start:prod
+
+# View error logs
+pm2 logs trimly-api --err
+
+# Check if port is in use
+lsof -i :3036
+```
+
 ### Database Connection Error
+
 ```bash
 # Check MySQL is running
 mysql -u root -p
 
-# Verify DATABASE_URL in .env
-# Format: mysql://user:password@host:port/database
+# Verify .env file has correct credentials
+cat .env | grep DB_
 ```
 
-### Port Already in Use
+### Build Errors
+
 ```bash
-# Change PORT in .env
-PORT=3001
-```
-
-### Firebase Connection Error
-```bash
-# Verify FIREBASE_API_KEY in .env
-# Check Firebase project is active
+# Clean and rebuild
+rm -rf dist
+npm run build
 ```
 
 ---
 
-## 📞 Support & Documentation
-
-- **Full Documentation** → [./documentation/](./documentation/)
-- **API Reference** → [API_DOCUMENTATION.md](./documentation/01-API-Reference/API_DOCUMENTATION.md)
-- **Quick Start** → [QUICK_START.md](./documentation/QUICK_START.md)
-- **Integration Guide** → [INTEGRATION_GUIDE.md](./documentation/04-Integration-Examples/INTEGRATION_GUIDE.md)
-- **Best Practices** → [BEST_PRACTICES.md](./documentation/06-Best-Practices/BEST_PRACTICES.md)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-## 👥 Contributors
-
-- Development Team
-- QA Team
-- DevOps Team
-
----
-
-## 📅 Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | Dec 2025 | Initial release |
-
----
-
-## 🎉 Getting Help
-
-**Documentation not clear?**
-1. Check [TABLE_OF_CONTENTS.md](./documentation/TABLE_OF_CONTENTS.md)
-2. Search flowcharts in [03-Flowcharts/](./documentation/03-Flowcharts/)
-3. Review integration examples in [04-Integration-Examples/](./documentation/04-Integration-Examples/)
-4. Read best practices in [06-Best-Practices/](./documentation/06-Best-Practices/)
-
----
-
-**Happy coding! 🚀**
+## 📞 Support
 
 For detailed documentation, visit the `/documentation/` folder.
+
+**Happy coding! 🚀**

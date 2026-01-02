@@ -8,9 +8,9 @@ export class AuthController {
     static async sendOtp(req: Request, res: Response): Promise<void> {
         const parsed = SendOtpSchema.safeParse(req.body);
         if (!parsed.success) {
-            ApiResponse.error(parsed.error);
+            return ApiResponse.error(parsed.error);
         }
-        await AuthService.sendOtp(parsed.data?.mobile!, parsed.data!.role!)
+        await AuthService.sendOtp(parsed.data.mobile, parsed.data.role)
             .then((value) => ApiResponse.success("OTP send successfully", value))
             .catch((e) => ApiResponse.error(e))
     }
@@ -34,7 +34,7 @@ export class AuthController {
     static async generateNewAccessToken(req: Request, res: Response): Promise<void> {
         const { refresh_token } = req.body;
         await AuthService.generateNewAccessToken(refresh_token)
-            .then((value) => ApiResponse.success("New Access Token Generated::::", value))
-            .then((value) => ApiResponse.error(value))
+            .then((value) => ApiResponse.success("New Access Token Generated", value))
+            .catch((e) => ApiResponse.error(e))
     }
 }

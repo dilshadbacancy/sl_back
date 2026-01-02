@@ -4,36 +4,38 @@ import { CustomerServies } from "../../service/user/customer.service";
 import { ApiResponse } from "../../utils/apiResponse";
 import { Response } from "express";
 import { AppointmentStatus } from "../../utils/enum.utils";
-import { da } from "zod/v4/locales";
 
 export class CustomerController {
 
     static async fetchNearByShops(req: AuthRequest, res: Response): Promise<void> {
+        // Convert query params to numbers for validation
+        const queryData = {
+            latitude: req.query.latitude ? Number(req.query.latitude) : undefined,
+            longitude: req.query.longitude ? Number(req.query.longitude) : undefined,
+            radius: req.query.radius ? Number(req.query.radius) : undefined
+        };
 
-        const parsed = NearByShops.safeParse(req.body);
+        const parsed = NearByShops.safeParse(queryData);
 
         if (!parsed.success) {
-            ApiResponse.error(parsed.error)
+            return ApiResponse.error(parsed.error);
         }
 
         await CustomerServies.fetchNearByShops(parsed.data)
             .then((value) => ApiResponse.success("All available near by shops fetched..", value))
             .catch((e) => ApiResponse.error(e))
-
-
     }
 
 
     static async bookAppointment(req: AuthRequest, res: Response): Promise<any> {
-
         const parsed = CreateAppointmentSchema.safeParse(req.body);
 
         if (!parsed.success) {
-            ApiResponse.error(parsed.error);
+            return ApiResponse.error(parsed.error);
         }
         await CustomerServies.createAppointment(parsed.data)
             .then((value) => ApiResponse.success("Appointment submitted", value))
-
+            .catch((e) => ApiResponse.error(e))
     }
 
     static async assignAppointments(req: AuthRequest, res: Response): Promise<void> {
@@ -56,16 +58,13 @@ export class CustomerController {
 
 
     static async changeAppointmentStatus(req: AuthRequest, res: Response): Promise<void> {
-
-
-        const data = ChangeAppointmentStatus.safeParse(req.body)
+        const data = ChangeAppointmentStatus.safeParse(req.body);
         if (!data.success) {
-            ApiResponse.error(data.error);
+            return ApiResponse.error(data.error);
         }
         await CustomerServies.changeAppointmentStatus(data.data)
             .then((value) => ApiResponse.success("Appointment status changed to" + ` ${value.status}`, value))
             .catch((e) => ApiResponse.error(e))
-
     }
 
     static async getPaymentsModes(req: AuthRequest, res: Response): Promise<void> {

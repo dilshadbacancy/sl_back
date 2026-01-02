@@ -1,0 +1,1433 @@
+{
+  "info": {
+    "name": "Trimly API",
+    "description": "API collection for trimly application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3036",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "barber_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "send-otp"
+              ]
+            },
+            "description": "Send OTP to user mobile number",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"9876543210\",\n  \"role\": \"customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "description": "Verify OTP and get access token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"123456\",\n  \"mobile\": \"9876543210\",\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logout user and blacklist token"
+          }
+        },
+        {
+          "name": "Generate New Access Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/new-access-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "new-access-token"
+              ]
+            },
+            "description": "Generate new access token using refresh token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"your_token_here\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Save User Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/save-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "save-profile"
+              ]
+            },
+            "description": "Save user profile information",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"user@example.com\",\n  \"location\": {\n    \"country\": \"USA\",\n    \"state\": \"NY\",\n    \"city\": \"New York\",\n    \"landmark\": null,\n    \"latitude\": \"28.6139\",\n    \"longitude\": \"77.2090\"\n  },\n  \"is_onboarding_completed\": false,\n  \"gender\": \"male\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/update-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "update-profile"
+              ]
+            },
+            "description": "Update user profile information",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"user@example.com\",\n  \"location\": {\n    \"country\": \"USA\",\n    \"state\": \"NY\",\n    \"city\": \"New York\",\n    \"landmark\": null,\n    \"latitude\": \"28.6139\",\n    \"longitude\": \"77.2090\"\n  },\n  \"is_onboarding_completed\": false,\n  \"gender\": \"male\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update User Location",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/update-location",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "update-location"
+              ]
+            },
+            "description": "Update user location",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": \"28.6139\",\n  \"longitude\": \"77.2090\",\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/user-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "user-profile"
+              ]
+            },
+            "description": "Get current user profile"
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/update-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "update-status"
+              ]
+            },
+            "description": "Update user status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All User Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/get-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "get-status"
+              ]
+            },
+            "description": "Get all available user statuses"
+          }
+        },
+        {
+          "name": "Get All Genders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/get-genders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "get-genders"
+              ]
+            },
+            "description": "Get all available genders"
+          }
+        },
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/roles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "roles"
+              ]
+            },
+            "description": "Get all available roles"
+          }
+        },
+        {
+          "name": "Check Profile Completion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/check-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "check-profile"
+              ]
+            },
+            "description": "Check if user profile is completed"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Get Near By Shops",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/customer/near-by-shops",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "near-by-shops"
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "0",
+                  "description": "number",
+                  "disabled": false
+                },
+                {
+                  "key": "longitude",
+                  "value": "0",
+                  "description": "number",
+                  "disabled": false
+                },
+                {
+                  "key": "radius",
+                  "value": "5",
+                  "description": "number (optional, default: 5)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get nearby shops based on location"
+          }
+        },
+        {
+          "name": "Book Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/book-appointment",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "book-appointment"
+              ]
+            },
+            "description": "Book a new appointment",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"appointment_date\": \"2026-01-02T05:21:40.440Z\",\n  \"gender\": \"male\",\n  \"notes\": \"Sample text\",\n  \"payment_mode\": \"cash\",\n  \"services\": [\n    {\n      \"service_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"duration\": 30,\n      \"price\": 100.5,\n      \"discounted_price\": 25\n    }\n  ],\n  \"location\": {\n    \"latitude\": \"28.6139\",\n    \"longitude\": \"77.2090\",\n    \"radius\": 5\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Assign Appointments",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/assign-appointments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "assign-appointments"
+              ]
+            },
+            "description": "Assign appointments to barbers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"barberId\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"extra_duration\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/appointments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "appointments"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "123e4567-e89b-12d3-a456-426614174000",
+                  "description": "string (uuid) (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "shop_id",
+                  "value": "123e4567-e89b-12d3-a456-426614174000",
+                  "description": "string (uuid) (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "barber_id",
+                  "value": "123e4567-e89b-12d3-a456-426614174000",
+                  "description": "string (uuid) (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "description": "enum (pending, confirmed, completed, cancelled, rejected) (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all customer appointments"
+          }
+        },
+        {
+          "name": "Change Appointment Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/change-appointment-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "change-appointment-status"
+              ]
+            },
+            "description": "Change appointment status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"pending\",\n  \"remark\": \"Sample text\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Payment Modes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/payment-modes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "payment-modes"
+              ]
+            },
+            "description": "Get all available payment modes"
+          }
+        },
+        {
+          "name": "Get Appointment Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/appointment-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customer",
+                "appointment-statuses"
+              ]
+            },
+            "description": "Get all available appointment statuses"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor/Shop",
+      "item": [
+        {
+          "name": "Save Shop Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/save-shop-details",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "save-shop-details"
+              ]
+            },
+            "description": "Save shop details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_name\": \"My Shop\",\n  \"shop_logo_url\": \"https://example.com/image.jpg\",\n  \"shop_banner_url\": \"https://example.com/image.jpg\",\n  \"gstin_number\": \"29ABCDE1234F1Z5\",\n  \"email\": \"user@example.com\",\n  \"mobile\": \"9876543210\",\n  \"shop_open_time\": \"09:00\",\n  \"shop_close_time\": \"09:00\",\n  \"weekly_holiday\": \"Sunday\",\n  \"services\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Save Shop Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/save-shop-location",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "save-shop-location"
+              ]
+            },
+            "description": "Save shop location",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"address_line1\": \"123 Main Street\",\n  \"address_line2\": \"Apt 4B\",\n  \"area\": \"Downtown\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"pincode\": \"123456\",\n  \"latitude\": 0,\n  \"longitude\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Save Shop KYC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/save-shop-kyc",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "save-shop-kyc"
+              ]
+            },
+            "description": "Save shop KYC details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"aadhar_number\": \"123456789012\",\n  \"pan_number\": \"123456789012\",\n  \"aadhar_front\": \"123456789012\",\n  \"aadhar_back\": \"123456789012\",\n  \"pan_card\": \"123456789012\",\n  \"shop_license\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Save Shop Bank Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/save-shop-bank",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "save-shop-bank"
+              ]
+            },
+            "description": "Save shop bank details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"bank_name\": \"John Doe\",\n  \"account_number\": \"1234567890\",\n  \"ifsc_code\": \"123456\",\n  \"account_holder_name\": \"John Doe\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Shop Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/get-shop-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "get-shop-profile"
+              ]
+            },
+            "description": "Get shop profile"
+          }
+        },
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/create-service",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "create-service"
+              ]
+            },
+            "description": "Create a new service",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"description\": \"Sample text\",\n  \"duration\": 30,\n  \"price\": 100.5,\n  \"discounted_price\": 25,\n  \"gender\": \"male\",\n  \"category\": \"\",\n  \"is_active\": false,\n  \"image_url\": \"https://example.com/image.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/services",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "services"
+              ]
+            },
+            "description": "Get all services"
+          }
+        },
+        {
+          "name": "Add Services to Shop",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/add-services",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "add-services"
+              ]
+            },
+            "description": "Add services to shop",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"services\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/update-service",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vendor",
+                "update-service"
+              ]
+            },
+            "description": "Update service details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"name\": \"John Doe\",\n  \"description\": \"Sample text\",\n  \"duration\": 30,\n  \"price\": 100.5,\n  \"discounted_price\": 25,\n  \"gender\": \"male\",\n  \"category\": null,\n  \"is_active\": false,\n  \"image_url\": \"https://example.com/image.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Barber",
+      "item": [
+        {
+          "name": "Login Barber",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "login"
+              ]
+            },
+            "description": "Login barber with username and PIN",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"johndoe\",\n  \"login_pin\": 1234\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Barber Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{barber_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/barber-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "barber-profile"
+              ]
+            },
+            "description": "Get barber profile"
+          }
+        },
+        {
+          "name": "Get Barber Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{barber_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/barbers-appointments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "barbers-appointments"
+              ]
+            },
+            "description": "Get all barber appointments"
+          }
+        },
+        {
+          "name": "Create Barber",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/create-barber",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "create-barber"
+              ]
+            },
+            "description": "Create a new barber",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"name\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  \"mobile\": \"9876543210\",\n  \"age\": 25,\n  \"gender\": \"male\",\n  \"specialist_in\": [],\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Barber",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/update-barber",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "update-barber"
+              ]
+            },
+            "description": "Update barber details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"name\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  \"mobile\": \"9876543210\",\n  \"age\": 25,\n  \"gender\": \"male\",\n  \"specialist_in\": [],\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Barbers of Shop",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/barbers/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "barbers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "string (shop_id)"
+                }
+              ]
+            },
+            "description": "Get all barbers of a shop"
+          }
+        },
+        {
+          "name": "Toggle Barber Availability",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barber/availability",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "barber",
+                "availability"
+              ]
+            },
+            "description": "Toggle barber availability",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"available\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Common",
+      "item": [
+        {
+          "name": "Update Device Info",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/common/update-device-info",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "common",
+                "update-device-info"
+              ]
+            },
+            "description": "Update device information",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"device_type\": null,\n  \"device_model\": null,\n  \"os_version\": null,\n  \"app_version\": null,\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Device Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/common/device-info",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "common",
+                "device-info"
+              ]
+            },
+            "description": "Get device information"
+          }
+        },
+        {
+          "name": "Save FCM Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/common/save-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "common",
+                "save-token"
+              ]
+            },
+            "description": "Save FCM token for push notifications",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"device_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"token\": {\n    \"type\": \"fcm\",\n    \"token\": \"your_token_here\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get FCM Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/common/fcm-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "common",
+                "fcm-token"
+              ]
+            },
+            "description": "Get FCM token"
+          }
+        },
+        {
+          "name": "Upload Media",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/common/upload-media",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "common",
+                "upload-media"
+              ]
+            },
+            "description": "Upload media file",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "folder",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api"
+              ]
+            },
+            "description": "Check if server is running"
+          }
+        }
+      ]
+    }
+  ]
+}

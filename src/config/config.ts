@@ -33,7 +33,7 @@ const config: Config = {
         host: process.env.DB_HOST || "localhost",
         user: process.env.DB_USER || "root",
         password: process.env.DB_PASSWORD || "",
-        name: process.env.DB_NAME || "hyperlocal_shop"
+        name: process.env.DB_NAME || "trimly"
     },
     app: {
         port: parseInt(process.env.PORT || "5000", 10),

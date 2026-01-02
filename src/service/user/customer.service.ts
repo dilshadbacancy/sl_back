@@ -4,7 +4,7 @@ import { Shop } from "../../models/vendor/shop.model";
 import { ShopLocation } from "../../models/vendor/shop_location";
 import { JSON, literal, Op } from "sequelize";
 import { AppointmentStatus, PaymentMode, PaymentStatus } from "../../utils/enum.utils";
-import { Barber } from "../../models/vendor/barber.mode";
+import { Barber } from "../../models/vendor/barber.model";
 import { HelperUtils } from "../../utils/helper";
 import { User } from "../../models/user/user.model";
 import Service from "../../models/vendor/service.model";

@@ -1,6 +1,6 @@
 
-import bcrypt from "bcrypt";
-import { Barber } from "../models/vendor/barber.mode";
+import bcrypt from "bcryptjs";
+import { Barber } from "../models/vendor/barber.model";
 import { User } from "../models/user/user.model";
 import { ScreenSteps } from "./enum.utils";
 import { Shop } from "../models/vendor/shop.model";

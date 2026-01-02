@@ -1,5 +1,5 @@
 import Router from "express";
-import { barberAuthMiddleware } from "../../middlewares/barbar.auth.middleware";
+import { barberAuthMiddleware } from "../../middlewares/barber.auth.middleware";
 import { BarberController } from "../../controllers/vendor/barber.controller";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 import { ShopController } from "../../controllers/vendor/shop.controller";
@@ -19,7 +19,8 @@ router.get("/get-shop-profile", ShopController.getShopProfile);
 router.post("/create-service", ShopController.createService)
 router.get("/services", ShopController.getAllServices)
 
-
-
+// Shop Services Management (previously in saloon)
+router.put("/add-services", ShopController.addServicesToShop);
+router.put("/update-service", ShopController.updateServicesOfShops);
 
 export default router;

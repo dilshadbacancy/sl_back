@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { Gender, Roles, Status } from "../../utils/enum.utils";
+import { Gender, Status } from "../../utils/enum.utils";
 import { SequelizeConnection } from "../../config/database.config";
 
 export class Barber extends Model {
@@ -9,7 +9,7 @@ export class Barber extends Model {
     name!: string;
     email: string | undefined;
     mobile!: string;
-    role!: Roles;
+    role!: string;
     age: number | undefined;
     gender!: Gender;
     specialist_in: string[] | undefined;
@@ -49,8 +49,8 @@ Barber.init(
             allowNull: false,
         },
         role: {
-            type: DataTypes.ENUM(...Object.values(Roles)),
-            defaultValue: Roles.BARBER,
+            type: DataTypes.STRING,
+            defaultValue: "barber",
             allowNull: false,
         },
         age: {

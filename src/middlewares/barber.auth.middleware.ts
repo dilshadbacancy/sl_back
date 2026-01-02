@@ -4,8 +4,7 @@ import { HelperUtils } from "../utils/helper";
 import { TokenPayload } from "../interfaces/jwt.payload";
 import { User } from "../models/user/user.model";
 import { JwtUtils } from "../utils/jwt_utils";
-import { Barber } from "../models/vendor/barber.mode";
-import { Roles } from "../utils/enum.utils";
+import { Barber } from "../models/vendor/barber.model";
 
 
 export interface BarberAuthReq extends Request {
@@ -63,7 +62,7 @@ export const barberAuthMiddleware = async (
             return;
 
         }
-        if (barber.role !== Roles.BARBER) {
+        if (barber.role !== "barber") {
             res.status(401).json({
                 success: false,
                 message: "Current user role is not allowed"

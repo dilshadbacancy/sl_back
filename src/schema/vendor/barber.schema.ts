@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { Gender, Roles, Status } from "../../utils/enum.utils";
+import { Gender, Status } from "../../utils/enum.utils";
 
 
 export const BarberSchema = z.object({
@@ -10,7 +10,7 @@ export const BarberSchema = z.object({
     mobile: z
         .string()
         .regex(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
-    role: z.enum(Object.values(Roles)).optional(),
+    role: z.string().optional(),
     age: z.number().int().positive().optional(),
     gender: z.enum(Object.values(Gender)),
     specialist_in: z.array(z.string()).optional(),

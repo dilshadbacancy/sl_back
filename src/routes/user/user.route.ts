@@ -9,10 +9,10 @@ const router = Router()
 
 router.use(authMiddleware)
 router.post("/save-profile", UserController.saveUserProfile)
-router.post("/update-profile", UserController.updateUserProfile)
-router.post("/update-location", UserController.updateUserLocation)
+router.put("/update-profile", UserController.updateUserProfile)
+router.put("/update-location", UserController.updateUserLocation)
 router.get("/user-profile", UserController.getUserProfile);
-router.post("/update-status", UserController.updateUserStatus)
+router.put("/update-status", UserController.updateUserStatus)
 router.get("/get-status", UserController.getAllUserStatus);
 router.get("/get-genders", UserController.getAllGenders);
 router.get("/roles", UserController.getAllRoles)

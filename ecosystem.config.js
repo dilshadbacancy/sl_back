@@ -1,21 +1,29 @@
 module.exports = {
     apps: [
         {
-            name: "hyperlocal-shop",
+            name: "trimly-api",
             script: "dist/server.js",
             instances: "max",
             exec_mode: "cluster",
             watch: false,
             max_memory_restart: "500M",
+            min_uptime: "10s",
+            max_restarts: 10,
+            autorestart: true,
+            error_file: "./logs/pm2-error.log",
+            out_file: "./logs/pm2-out.log",
+            log_file: "./logs/pm2-combined.log",
+            time: true,
+            merge_logs: true,
 
-            env: {                     // default env (used if --env is not passed)
+            env: {
                 NODE_ENV: "development",
-                PORT: 5000
+                PORT: 3036
             },
 
-            env_production: {          // production env (used with --env production)
+            env_production: {
                 NODE_ENV: "production",
-                PORT: 5000
+                PORT: 3036
             }
         }
     ]

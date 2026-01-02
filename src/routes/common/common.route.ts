@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { CommonController } from "../../controllers/common/commoon.controller";
+import { CommonController } from "../../controllers/common/common.controller";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 import { upload } from "../../middlewares/upload.middleware";
 import { AppErrors } from "../../errors/app.errors";
@@ -32,7 +32,7 @@ const handleMulterError = (err: any, req: Request, res: Response, next: NextFunc
 };
 
 router.use(authMiddleware)
-router.post('/update-device-info', CommonController.saveDeviceInfo)
+router.put('/update-device-info', CommonController.saveDeviceInfo)
 router.get("/device-info", CommonController.getDeviceInfo)
 router.post("/save-token", CommonController.saveFCMToken)
 router.get("/fcm-token", CommonController.getFCMToken)

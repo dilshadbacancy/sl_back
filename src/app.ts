@@ -13,10 +13,9 @@ import adminRoute from "./routes/admin/admin.route"
 import { AppErrors } from "./errors/app.errors";
 import userRoute from "./routes/user/user.route";
 import commonRoute from "./routes/common/common.route";
-import saloonRoute from "./routes/user/saloon.route";
 import shopRoute from "./routes/vendor/shop.route";
-import barberRoute from "./routes/vendor/barbar.route"
-import customerRoute from "./routes/user/cutomer.route"
+import barberRoute from "./routes/vendor/barber.route"
+import customerRoute from "./routes/user/customer.route"
 
 dotenv.config();
 
@@ -50,10 +49,9 @@ app.use("/auth", authRouter)
 
 app.use("/users", userRoute);
 app.use("/common", commonRoute);
-app.use("/vendor", shopRoute)
-app.use("/saloon", saloonRoute)
+app.use("/vendor", shopRoute);
 // app.use("/admin", adminRoute)
-app.use("/barber", barberRoute)
+app.use("/barber", barberRoute);
 app.use('/customer', customerRoute);
 
 
@@ -71,7 +69,7 @@ app.use((req, res) => {
 });
 
 
-app.use((err: any, res, next) => {
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     // If it's our custom AppErrors
     if (err instanceof AppErrors) {
         return res.status(err.statusCode).json({

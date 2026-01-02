@@ -3,7 +3,7 @@ import { OTP } from "./models/auth/otp.model";
 import { DeviceInfo } from "./models/user/device_info.model";
 import { FCM } from "./models/user/fcm.model";
 import { User } from "./models/user/user.model";
-import { Barber } from "./models/vendor/barber.mode";
+import { Barber } from "./models/vendor/barber.model";
 import { Shop } from "./models/vendor/shop.model";
 import ShopBankDetails from "./models/vendor/shop_bank_details";
 import { ShopKycDetail } from "./models/vendor/shop_kyc.model";

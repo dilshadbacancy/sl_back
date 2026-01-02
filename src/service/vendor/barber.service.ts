@@ -1,10 +1,9 @@
 import { AppErrors } from "../../errors/app.errors";
-import { Barber } from "../../models/vendor/barber.mode";
-import { Roles, Status } from "../../utils/enum.utils";
+import { Barber } from "../../models/vendor/barber.model";
+import { Status } from "../../utils/enum.utils";
 import { HelperUtils } from "../../utils/helper";
 import { JwtUtils } from "../../utils/jwt_utils";
 import { RefreshToken } from "../../models/auth/RefreshToken.model";
-import { da } from "zod/v4/locales";
 import { Appointment } from "../../models/user/appointment";
 import Service from "../../models/vendor/service.model";
 import { AppointmentService } from "../../models/vendor/appointment_service.model";
@@ -27,7 +26,7 @@ export class BarberService {
             name: name,
             email: email,
             mobile: mobile,
-            role: Roles.BARBER,
+            role: "barber",
             age: data.age || undefined,
             gender: data.gender,
             specialist_in: data.specialist_in || undefined,
