@@ -14,3 +14,7 @@ app.listen(PORT, () => {
         .catch(err => console.error("DB Connection Error:", err));
     console.log(`Server running on port http://localhost:${PORT}`);
 });
+
+app.get("/api", (req, res) => {
+    res.json({ message: "Server Running" });
+});
