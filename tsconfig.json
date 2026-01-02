@@ -17,11 +17,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "types": [
-      "node"
-    ],
     "typeRoots": [
-      "./src/types",
       "./node_modules/@types"
     ]
   },

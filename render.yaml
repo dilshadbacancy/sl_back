@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: trimly-api
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Add your other environment variables in Render dashboard:
+      # DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT
+      # JWT_SECRET, JWT_REFRESH_TOKEN, etc.
+
+databases:
+  - name: trimly-db
+    plan: starter
+    databaseName: trimly_app
+    user: trimly_app_root
+
