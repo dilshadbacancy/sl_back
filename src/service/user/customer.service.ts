@@ -9,25 +9,26 @@ import { HelperUtils } from "../../utils/helper";
 import { User } from "../../models/user/user.model";
 import Service from "../../models/vendor/service.model";
 import { AppointmentService } from "../../models/vendor/appointment_service.model";
-import { BarberService } from "../vendor/barber.service";
 import { SequelizeConnection } from "../../config/database.config";
+import { SALON_CATEGORIES } from "../../constant/constant.response";
 
 export class CustomerServies {
     static async fetchNearByShops(data: any): Promise<any> {
         const { latitude, longitude, radius = 5 } = data;
 
         // PostgreSQL-compatible haversine distance calculation
+        // Cast to numeric before ROUND to support decimal places
         const distance = `
         ROUND(
             (6371 * acos(
                 LEAST(1.0, 
                     cos(radians(${latitude})) *
-                    cos(radians(location.latitude)) *
-                    cos(radians(location.longitude) - radians(${longitude})) +
+                    cos(radians("shop_location".latitude)) *
+                    cos(radians("shop_location".longitude) - radians(${longitude})) +
                     sin(radians(${latitude})) *
-                    sin(radians(location.latitude))
+                    sin(radians("shop_location".latitude))
                 )
-            ))
+            ))::numeric
         , 3)
     `;
 
@@ -35,27 +36,54 @@ export class CustomerServies {
             include: [
                 {
                     model: ShopLocation,
-                    as: "location",
+                    as: "shop_location",
+                },
+                {
+                    model: Service,
+                    as: "shop_services",
+
                 }
             ],
             attributes: {
-                include: [[literal(distance,), "distance"]]
+                include: [[literal(distance,), "distance"]],
+                exclude: ["services"] // Exclude the JSON services field, use shop_services instead
             },
             where: literal(`${distance} <= ${radius}`),
             order: literal(`distance ASC`)
         });
 
         const formatted = shops.map(shop => {
-            const dist = Number(shop.dataValues.distance);
+            const shopData = shop.get({ plain: true }) as any;
+            const dist = Number(shopData.distance);
 
+            // Format distance
             if (dist < 1) {
                 const meters = Math.round(dist * 1000);
-                shop.dataValues.distance = `${meters} m`;
+                shopData.distance = `${meters} m`;
             } else {
-                shop.dataValues.distance = `${dist} km`;
+                shopData.distance = `${dist} km`;
             }
 
-            return shop;
+            // Map shop_services to services for consistent API response
+            shopData.services = Array.isArray(shopData.shop_services)
+                ? shopData.shop_services.map((service: any) => ({
+                    id: service.id,
+                    name: service.name,
+                    description: service.description,
+                    duration: service.duration,
+                    price: service.price,
+                    discounted_price: service.discounted_price,
+                    category: service.category,
+                    gender: service.gender,
+                    image_url: service.image_url,
+                    is_active: service.is_active
+                }))
+                : [];
+
+            // Remove shop_services to avoid duplication
+            delete shopData.shop_services;
+
+            return shopData;
         });
         return formatted;
     }
@@ -531,5 +559,9 @@ export class CustomerServies {
             value: status.toLowerCase(),
         }));
         return list;
+    }
+
+    static async getAllCategory(): Promise<any> {
+        return SALON_CATEGORIES;
     }
 }

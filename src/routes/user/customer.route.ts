@@ -17,5 +17,7 @@ router.put("/change-appointment-status", CustomerController.changeAppointmentSta
 router.get("/payment-modes", CustomerController.getPaymentsModes);
 router.get("/appointment-statuses", CustomerController.getAppointmentsStatus);
 
+router.get("/categories", CustomerController.getAllCategory);
+
 
 export default router;// test change

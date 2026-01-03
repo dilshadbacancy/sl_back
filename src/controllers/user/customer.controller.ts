@@ -80,4 +80,10 @@ export class CustomerController {
     }
 
 
+    static async getAllCategory(req: AuthRequest, res: Response): Promise<void> {
+        await CustomerServies.getAllCategory()
+            .then((value) => ApiResponse.success("All category fetched successfully", value))
+            .catch((e) => ApiResponse.error(e))
+    }
+
 }
