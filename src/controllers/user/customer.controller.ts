@@ -42,7 +42,7 @@ export class CustomerController {
 
         const data = req.body;
         await CustomerServies.assignBarber(data.id, data.barberId, data.extra_duration)
-            .then((value) => ApiResponse.success("Appointments accespted", value))
+            .then((value) => ApiResponse.success("Appointments accepted", value))
             .catch((e) => ApiResponse.error(e))
     }
 

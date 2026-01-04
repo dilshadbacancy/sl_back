@@ -157,3 +157,4 @@ bundle-stats.json
 # Compiled Database Migrations
 migrations/*.js
 !src/migrations/*.ts
+logs/

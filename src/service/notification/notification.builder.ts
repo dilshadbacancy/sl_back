@@ -10,21 +10,31 @@ interface NotificationData {
  * Helper class to build notification payloads for appointment-related events
  */
 export class NotificationBuilder {
-    private static readonly STATUS_LABELS: Record<string, string> = {
-        'pending': 'Pending',
-        'accepted': 'Accepted',
-        'rejected': 'Rejected',
-        'cancelled': 'Cancelled',
-        'inProgress': 'In Progress',
-        'completed': 'Completed',
-        'conmpleted': 'Completed' // Handle typo in enum
-    };
+    // private static readonly STATUS_LABELS: Record<string, string> = {
+    //     'pending': 'Pending',
+    //     'accepted': 'Accepted',
+    //     'rejected': 'Rejected',
+    //     'cancelled': 'Cancelled',
+    //     'inProgress': 'In Progress',
+    //     'completed': 'Completed',
+    //     'conmpleted': 'Completed' // Handle typo in enum
+    // };
 
     /**
      * Get formatted status label
      */
+
+    private static readonly statusMap = Object.values(AppointmentStatus).reduce(
+        (acc, value) => {
+            acc[value] = value
+                .replace("-", " ")
+                .replace(/\b\w/g, char => char.toUpperCase());
+            return acc;
+        },
+        {} as Record<string, string>
+    );
     private static getStatusLabel(status: string): string {
-        return this.STATUS_LABELS[status.toLowerCase()] || status;
+        return this.statusMap[status.toLowerCase()] || status;
     }
 
     /**

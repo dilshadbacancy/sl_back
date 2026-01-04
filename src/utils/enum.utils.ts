@@ -73,7 +73,7 @@ export enum Gender {
 export enum AppointmentStatus {
     Pending = "pending",
     Accepted = "accepted",
-    InProgress = "in-prpgress",
+    InProgress = "in-progress",
     Rejected = "rejected",
     Conmpleted = "completed",
     Cancelled = "cancelled",

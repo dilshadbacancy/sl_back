@@ -1,3 +1,8 @@
+require('dotenv').config();
+
+// Read PORT from .env or use default
+const PORT = process.env.PORT || 3036;
+
 module.exports = {
     apps: [
         {
@@ -15,15 +20,16 @@ module.exports = {
             log_file: "./logs/pm2-combined.log",
             time: true,
             merge_logs: true,
+            log_date_format: "YYYY-MM-DD HH:mm:ss Z",
 
             env: {
                 NODE_ENV: "development",
-                PORT: 3036
+                PORT: PORT
             },
 
             env_production: {
                 NODE_ENV: "production",
-                PORT: 3036
+                PORT: PORT
             }
         }
     ]
