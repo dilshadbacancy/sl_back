@@ -1,5 +1,5 @@
 {
-  "name": "hyper_local",
+  "name": "trimly",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,9 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "generate-docs": "node scripts/generate-docs.js",
+    "generate-postman": "node scripts/generate-postman-collection.js",
+    "postman:push": "node scripts/push-to-postman.js",
+    "postman": "node scripts/generate-postman-collection.js && node scripts/push-to-postman.js",
     "prepare": "husky install"
   },
   "keywords": [],
