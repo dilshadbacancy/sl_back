@@ -275,6 +275,13 @@ const routes = [
         description: 'Get all available appointment statuses',
         auth: true
     },
+    {
+        name: 'Get All Categories',
+        method: 'GET',
+        path: '/customer/categories',
+        description: 'Get all available salon/service categories',
+        auth: true
+    },
 
     // Vendor/Shop Routes
     {
