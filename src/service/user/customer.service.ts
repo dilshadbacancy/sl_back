@@ -11,6 +11,8 @@ import Service from "../../models/vendor/service.model";
 import { AppointmentService } from "../../models/vendor/appointment_service.model";
 import { SequelizeConnection } from "../../config/database.config";
 import { SALON_CATEGORIES } from "../../constant/constant.response";
+import { FirebaseNotificationService } from "../notification/firebase.service";
+import { NotificationBuilder } from "../notification/notification.builder";
 
 export class CustomerServies {
     static async fetchNearByShops(data: any): Promise<any> {
@@ -19,7 +21,7 @@ export class CustomerServies {
         // PostgreSQL-compatible haversine distance calculation
         // Cast to numeric before ROUND to support decimal places
         const distance = `
-        ROUND(
+        ROUND(xx
             (6371 * acos(
                 LEAST(1.0, 
                     cos(radians(${latitude})) *
@@ -167,7 +169,7 @@ export class CustomerServies {
                             const lastAppt = await Appointment.findOne({
                                 where: {
                                     barber_id: barber.id,
-                                    status: { [Op.in]: ["inProgress", "accepted"] }
+                                    status: { [Op.in]: [AppointmentStatus.InProgress, AppointmentStatus.Accepted] }
                                 },
                                 order: [["expected_end_time", "DESC"]],
                                 transaction: tx
@@ -208,9 +210,14 @@ export class CustomerServies {
             }, { transaction: tx });
 
             // ------------------------------------------------------------------
-            // 3) Insert appointment services
+            // 3) Insert appointment services and collect service names
             // ------------------------------------------------------------------
+            const serviceNames: string[] = [];
             for (const s of data.services) {
+                const service = await Service.findByPk(s.service_id, { transaction: tx });
+                if (service) {
+                    serviceNames.push(service.name);
+                }
                 await AppointmentService.create({
                     appointment_id: appointment.id,
                     service_id: s.service_id,
@@ -220,13 +227,35 @@ export class CustomerServies {
                 }, { transaction: tx });
             }
 
-            // Final return (NO BARBER ASSIGNMENT)
+            const result = { ...appointment.toJSON(), distance };
 
+            // ------------------------------------------------------------------
+            // 4) Send notification to vendor (outside transaction for performance)
+            // ------------------------------------------------------------------
+            // Move notification outside transaction to avoid blocking
+            setImmediate(async () => {
+                try {
+                    const shop = await Shop.findByPk(chosenShopId, {
+                        include: [{ model: User, as: 'shop_user' }]
+                    });
+                    const customer = await User.findByPk(data.customer_id);
 
+                    if (shop?.user_id && customer) {
+                        const notification = NotificationBuilder.buildBookingNotification(
+                            customer,
+                            serviceNames,
+                            appointment.id,
+                            data.appointment_date
+                        );
 
+                        FirebaseNotificationService.sendNotificationAsync(shop.user_id, notification);
+                    }
+                } catch (notifError) {
+                    console.error('Error sending notification to vendor:', notifError);
+                }
+            });
 
-
-            return { ...appointment.toJSON(), distance };
+            return result;
         });
     }
 
@@ -261,7 +290,7 @@ export class CustomerServies {
                 const lastAppt = await Appointment.findOne({
                     where: {
                         barber_id: barberId,
-                        status: { [Op.in]: ["inProgress", "accepted"] },
+                        status: { [Op.in]: [AppointmentStatus.InProgress, AppointmentStatus.Accepted] },
                         appointment_date: appointment.appointment_date
                     },
                     order: [["expected_end_time", "DESC"]]
@@ -283,7 +312,7 @@ export class CustomerServies {
                     const lastAppt = await Appointment.findOne({
                         where: {
                             barber_id: barber.id,
-                            status: { [Op.in]: ["inProgress", "accepted"] },
+                            status: { [Op.in]: [AppointmentStatus.InProgress, AppointmentStatus.Accepted] },
                             appointment_date: appointment.appointment_date
                         },
                         order: [["expected_end_time", "DESC"]]
@@ -314,6 +343,36 @@ export class CustomerServies {
             expected_end_time: expectedEnd,
             status: AppointmentStatus.Accepted,
             extra_duration: extraDuration ?? 0
+        });
+
+        // 4. Send notification to customer (async, non-blocking)
+        setImmediate(async () => {
+            try {
+                const shop = await Shop.findByPk(shopId, {
+                    include: [{ model: User, as: 'shop_user' }]
+                });
+                const appointmentServices = await AppointmentService.findAll({
+                    where: { appointment_id: appointmentId },
+                    include: [{ model: Service, as: 'service' }]
+                });
+
+                if (shop && appointment.customer_id) {
+                    const serviceNames = appointmentServices.map((as: any) => as.service?.name).filter(Boolean);
+
+                    const notification = NotificationBuilder.buildAcceptanceNotification(
+                        shop,
+                        serviceNames,
+                        appointmentId,
+                        appointment.appointment_date || new Date(),
+                        expectedStart,
+                        assignedBarber
+                    );
+
+                    FirebaseNotificationService.sendNotificationAsync(appointment.customer_id, notification);
+                }
+            } catch (notifError) {
+                console.error('Error sending notification to customer:', notifError);
+            }
         });
 
         return {
@@ -433,7 +492,7 @@ export class CustomerServies {
     }
 
 
-    static async changeAppointmentStatus(data: any): Promise<any> {
+    static async changeAppointmentStatus(data: any, changedByUserId?: string): Promise<any> {
         const status = data.status as AppointmentStatus;
 
         const appointment = await Appointment.findOne({
@@ -444,7 +503,15 @@ export class CustomerServies {
                     as: "services",
                     include: [{ model: Service, as: "service" }]
                 },
-
+                {
+                    model: Shop,
+                    as: "shop",
+                    include: [{ model: User, as: "shop_user" }]
+                },
+                {
+                    model: User,
+                    as: "customer"
+                }
             ]
         });
 
@@ -523,6 +590,80 @@ export class CustomerServies {
         }
         // ---- UPDATE APPOINTMENT ----
         await appointment.update(dataToUpdate);
+
+        // ---- SEND NOTIFICATION (async, non-blocking) ----
+        setImmediate(async () => {
+            try {
+                const appt = appointment.get({ plain: true }) as any;
+                const shop = appt.shop;
+                const customer = appt.customer;
+
+                // Get service names from services array or appointment services
+                const serviceNames = services.length > 0
+                    ? services.map((s: any) => s.name)
+                    : (Array.isArray(appt.services)
+                        ? appt.services.map((s: any) => s.service?.name).filter(Boolean)
+                        : []);
+
+                // Determine who changed the status
+                const isCustomerChanged = changedByUserId === appointment.customer_id;
+                const isVendorChanged = changedByUserId === shop?.user_id;
+
+                if (isCustomerChanged && shop?.user_id) {
+                    // Customer changed status, notify vendor
+                    const notification = NotificationBuilder.buildStatusChangeNotificationForVendor(
+                        customer,
+                        serviceNames,
+                        status,
+                        appointment.id,
+                        appointment.appointment_date,
+                        appointment.expected_start_time
+                    );
+                    FirebaseNotificationService.sendNotificationAsync(shop.user_id, notification);
+                } else if (isVendorChanged && appointment.customer_id) {
+                    // Vendor changed status, notify customer
+                    const notification = NotificationBuilder.buildStatusChangeNotificationForCustomer(
+                        shop,
+                        serviceNames,
+                        status,
+                        appointment.id,
+                        appointment.appointment_date,
+                        appointment.expected_start_time
+                    );
+                    FirebaseNotificationService.sendNotificationAsync(appointment.customer_id, notification);
+                } else if (changedByUserId) {
+                    // Unknown who changed, notify both
+                    if (shop?.user_id) {
+                        const notification = NotificationBuilder.buildGenericStatusChangeNotification(
+                            serviceNames,
+                            status,
+                            appointment.id,
+                            appointment.appointment_date,
+                            appointment.expected_start_time,
+                            false, // isForCustomer
+                            customer,
+                            shop
+                        );
+                        FirebaseNotificationService.sendNotificationAsync(shop.user_id, notification);
+                    }
+                    if (appointment.customer_id) {
+                        const notification = NotificationBuilder.buildGenericStatusChangeNotification(
+                            serviceNames,
+                            status,
+                            appointment.id,
+                            appointment.appointment_date,
+                            appointment.expected_start_time,
+                            true, // isForCustomer
+                            customer,
+                            shop
+                        );
+                        FirebaseNotificationService.sendNotificationAsync(appointment.customer_id, notification);
+                    }
+                }
+            } catch (notifError) {
+                console.error('Error sending notification:', notifError);
+            }
+        });
 
         return {
             message: "Appointment status changed",

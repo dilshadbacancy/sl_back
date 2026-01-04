@@ -84,7 +84,7 @@ export class HelperUtils {
                 return 'PENDING';
             case 'accepted':
                 return 'ACCEPT';
-            case 'inProgress':
+            case 'in-prpgress':
                 return 'IN PROGRESS';
             case 'conmpleted':
                 return 'COMPLETE';

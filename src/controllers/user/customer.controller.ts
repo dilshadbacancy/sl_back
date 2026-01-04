@@ -62,7 +62,8 @@ export class CustomerController {
         if (!data.success) {
             return ApiResponse.error(data.error);
         }
-        await CustomerServies.changeAppointmentStatus(data.data)
+        const userId = req.user?.id;
+        await CustomerServies.changeAppointmentStatus(data.data, userId)
             .then((value) => ApiResponse.success("Appointment status changed to" + ` ${value.status}`, value))
             .catch((e) => ApiResponse.error(e))
     }
