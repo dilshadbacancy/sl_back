@@ -502,7 +502,7 @@
             "description": "Book a new appointment",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"appointment_date\": \"2026-01-04T08:34:20.146Z\",\n  \"gender\": \"male\",\n  \"notes\": \"Sample text\",\n  \"payment_mode\": \"cash\",\n  \"services\": [\n    {\n      \"service_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"duration\": 30,\n      \"price\": 100.5,\n      \"discounted_price\": 25\n    }\n  ],\n  \"location\": {\n    \"latitude\": \"28.6139\",\n    \"longitude\": \"77.2090\",\n    \"radius\": 5\n  }\n}",
+              "raw": "{\n  \"customer_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"shop_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"appointment_date\": \"2026-01-04T08:35:45.137Z\",\n  \"gender\": \"male\",\n  \"notes\": \"Sample text\",\n  \"payment_mode\": \"cash\",\n  \"services\": [\n    {\n      \"service_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"duration\": 30,\n      \"price\": 100.5,\n      \"discounted_price\": 25\n    }\n  ],\n  \"location\": {\n    \"latitude\": \"28.6139\",\n    \"longitude\": \"77.2090\",\n    \"radius\": 5\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
