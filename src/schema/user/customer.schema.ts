@@ -43,6 +43,7 @@ export const CreateAppointmentSchema = z.object({
 export const ChangeAppointmentStatus = z.object({
     id: z.string().uuid("Appointment id is required"),
     status: z.enum(AppointmentStatus),
+    pin: z.string().optional(),
     remark: z.string().optional(),
 })
     .superRefine((data, ctx) => {
@@ -55,6 +56,14 @@ export const ChangeAppointmentStatus = z.object({
                 path: ["remark"],
                 code: z.ZodIssueCode.custom,
                 message: "Remark is required when rejecting or cancelling an appointment",
+            });
+        }
+
+        if (data.status === AppointmentStatus.Conmpleted && !data.pin) {
+            ctx.addIssue({
+                path: ["pin"],
+                code: z.ZodIssueCode.custom,
+                message: "PIN is required when completing an appointment",
             });
         }
     })

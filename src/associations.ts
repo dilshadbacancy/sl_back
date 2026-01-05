@@ -83,12 +83,15 @@ Shop.belongsTo(User, {
 Shop.hasOne(ShopLocation, {
     foreignKey: "shop_id",
     as: "shop_location",
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 });
 
 ShopLocation.belongsTo(Shop, {
     foreignKey: "shop_id",
-    as: "shop"
+    as: "shop",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 });
 
 
@@ -96,7 +99,9 @@ ShopLocation.belongsTo(Shop, {
 // A ShopKycDetail belongs to a Shop
 ShopKycDetail.belongsTo(Shop, {
     foreignKey: "shop_id",
-    as: "shop"
+    as: "shop",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 });
 
 // A Shop has one KYC detail
@@ -111,24 +116,32 @@ Shop.hasOne(ShopKycDetail, {
 
 ShopBankDetails.belongsTo(Shop, {
     foreignKey: "shop_id",
-    as: "shop"
+    as: "shop",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 })
 
 Shop.hasOne(ShopBankDetails, {
     foreignKey: "shop_id",
-    as: "shop_bank_details"
+    as: "shop_bank_details",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 })
 
 // Shop -> Barber
 
 Barber.belongsTo(Shop, {
     foreignKey: "shop_id",
-    as: "barber"
+    as: "barber",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 })
 
 Shop.hasMany(Barber, {
     foreignKey: "shop_id",
-    as: "shop_barbers"
+    as: "shop_barbers",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 })
 
 
@@ -137,21 +150,52 @@ Shop.hasMany(Barber, {
 // Shop -> Service
 Shop.hasMany(Service, {
     foreignKey: "shop_id",
-    as: "shop_services" // must match your include
+    as: "shop_services",// must match your include
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 });
 
 Service.belongsTo(Shop, {
     foreignKey: "shop_id",
-    as: "shop"
+    as: "shop",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 });
 
 // Appointment.ts associations
 
 // Associations
-Appointment.belongsTo(User, { foreignKey: "customer_id", as: "customer" });
-Appointment.belongsTo(Shop, { foreignKey: "shop_id", as: "shop" });
-Appointment.belongsTo(Barber, { foreignKey: "barber_id", as: "barber" });
-Appointment.hasMany(AppointmentService, { foreignKey: "appointment_id", as: "services" });
+Appointment.belongsTo(User, {
+    foreignKey: "customer_id",
+    as: "customer",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+});
+Appointment.belongsTo(Shop, {
+    foreignKey: "shop_id",
+    as: "shop",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+});
+Appointment.belongsTo(Barber, {
+    foreignKey: "barber_id",
+    as: "barber",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+});
+Appointment.hasMany(AppointmentService, {
+    foreignKey: "appointment_id", as: "services",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+});
 
-AppointmentService.belongsTo(Appointment, { foreignKey: "appointment_id", as: "appointment" });
-AppointmentService.belongsTo(Service, { foreignKey: "service_id", as: "service" });
+AppointmentService.belongsTo(Appointment, {
+    foreignKey: "appointment_id", as: "appointment",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+});
+AppointmentService.belongsTo(Service, {
+    foreignKey: "service_id", as: "service",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+});

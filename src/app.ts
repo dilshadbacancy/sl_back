@@ -50,7 +50,7 @@ app.use("/auth", authRouter)
 app.use("/users", userRoute);
 app.use("/common", commonRoute);
 app.use("/vendor", shopRoute);
-// app.use("/admin", adminRoute)
+app.use("/admin", adminRoute)
 app.use("/barber", barberRoute);
 app.use('/customer', customerRoute);
 

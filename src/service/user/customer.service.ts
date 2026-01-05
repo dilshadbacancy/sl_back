@@ -407,8 +407,7 @@ export class CustomerServies {
                 { model: User, as: "customer" }
             ],
             order: [
-                ["appointment_date", "ASC"],
-                ["expected_start_time", "ASC"]
+                ["createdAt", "DESC"],
             ]
         });
 
@@ -465,6 +464,7 @@ export class CustomerServies {
                 }
                 : null;
 
+            const earningPerAppt = services.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
             return {
                 id: appt.id,
                 booking_time: appt.booking_time ?? null,
@@ -480,7 +480,7 @@ export class CustomerServies {
                 payment_status: appt.payment_status ?? null,
                 payment_mode: appt.payment_mode ?? null,
                 service_count: services.length,
-
+                earnings: earningPerAppt,
                 services,
                 barber,
                 shop,
@@ -689,6 +689,12 @@ export class CustomerServies {
 
         // ---- CALCULATE ONLY IF COMPLETED ----
         if (status === AppointmentStatus.Conmpleted) {
+            const isPinMatched =
+                Number(appointment?.pin) === Number(data?.pin);
+
+            if (!isPinMatched) {
+                throw new AppErrors("Invalid PIN provided for completing the appointment");
+            }
             dataToUpdate.service_completed_at = new Date();
             dataToUpdate.payment_status = PaymentStatus.Success;
 
