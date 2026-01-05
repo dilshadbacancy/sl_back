@@ -21,7 +21,7 @@ export class CustomerServies {
         // PostgreSQL-compatible haversine distance calculation
         // Cast to numeric before ROUND to support decimal places
         const distance = `
-        ROUND(xx
+        ROUND(
             (6371 * acos(
                 LEAST(1.0, 
                     cos(radians(${latitude})) *
@@ -146,8 +146,8 @@ export class CustomerServies {
 
                     if (available) {
                         immediateShop = shop;
-                        distance = shop.getDataValue("distance").
-                            break; // nearest shop with available barber
+                        distance = shop.getDataValue("distance");
+                        break; // nearest shop with available barber
                     }
                 }
 
@@ -189,7 +189,7 @@ export class CustomerServies {
                     if (!bestShop) {
                         throw new AppErrors("No barbers found in nearby shops");
                     }
-                    distance = bestShop.getDataValue("distance")
+                    distance = bestShop.getDataValue("distance");
                     chosenShopId = bestShop.id;
                 }
             }
@@ -490,6 +490,144 @@ export class CustomerServies {
 
         return formatted;
     }
+
+
+
+
+    static async getRecentAppointments(shopId: string): Promise<any> {
+        // 1️⃣ Time boundaries
+        const now = new Date();
+
+        const startOfToday = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+        const startOfMonth = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+        // Sunday as week start (change if Monday is needed)
+        const startOfWeek = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() - now.getDay()
+        );
+
+        // 2️⃣ Fetch appointments (only this month)
+        const appointments = await Appointment.findAll({
+            where: {
+                shop_id: shopId,
+                createdAt: {
+                    [Op.gte]: startOfMonth,
+                },
+            },
+            attributes: [
+                "id",
+                "appointment_date",
+                "status",
+                "booking_time",
+                "createdAt",
+            ],
+            include: [
+                {
+                    model: AppointmentService,
+                    as: "services",
+                    attributes: ["id", "price", "duration", "service_id"],
+                    include: [
+                        {
+                            model: Service,
+                            as: "service",
+                            attributes: ["id", "name", "price", "duration"],
+                        },
+                    ],
+                },
+                {
+                    model: Barber,
+                    as: "barber",
+                    attributes: ["id", "name", "gender", "mobile", "email"],
+                },
+                {
+                    model: User,
+                    as: "customer",
+                    attributes: ["id", "first_name", "last_name", "gender", "mobile", "email"],
+                },
+            ],
+            order: [["appointment_date", "DESC"]],
+        });
+
+        // 3️⃣ Normalize + calculate earnings (single pass)
+        let todaysEarnings = 0;
+        let weeklyEarnings = 0;
+        let monthlyEarnings = 0;
+
+        const normalizedAppointments = appointments.map((instance) => {
+            const appt = instance.get({ plain: true }) as any;
+
+            const services = (appt.services ?? []).map((s: any) => {
+                const price = Number(s.price ?? s.service?.price ?? 0);
+                return {
+                    id: s.service_id ?? s.id,
+                    name: s.service?.name ?? null,
+                    duration: s.duration ?? s.service?.duration ?? null,
+                    price,
+                };
+            });
+
+            const totalPrice = services.reduce(
+                (sum: number, s: { price: number }) => sum + s.price,
+                0
+            );
+
+            monthlyEarnings += totalPrice;
+
+            const createdAt = new Date(appt.createdAt);
+
+            if (createdAt >= startOfToday) {
+                todaysEarnings += totalPrice;
+            }
+
+            if (createdAt >= startOfWeek) {
+                weeklyEarnings += totalPrice;
+            }
+
+            return {
+                ...appt,
+                services,
+                totalPrice,
+                createdAt,
+            };
+        });
+
+
+        const todaysAppointments = normalizedAppointments.filter(
+            (appt) => appt.createdAt >= startOfToday
+        );
+
+        const weeklyAppointments = normalizedAppointments.filter(
+            (appt) => appt.createdAt >= startOfWeek
+        );
+
+        // 5️⃣ Final response
+        return {
+            monthly_summary: normalizedAppointments,
+            todays_summary: todaysAppointments,
+            weekly_summary: weeklyAppointments,
+            todays_earning: todaysEarnings,
+            weekly_earning: weeklyEarnings,
+            monthly_earning: monthlyEarnings,
+            total_monthly_appointments: normalizedAppointments.length,
+            total_weekly_appointments: weeklyAppointments.length,
+            total_todays_appointments: todaysAppointments.length,
+        };
+    }
+
+
+
+
 
 
     static async changeAppointmentStatus(data: any, changedByUserId?: string): Promise<any> {

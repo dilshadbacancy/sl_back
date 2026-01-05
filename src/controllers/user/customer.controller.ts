@@ -57,6 +57,13 @@ export class CustomerController {
     }
 
 
+    static async getRecentAppointments(req: AuthRequest, res: Response): Promise<void> {
+        const shopId = req.query.shop_id as string;
+        await CustomerServies.getRecentAppointments(shopId!)
+            .then((value) => ApiResponse.success("Recent appointments fetched successfully", value))
+            .catch((e) => ApiResponse.error(e))
+    }
+
     static async changeAppointmentStatus(req: AuthRequest, res: Response): Promise<void> {
         const data = ChangeAppointmentStatus.safeParse(req.body);
         if (!data.success) {

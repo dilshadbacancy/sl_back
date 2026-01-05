@@ -19,5 +19,7 @@ router.get("/appointment-statuses", CustomerController.getAppointmentsStatus);
 
 router.get("/categories", CustomerController.getAllCategory);
 
+router.get("/recent-appointments", CustomerController.getRecentAppointments);
+
 
 export default router;// test change
