@@ -1,12 +1,10 @@
-import { email } from "zod";
 import { AppErrors } from "../../errors/app.errors";
 import { AdminUserModel } from "../../models/admin/admin.user.model";
 import { Op } from "sequelize"
-import { da } from "zod/v4/locales";
 import { HelperUtils } from "../../utils/helper";
 import { JwtUtils } from "../../utils/jwt_utils";
 import { TokenPayload } from "../../interfaces/jwt.payload";
-import { blackListToken } from "../../middlewares/auth.middleware";
+import { blackListRefreshToken, blackListRefreshTokens, blackListToken } from "../../middlewares/auth.middleware";
 
 
 export class AdminAuthService {
@@ -145,6 +143,39 @@ export class AdminAuthService {
             return res;
         } catch (e: any) {
             throw new AppErrors(e.message)
+        }
+    }
+
+
+    static async getNewAccessToken(refreshToken: string, token: string) {
+        try {
+
+            const decodedToken = JwtUtils.verifyRefreshToken(refreshToken);
+
+            const adminUser = await AdminUserModel.findByPk(decodedToken.id);
+            if (!adminUser) {
+                throw new AppErrors("User does not exist");
+            }
+            const tokenPayload: TokenPayload = adminUser;
+            if (blackListRefreshTokens.has(refreshToken)) {
+                throw new AppErrors("Refresh token is invalid or blacklisted")
+            }
+            blackListRefreshToken(refreshToken);
+            blackListToken(token)
+
+
+
+            const { password, ...safeUser } = adminUser.toJSON();
+            const newAccessToken = JwtUtils.generateAccessToken(tokenPayload);
+            const newRefreshToken = JwtUtils.generateRefreshToken(tokenPayload);
+            return {
+                access_token: newAccessToken,
+                refresh_token: newRefreshToken,
+                user: safeUser,
+            }
+
+        } catch (error: any) {
+            throw new AppErrors(error.message);
         }
     }
 

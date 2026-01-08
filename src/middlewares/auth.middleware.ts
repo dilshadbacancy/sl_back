@@ -13,8 +13,14 @@ export interface AuthRequest extends Request {
 
 
 const blackListTokens = new Set<string>;
+export const blackListRefreshTokens = new Set<string>;
+
 export const blackListToken = (token: string) => {
     blackListTokens.add(token)
+}
+
+export const blackListRefreshToken = (token: string) => {
+    blackListRefreshTokens.add(token);
 }
 
 export const authMiddleware = async (

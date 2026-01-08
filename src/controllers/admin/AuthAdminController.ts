@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { AdminLoginSchema, ChangeAdminPassowrdSchema, CreateAdminSchema } from "../../schema/admin/AuthSchma";
 import { ApiResponse } from "../../utils/apiResponse";
-import { AdminAuthService } from "../../service/admin/AdminAuth.service";
+import { AdminAuthService } from "../../service/admin/AdminAuthService";
 import { AuthRequest, blackListToken } from "../../middlewares/auth.middleware";
+import { AuthService } from "../../service/common/auth.service";
 
 
 export class AuthAdminController {
@@ -70,6 +71,23 @@ export class AuthAdminController {
             return ApiResponse.success(result);
 
         } catch (error) {
+            return ApiResponse.error(error);
+        }
+    }
+
+    static async getNewAccessToken(req: AuthRequest, res: Response) {
+
+        try {
+            const { refresh_token } = req.body;
+            const authorization = req.headers.authorization!;
+            const token = authorization?.split(' ')[1];
+            if (!refresh_token) {
+                return ApiResponse.error("Refresh token is required to accquire access token")
+            }
+            const result = await AdminAuthService.getNewAccessToken(refresh_token, token)
+            return ApiResponse.success("New access token retrive successfully", result);
+
+        } catch (error: any) {
             return ApiResponse.error(error);
         }
     }
