@@ -2,13 +2,14 @@
 import bcrypt from "bcryptjs";
 import { Barber } from "../models/vendor/barber.model";
 import { User } from "../models/user/user.model";
-import { ScreenSteps } from "./enum.utils";
+import { AdminRole, ScreenSteps } from "./enum.utils";
 import { Shop } from "../models/vendor/shop.model";
 import { ShopLocation } from "../models/vendor/shop_location";
 import { ShopKycDetail } from "../models/vendor/shop_kyc.model";
 import ShopBankDetails from "../models/vendor/shop_bank_details";
 import { AppErrors } from "../errors/app.errors";
 import { OTP } from "../models/auth/otp.model";
+import { AdminUserModel } from "../models/admin/admin.user.model";
 
 export class HelperUtils {
 
@@ -16,7 +17,11 @@ export class HelperUtils {
         const user = await User.findOne({ where: { email: email } })
         return user;
     }
-    static async findUserById(id: string): Promise<User | null> {
+    static async findUserById(id: string, role: string): Promise<any> {
+        if (role === AdminRole.Admin || role === AdminRole.SuperAdmin) {
+            const user = AdminUserModel.findByPk(id);
+            return user;
+        }
         const user = await User.findByPk(id)
         return user;
     }
@@ -31,9 +36,16 @@ export class HelperUtils {
         return user;
     }
 
-    static async hashPassowrd(password: string): Promise<string> {
+    static async hashPassword(password: string): Promise<string> {
         return await bcrypt.hash(password, 10);
 
+    }
+
+    static async verifyPassword(
+        plainPassword: string,
+        hashedPassword: string
+    ): Promise<boolean> {
+        return await bcrypt.compare(plainPassword, hashedPassword)
     }
 
 

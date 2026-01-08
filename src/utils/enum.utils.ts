@@ -91,3 +91,9 @@ export enum PaymentMode {
     Online = "online",
     Other = "Other"
 }
+
+
+export enum AdminRole {
+    Admin = "admin",
+    SuperAdmin = "super-admin"
+}

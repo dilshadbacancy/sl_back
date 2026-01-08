@@ -16,6 +16,8 @@ import commonRoute from "./routes/common/common.route";
 import shopRoute from "./routes/vendor/shop.route";
 import barberRoute from "./routes/vendor/barber.route"
 import customerRoute from "./routes/user/customer.route"
+import adminAuthRoute from "./routes/admin/AuthAdminRoute"
+import adminUserRoute from "./routes/admin/AdminUserRoute";
 
 dotenv.config();
 
@@ -50,9 +52,18 @@ app.use("/auth", authRouter)
 app.use("/users", userRoute);
 app.use("/common", commonRoute);
 app.use("/vendor", shopRoute);
-app.use("/admin", adminRoute)
 app.use("/barber", barberRoute);
 app.use('/customer', customerRoute);
+
+
+
+/// Admin Routes here......
+app.use("/admin/auth", adminAuthRoute)
+app.use("/admin/user", adminUserRoute)
+app.use("/admin", adminRoute)
+
+
+
 
 
 

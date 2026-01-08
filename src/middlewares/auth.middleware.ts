@@ -51,7 +51,7 @@ export const authMiddleware = async (
 
         const decoded = JwtUtils.verifyAccessToken(token) as TokenPayload;
 
-        const user = await HelperUtils.findUserById(decoded.id);
+        const user = await HelperUtils.findUserById(decoded.id, decoded.role!);
 
         if (!user) {
             res.status(401).json({

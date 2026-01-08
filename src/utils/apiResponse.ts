@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
 import { ZodError } from "zod";
 import { getContext } from "./request.context";
-import { formatZodError } from "../errors/app.errors";
+import { AppErrors, formatZodError } from "../errors/app.errors";
 import LoggerHelper from "./logger.helper";
 
 // Type definitions
@@ -180,13 +180,27 @@ export class ApiResponse {
             return {
                 message: firstError?.message || "Validation Failed",
                 details: {
-                message: firstError?.message,
-                type: firstError?.type,
-                field: firstError?.path,
-                value: firstError?.value,
+                    title: firstError.name,
+                    message: firstError?.message,
+                    type: firstError?.type,
+                    field: firstError?.path,
+                    value: firstError?.value,
                 },
                 statusCode: (error as any).statusCode || 400,
             };
+        }
+
+        if (error instanceof AppErrors) {
+            return {
+                message: error.message,
+                details: {
+                    title: error.name,
+                    message: error.message,
+                    code: error.statusCode,
+                    ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
+
+                }
+            }
         }
 
         // Handle Error objects
@@ -194,7 +208,8 @@ export class ApiResponse {
             return {
                 message: error.message || "Something went wrong",
                 details: {
-                message: error.message,
+                    title: error.name,
+                    message: error.message,
                     ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
                 },
                 statusCode: (error as any).statusCode || 500,
