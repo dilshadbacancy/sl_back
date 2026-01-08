@@ -11,5 +11,7 @@ router.post("/login", AuthAdminController.loginAdmin)
 router.post("/change-password", AuthAdminController.changeAdminPassword);
 router.post("/logout-admin", authMiddleware, AuthAdminController.logoutAdminUser);
 router.get("/access-token", AuthAdminController.getNewAccessToken)
+router.post("/send-otp", AuthAdminController.sendOtpForForgetPassword);
+router.post("/verify-reset-password", AuthAdminController.verifyOtpAndResetPassword)
 
 export default router

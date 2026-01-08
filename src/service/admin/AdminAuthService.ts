@@ -6,6 +6,7 @@ import { JwtUtils } from "../../utils/jwt_utils";
 import { TokenPayload } from "../../interfaces/jwt.payload";
 import { blackListRefreshToken, blackListRefreshTokens, blackListToken } from "../../middlewares/auth.middleware";
 
+const forgetPasswordOtp = new Set<string>;
 
 export class AdminAuthService {
 
@@ -177,6 +178,51 @@ export class AdminAuthService {
         } catch (error: any) {
             throw new AppErrors(error.message);
         }
+    }
+
+
+
+    static async sendOtpFotForgetPassword(mobile: string): Promise<any> {
+
+        try {
+
+            const adminUser = AdminUserModel.findOne({ where: { mobile: mobile } })
+
+            if (!adminUser) {
+                throw new AppErrors("User doesnot exist with the given mobile numner");
+            }
+
+            const OTP = HelperUtils.generateOTP();
+
+            forgetPasswordOtp.add(OTP)
+            /// Send OTP to the mobile , for now I am sending it in response;
+            return { otp: OTP }
+
+
+        } catch (error: any) {
+            throw new AppErrors(error.message);
+        }
+
+    }
+
+    static async verifyOtpAndResetPassword(data: any) {
+
+        const isCodematched = forgetPasswordOtp.has(data.code);
+        if (!isCodematched) {
+            throw new AppErrors("Invalid or expire OTP")
+        }
+
+        const adminUser = await AdminUserModel.findOne({ where: { mobile: data.mobile } })
+        if (!adminUser) {
+            throw new AppErrors("User doesnot exist.")
+        }
+
+        const hashPassword = await HelperUtils.hashPassword(data.password);
+        await adminUser.update({ password: hashPassword })
+
+        const { password, ...safeUser } = adminUser.toJSON();
+        return safeUser;
+
     }
 
 

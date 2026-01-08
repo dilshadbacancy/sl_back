@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AdminLoginSchema, ChangeAdminPassowrdSchema, CreateAdminSchema } from "../../schema/admin/AuthSchma";
+import { AdminLoginSchema, ChangeAdminPassowrdSchema, CreateAdminSchema, ResetAdminPasswordSchema } from "../../schema/admin/AuthSchma";
 import { ApiResponse } from "../../utils/apiResponse";
 import { AdminAuthService } from "../../service/admin/AdminAuthService";
 import { AuthRequest, blackListToken } from "../../middlewares/auth.middleware";
@@ -91,4 +91,33 @@ export class AuthAdminController {
             return ApiResponse.error(error);
         }
     }
+
+    static async sendOtpForForgetPassword(req: AuthRequest, res: Response) {
+
+        try {
+            const { mobile } = req.body;
+            const result = await AdminAuthService.sendOtpFotForgetPassword(mobile)
+            return ApiResponse.success("One Time Password has been sent to you mobile number", result);
+        } catch (error) {
+            return ApiResponse.error(error);
+        }
+    }
+
+
+    static async verifyOtpAndResetPassword(req: AuthRequest, res: Response) {
+        try {
+            const requestBody = req.body;
+
+            const parsedBody = ResetAdminPasswordSchema.safeParse(requestBody);
+            if (!parsedBody.success) {
+                return ApiResponse.error(parsedBody.error);
+            }
+            const result = await AdminAuthService.verifyOtpAndResetPassword(parsedBody.data)
+            return ApiResponse.success("Password reset successfully", result);
+        } catch (error: any) {
+            return ApiResponse.error(error);
+        }
+    }
+
+
 }

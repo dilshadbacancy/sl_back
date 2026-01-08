@@ -55,3 +55,17 @@ export const ChangeAdminPassowrdSchema = z
         message: "New password must be different from current password",
         path: ["newPassword"],
     });
+
+
+export const ResetAdminPasswordSchema = z.object({
+    code: z.string().trim().min(4, "One time password cannot be null or empty"),
+    mobile: z.string().min(10, "Mobile number must be at least 10 digits"),
+    password: z
+        .string()
+        .min(8, "New password must be at least 8 characters")
+        .regex(
+            /^(?=.*[!@#$%^&*(),.?":{}|<>])/,
+            "New password must include at least one special character"
+        ),
+
+})
