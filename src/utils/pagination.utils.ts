@@ -1,9 +1,10 @@
 export class PaginationUtils {
-    static getPagination(query: any) {
+    static getPagination(query: any): PaginationReqMeta {
         const page = Math.max(1, parseInt(query.page) || 1);
         const limit = Math.min(100, parseInt(query.limit) || 10);
         const offset = (page - 1) * limit;
-        return { page, limit, offset };
+        const meta: PaginationReqMeta = { page, limit, offset };;
+        return meta
     }
 
     static getMetaData(value: any, query: any): Record<string, any> | null {
@@ -15,4 +16,10 @@ export class PaginationUtils {
         }
         return meta;
     }
+}
+
+export interface PaginationReqMeta {
+    page: number,
+    limit: number,
+    offset: number,
 }

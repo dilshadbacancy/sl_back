@@ -84,6 +84,13 @@ Shop.belongsTo(User, {
     onUpdate: "CASCADE",
 })
 
+Shop.belongsTo(User, {
+    foreignKey: "user_id",
+    as: "shop_owner",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+})
+
 
 // Shop -> Location
 

@@ -6,8 +6,8 @@ const router = Router();
 
 router.get('/vendor-shops', AdminController.getAllVendorShops);
 router.get('/customers', AdminController.getAllCustomers);
-router.get('/appointments-earnings/:shopId', AdminController.getAllAppointmentsByShopIdWithEarnings);
 router.get("/get-appointments", AdminController.getAllAppointments);
+router.get("/vendor-shops/:id", AdminController.getShopDetailById)
 
 
 

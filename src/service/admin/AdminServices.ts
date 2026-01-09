@@ -9,43 +9,25 @@ import { CustomerServies } from "../user/customer.service";
 import { Op } from "sequelize";
 import HelperFunctions from "../../utils/helper_functions";
 import { da } from "zod/v4/locales";
+import { Barber } from "../../models/vendor/barber.model";
+import ShopBankDetails from "../../models/vendor/shop_bank_details";
+import { ShopKycDetail } from "../../models/vendor/shop_kyc.model";
+import { PaginationReqMeta } from "../../utils/pagination.utils";
 
 export class AdminServices {
 
 
-    static async getAllVendorShops(data: any): Promise<Shop[]> {
+    static async getAllVendorShops(data: any, paginationQuery: PaginationReqMeta): Promise<Shop[]> {
         try {
 
-            console.log("Filtr Data:::: " + JSON.stringify(data));
-
-            const venodors = await User.findAll({ where: { role: Roles.VENDOR } })
+            const venodors = await User.findAll({ where: { role: Roles.VENDOR }, offset: paginationQuery.offset, limit: paginationQuery.limit })
 
             let userIds = venodors.map(ven => ven.getDataValue('id'));
             const whereClause: any = { user_id: userIds, ...data };
 
-
             const shops = await Shop.findAll({
                 where: whereClause,
-                include: [
-                    {
-                        model: Appointment,
-                        as: "appointments",
-                        include: [
-                            {
-                                model: AppointmentService,
-                                as: "services",
-                            },
-                        ],
-                    },
-                    {
-                        model: Service,
-                        as: "shop_services"
-                    },
-                    {
-                        model: User,
-                        as: "shop_user"
-                    }
-                ]
+                include: AdminServiceIncludes.allVendorShopInclude()
             });
 
             const formattedResponse = shops.map((shopInstance) => {
@@ -93,28 +75,60 @@ export class AdminServices {
         }
     }
 
-    static async getAllCustomers(data: any): Promise<User[]> {
+
+    static async getShopDetailById(shopId: string): Promise<any> {
+        try {
+
+            const shop = await Shop.findOne({
+                where: { id: shopId },
+                include: AdminServiceIncludes.shopDetailByIdInclude()
+            });
+            if (!shop) {
+                throw new AppErrors("No shop exist with the given Id")
+            }
+
+
+            const shopPlain = shop.get({ plain: true });
+
+            const totalShopCount = shopPlain.shop_owner.shops.length;
+            delete shopPlain.shop_owner.shops;
+
+
+            const response = {
+                has_verified_bank: shopPlain.shop_bank_details !== null || shopPlain.shop_bank_details !== undefined,
+                has_verified_kyc: shopPlain.shop_kyc_details !== null || shopPlain.shop_kyc_details !== undefined,
+                // recent_appointments: recentAppointments,
+                shop_owner: {
+                    ...shopPlain.shop_owner,
+                    total_shop_count: totalShopCount,
+                },
+                shop_kyc_details: shopPlain.shop_kyc_details,
+                shop_bank_details: shopPlain.shop_bank_details,
+                shop_barbers: shopPlain.shop_barbers,
+                shop_services: shopPlain.shop_services,
+
+            };
+
+            return response;
+        } catch (error: any) {
+            throw new AppErrors(error.message)
+        }
+    }
+
+
+    static async getAllCustomers(data: any, paginationQuery: PaginationReqMeta): Promise<User[]> {
         try {
 
             let whereClause: any = { role: Roles.CUSTOMER, ...data };
             const customers = await User.findAll({
                 where: whereClause,
-                include: [
-                    {
-                        model: Appointment,
-                        as: "appointments",
-                        include: [
-                            {
-                                model: AppointmentService,
-                                as: "services",
-                            }
-                        ]
-                    }
-                ],
+                include: AdminServiceIncludes.allCustomerInclude(),
                 attributes: {
                     exclude: ['route', "is_onboarding_completed"],
 
-                }
+                },
+                offset: paginationQuery.offset,
+                limit: paginationQuery.limit,
             })
 
             const formattedResponse = customers.map((custInstance) => {
@@ -154,7 +168,7 @@ export class AdminServices {
 
     }
 
-    static async getAllAppointments(data: any): Promise<Appointment[]> {
+    static async getAllAppointments(data: any, paginationQuery: PaginationReqMeta): Promise<Appointment[]> {
 
         try {
 
@@ -178,33 +192,12 @@ export class AdminServices {
             }
 
             const appointments = await Appointment.findAll({
-                include: [
-                    {
-                        model: User,
-                        as: "customer",
-                        attributes: ['id', 'first_name', "last_name",]
-                    },
-                    {
-                        model: Shop,
-                        as: "shop",
-                        attributes: ['id', 'shop_name',]
-                    },
+                include: AdminServiceIncludes.getAllApointmentsInclude(),
 
-                    {
-                        model: AppointmentService,
-                        as: "services",
-
-                        include: [
-                            {
-                                model: Service,
-                                as: "service",
-                                attributes: ["id", "name", "price", "duration"], // choose fields
-                            },
-                        ],
-                    },
-                ],
-                where: whereClause
-                // attributes: ['id', 'appointment_date', 'status', 'shop_id', 'customer_id', 'barber_id',]
+                where: whereClause,
+                attributes: ['id', 'appointment_date', 'status', "shop_id"],
+                offset: paginationQuery.offset,
+                limit: paginationQuery.limit,
             });
 
             const formattedResponse = appointments.map((aptInstance) => {
@@ -215,8 +208,13 @@ export class AdminServices {
 
                 const serviceInstance = appointementsInstance.services;
 
+                const appointmentAmt = serviceInstance.reduce(
+                    (sum: number, service: any) => sum + (service.price ?? 0),
+                    0
+                );
                 let serviceList = [];
                 for (const service of serviceInstance) {
+
                     serviceList.push({ id: service.service.id, name: service.service.name });
                 }
                 delete appointementsInstance.shop;
@@ -226,8 +224,9 @@ export class AdminServices {
                     ...appointementsInstance,
                     customer_name: customerName,
                     shop_name: shopName,
-                    services: serviceList,
+                    appointment_amt: appointmentAmt,
                     services_count: serviceList.length,
+                    services: serviceList,
                 }
             })
             return formattedResponse;
@@ -237,14 +236,139 @@ export class AdminServices {
     }
 
 
-    static async getAllAppointmentsByShopIdWithEarnings(shopId: number): Promise<any> {
-        try {
-            const appointements = await CustomerServies.getAllAppointments();
-            const totalEarnings = appointements.reduce((sum: number, appt: any) => sum + (appt.earnings || 0), 0);
-            return { appointements, totalEarnings };
-        } catch (error) {
-            throw new AppErrors('Failed to retrieve services', 500);
-        }
 
+}
+
+
+
+class AdminServiceIncludes {
+
+    static allVendorShopInclude() {
+        return [
+            {
+                model: Appointment,
+                as: "appointments",
+                include: [
+                    {
+                        model: AppointmentService,
+                        as: "services",
+                    },
+                ],
+            },
+            {
+                model: Service,
+                as: "shop_services"
+            },
+            {
+                model: User,
+                as: "shop_user"
+            }
+        ];
     }
+
+    static allCustomerInclude() {
+        return [
+            {
+                model: Appointment,
+                as: "appointments",
+                include: [
+                    {
+                        model: AppointmentService,
+                        as: "services",
+                    }
+                ]
+            }
+        ];
+    }
+
+    static shopDetailByIdInclude() {
+        return [
+            {
+                model: User,
+                as: "shop_owner",
+                attributes: ['first_name', 'last_name', 'mobile', 'email'],
+                include: [
+                    {
+                        model: Shop,
+                        as: "shops"
+                    }
+                ]
+            },
+            {
+                model: Service,
+                as: "shop_services",
+                attributes: ['name', 'price']
+            },
+            {
+                model: Barber,
+                as: "shop_barbers",
+                attributes: {
+                    exclude: ['user_id', 'shop_id', 'role', 'available', 'username', 'login_pin']
+                }
+            },
+            {
+                model: ShopBankDetails,
+                as: "shop_bank_details",
+                attributes: {
+                    exclude: ['shop_id', 'user_id', '']
+                }
+            },
+            {
+                model: ShopKycDetail,
+                as: "shop_kyc_details",
+                attributes: {
+                    exclude: ['shop_id', 'user_id', '']
+                }
+            },
+            // {
+            //     model: Appointment,
+            //     as: "appointments",
+            //     include: [
+            //         {
+            //             model: AppointmentService,
+            //             as: "services",
+            //             include: [
+            //                 {
+            //                     model: Service,
+            //                     as: "service"
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             model: User,
+            //             as: "customer"
+            //         }
+            //     ],
+            // },
+        ];
+    }
+
+    static getAllApointmentsInclude() {
+        return [
+            {
+                model: User,
+                as: "customer",
+                attributes: ['id', 'first_name', "last_name",]
+            },
+            {
+                model: Shop,
+                as: "shop",
+                attributes: ['id', 'shop_name',]
+            },
+
+            {
+                model: AppointmentService,
+                as: "services",
+
+                include: [
+                    {
+                        model: Service,
+                        as: "service",
+                        attributes: ["id", "name", "price", "duration"], // choose fields
+                    },
+                ],
+            },
+        ];
+    }
+
 }
