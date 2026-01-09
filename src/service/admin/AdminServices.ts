@@ -168,7 +168,7 @@ export class AdminServices {
 
     }
 
-    static async getAllAppointments(data: any, paginationQuery: PaginationReqMeta): Promise<Appointment[]> {
+    static async getAllAppointments(data: any, paginationQuery: PaginationReqMeta): Promise<any> {
 
         try {
 
@@ -199,7 +199,31 @@ export class AdminServices {
                 offset: paginationQuery.offset,
                 limit: paginationQuery.limit,
             });
+            const now = new Date();
 
+
+            const startOfToday = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate()
+            );
+            // Sunday as week start (change if Monday is needed)
+            const startOfWeek = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate() - now.getDay()
+            );
+
+            const startOfMonth = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                1
+            );
+
+            let total_earnings = 0;
+            let todays_earnings = 0
+            let weekly_earnings = 0;
+            let monthly_earnings = 0;
             const formattedResponse = appointments.map((aptInstance) => {
 
                 const appointementsInstance = aptInstance.get({ plain: true }) as any;
@@ -212,6 +236,33 @@ export class AdminServices {
                     (sum: number, service: any) => sum + (service.price ?? 0),
                     0
                 );
+                total_earnings += appointmentAmt;
+
+                const createdAt = new Date(appointementsInstance.appointment_date);
+
+
+                if (createdAt >= startOfToday) {
+                    todays_earnings += serviceInstance.reduce(
+                        (sum: number, service: any) => sum + (service.price ?? 0),
+                        0
+                    );
+                }
+
+
+                if (createdAt >= startOfWeek) {
+                    weekly_earnings += serviceInstance.reduce(
+                        (sum: number, service: any) => sum + (service.price ?? 0),
+                        0
+                    );
+                }
+
+                if (createdAt >= startOfMonth) {
+                    monthly_earnings += serviceInstance.reduce(
+                        (sum: number, service: any) => sum + (service.price ?? 0),
+                        0
+                    );
+                }
+
                 let serviceList = [];
                 for (const service of serviceInstance) {
 
@@ -229,7 +280,15 @@ export class AdminServices {
                     services: serviceList,
                 }
             })
-            return formattedResponse;
+
+            return {
+                total_earnings,
+                todays_earnings,
+                weekly_earnings,
+                monthly_earnings,
+                total_appointments_count: formattedResponse.length,
+                appointments: formattedResponse
+            }
         } catch (error: any) {
             throw new AppErrors(error.message);
         }
