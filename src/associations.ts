@@ -69,6 +69,13 @@ User.hasMany(Shop, {
     onUpdate: "CASCADE",
 })
 
+User.hasMany(Appointment, {
+    foreignKey: "customer_id",
+    as: "appointments",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+})
+
 
 Shop.belongsTo(User, {
     foreignKey: "user_id",
@@ -177,6 +184,13 @@ Appointment.belongsTo(Shop, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
+
+Shop.hasMany(Appointment, {
+    foreignKey: "shop_id",
+    as: "appointments",
+    onDelete: "CASECADE",
+    onUpdate: "CASECADE",
+})
 Appointment.belongsTo(Barber, {
     foreignKey: "barber_id",
     as: "barber",
@@ -194,6 +208,7 @@ AppointmentService.belongsTo(Appointment, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
+
 AppointmentService.belongsTo(Service, {
     foreignKey: "service_id", as: "service",
     onDelete: "CASCADE",

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { SequelizeConnection } from "../../config/database.config";
+import { Status } from "../../utils/enum.utils";
 
 export class Shop extends Model {
     id!: string;
@@ -13,7 +14,9 @@ export class Shop extends Model {
     shop_open_time!: string | null;
     shop_close_time!: string | null;
     weekly_holiday!: string | null;
-    services!: string[]
+    services!: string[];
+    status!: Status;
+    isVerified!: boolean;
 }
 
 const sequelize = SequelizeConnection.getInstance();
@@ -85,6 +88,16 @@ Shop.init(
             type: DataTypes.JSON,
             allowNull: true,
             defaultValue: []
+        },
+        status: {
+            type: DataTypes.ENUM(...Object.values(Status)),
+            allowNull: true,
+            defaultValue: Status.ACTIVE,
+        },
+        isVerified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         }
     },
 

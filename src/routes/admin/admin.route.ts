@@ -1,12 +1,13 @@
 
 import Router from "express";
-import { AdminController } from "../../controllers/admin/admin.controller";
+import { AdminController } from "../../controllers/admin/AdminController";
 
 const router = Router();
 
-router.get('/vendors', AdminController.getAllVendors);
+router.get('/vendor-shops', AdminController.getAllVendorShops);
 router.get('/customers', AdminController.getAllCustomers);
 router.get('/appointments-earnings/:shopId', AdminController.getAllAppointmentsByShopIdWithEarnings);
+router.get("/get-appointments", AdminController.getAllAppointments);
 
 
 
